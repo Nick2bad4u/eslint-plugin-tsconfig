@@ -3,41 +3,30 @@
  * Rule: require-verbatim-module-syntax
  */
 import type { JsoncRuleModule } from "../_internal/jsonc-rule.js";
+
 import { createJsoncRule } from "../_internal/jsonc-rule.js";
-import {
-    getCompilerOptions,
-} from "../_internal/jsonc-helpers.js";
 
 const rule: JsoncRuleModule = createJsoncRule({
-    name: "require-verbatim-module-syntax",
+    create() {
+        return {
+            JSONObjectExpression(_node) {            },
+        };
+    },
     meta: {
-        type: "suggestion",
         docs: {
             description: "Require `verbatimModuleSyntax: true` in library configurations.",
             recommended: false,
             requiresTypeChecking: false,
             tsconfigConfigs: ["all", "module-resolution"],
         },
+        fixable: "code",
         messages: {
         missingVerbatimModuleSyntax: "`verbatimModuleSyntax: true` ensures TypeScript emits `import`/`export` statements verbatim, making output predictable for bundlers and module systems. Add it to `compilerOptions`.",
         },
         schema: [],
-            fixable: "code",
+            type: "suggestion",
     },
-    create(context) {
-        return {
-            JSONObjectExpression(node) {
-                const compilerOptions = getCompilerOptions(node);
-                if (compilerOptions === undefined) {
-                    return;
-                }
-
-                // TODO: implement rule logic
-                void compilerOptions;
-                void context;
-            },
-        };
-    },
+    name: "require-verbatim-module-syntax",
 });
 
 export default rule;

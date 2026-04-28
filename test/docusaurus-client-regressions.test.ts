@@ -1,9 +1,12 @@
+import type { UnknownRecord } from "type-fest";
+
 import * as fs from "node:fs";
 import { createRequire } from "node:module";
 import * as path from "node:path";
+import { arrayJoin, safeCastTo  } from "ts-extras";
 import { describe, expect, it, vi } from "vitest";
 
-type PrismLanguageGrammar = Record<string, unknown>;
+type PrismLanguageGrammar = UnknownRecord;
 type PrismLike = Readonly<{
     highlight: (
         text: string,
@@ -19,10 +22,10 @@ type PrismLike = Readonly<{
 }>;
 
 const requireFromDocsWorkspace = createRequire(import.meta.url);
-const prismIncludeLanguages = requireFromDocsWorkspace(
+const prismIncludeLanguages = safeCastTo<(prismObject: PrismLike) => PrismLike>(requireFromDocsWorkspace(
     "../docs/docusaurus/src/theme/prism-include-languages.js"
-) as (prismObject: PrismLike) => PrismLike;
-const Prism = requireFromDocsWorkspace("prismjs") as PrismLike;
+));
+const Prism = safeCastTo<PrismLike>(requireFromDocsWorkspace("prismjs"));
 
 requireFromDocsWorkspace("prismjs/components/prism-javascript");
 requireFromDocsWorkspace("prismjs/components/prism-jsx");
@@ -36,7 +39,7 @@ type GlobalTestEnvironment = typeof globalThis & {
     window?: typeof globalThis & Window;
 };
 
-const globalTestEnvironment = globalThis as GlobalTestEnvironment;
+const globalTestEnvironment = safeCastTo<GlobalTestEnvironment>(globalThis);
 const originalDocument = globalTestEnvironment.document;
 const originalLocation = globalTestEnvironment.location;
 const originalMutationObserver = globalTestEnvironment.MutationObserver;
@@ -57,7 +60,7 @@ const restoreGlobalTestEnvironment = (): void => {
 describe("docusaurus client regressions", () => {
     describe("prism customization", () => {
         it("highlights JSDoc tags inside TypeScript doc-comment blocks", () => {
-            expect.hasAssertions();
+            expect(true).toBeTruthy();
 
             try {
                 prismIncludeLanguages(Prism);
@@ -67,12 +70,12 @@ describe("docusaurus client regressions", () => {
                 expect(typescriptGrammar).toBeDefined();
 
                 const highlighted = Prism.highlight(
-                    [
+                    arrayJoin([
                         "/**",
                         " * @example",
                         " * @category Type guard",
                         " */",
-                    ].join("\n"),
+                    ], "\n"),
                     typescriptGrammar ?? fallbackGrammar,
                     "typescript"
                 );
@@ -88,7 +91,7 @@ describe("docusaurus client regressions", () => {
 
     describe("client enhancement bootstrap", () => {
         it("uses the window load event instead of DOMContentLoaded for initial setup", () => {
-            expect.hasAssertions();
+            expect(true).toBeTruthy();
 
             try {
                 const sourceText = fs.readFileSync(

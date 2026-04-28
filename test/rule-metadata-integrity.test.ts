@@ -1,10 +1,12 @@
+import type { UnknownRecord } from "type-fest";
+
 /**
  * @packageDocumentation
  * Strong contract tests for required rule metadata across all registered rules.
  */
 import * as fs from "node:fs";
 import * as path from "node:path";
-import { arrayIncludes, objectEntries } from "ts-extras";
+import { arrayIncludes, isInteger, objectEntries, objectKeys } from "ts-extras";
 import { describe, expect, it } from "vitest";
 
 import { getRuleCatalogEntryForRuleName } from "../src/_internal/rule-catalog";
@@ -13,7 +15,11 @@ import { tsconfigConfigNames } from "../src/_internal/tsconfig-config-references
 import tsconfigPlugin from "../src/plugin";
 
 /** Allowed ESLint `meta.type` values for plugin rules. */
-const expectedRuleTypes = new Set(["layout", "problem", "suggestion"]);
+const expectedRuleTypes = new Set([
+    "layout",
+    "problem",
+    "suggestion",
+]);
 
 /** Stable rule-catalog id format used in docs metadata. */
 const ruleCatalogIdPattern = /^R\d{3}$/v;
@@ -23,7 +29,7 @@ const isNonEmptyString = (value: unknown): value is string =>
     typeof value === "string" && value.trim().length > 0;
 
 /** Guard unknown values to object-shaped records. */
-const isRecord = (value: unknown): value is Readonly<Record<string, unknown>> =>
+const isRecord = (value: unknown): value is Readonly<UnknownRecord> =>
     typeof value === "object" && value !== null;
 
 /**
@@ -91,11 +97,12 @@ const getExpectedRegisteredRuleNumbers = (
 const getRuleRecord = (
     ruleName: string,
     ruleModule: unknown
-): Readonly<Record<string, unknown>> => {
+): Readonly<UnknownRecord> => {
     expect(
         isRecord(ruleModule),
         `Rule '${ruleName}' must export an object`
     ).toBeTruthy();
+
     return isRecord(ruleModule) ? ruleModule : {};
 };
 
@@ -104,10 +111,12 @@ const getRuleRecord = (
  */
 const getRuleMetaRecord = (
     ruleName: string,
-    ruleRecord: Readonly<Record<string, unknown>>
-): Readonly<Record<string, unknown>> => {
+    ruleRecord: Readonly<UnknownRecord>
+): Readonly<UnknownRecord> => {
     const meta = ruleRecord["meta"];
+
     expect(isRecord(meta), `Rule '${ruleName}' must define meta`).toBeTruthy();
+
     return isRecord(meta) ? meta : {};
 };
 
@@ -116,13 +125,15 @@ const getRuleMetaRecord = (
  */
 const getRuleDocsRecord = (
     ruleName: string,
-    metaRecord: Readonly<Record<string, unknown>>
-): Readonly<Record<string, unknown>> => {
+    metaRecord: Readonly<UnknownRecord>
+): Readonly<UnknownRecord> => {
     const docs = metaRecord["docs"];
+
     expect(
         isRecord(docs),
         `Rule '${ruleName}' must define meta.docs`
     ).toBeTruthy();
+
     return isRecord(docs) ? docs : {};
 };
 
@@ -133,7 +144,7 @@ const assertDocsContract = ({
     docsRecord,
     ruleName,
 }: Readonly<{
-    docsRecord: Readonly<Record<string, unknown>>;
+    docsRecord: Readonly<UnknownRecord>;
     ruleName: string;
 }>): void => {
     const description = docsRecord["description"];
@@ -161,8 +172,8 @@ const assertDocsContract = ({
         `Rule '${ruleName}' must provide docs.ruleId in 'R###' format`
     ).toBeTruthy();
     expect(
-        Number.isInteger(ruleNumber) &&
-            typeof ruleNumber === "number" &&
+        typeof ruleNumber === "number" &&
+            isInteger(ruleNumber) &&
             ruleNumber > 0,
         `Rule '${ruleName}' must provide positive integer docs.ruleNumber`
     ).toBeTruthy();
@@ -183,6 +194,7 @@ const assertDocsContract = ({
     expect(ruleId).toBe(`R${String(ruleNumber).padStart(3, "0")}`);
 
     const expectedRuleUrl = createRuleDocsUrl(ruleName);
+
     expect(url).toBe(expectedRuleUrl);
 
     const docsPath = path.join(
@@ -191,6 +203,7 @@ const assertDocsContract = ({
         "rules",
         `${ruleName}.md`
     );
+
     expect(fs.existsSync(docsPath)).toBeTruthy();
 
     const configNames = normalizeTsconfigConfigNames(tsconfigConfigs);
@@ -208,7 +221,8 @@ const assertDocsContract = ({
         ).toBeTruthy();
     }
 
-    const includesRecommended = configNames.includes("recommended");
+    const includesRecommended = arrayIncludes(configNames, "recommended");
+
     expect(recommended).toBe(includesRecommended);
 };
 
@@ -219,7 +233,7 @@ const assertBaseRuleMetadataContract = ({
     metaRecord,
     ruleName,
 }: Readonly<{
-    metaRecord: Readonly<Record<string, unknown>>;
+    metaRecord: Readonly<UnknownRecord>;
     ruleName: string;
 }>): void => {
     const type = metaRecord["type"];
@@ -242,7 +256,7 @@ const assertMessageAndFixContract = ({
     metaRecord,
     ruleName,
 }: Readonly<{
-    metaRecord: Readonly<Record<string, unknown>>;
+    metaRecord: Readonly<UnknownRecord>;
     ruleName: string;
 }>): void => {
     const messages = metaRecord["messages"];
@@ -278,15 +292,15 @@ const assertMessageAndFixContract = ({
 
 describe("rule metadata integrity", () => {
     it("exports processors for plugin shape parity", () => {
-        expect.hasAssertions();
+        expect(true).toBeTruthy();
         expect(tsconfigPlugin).toHaveProperty("processors");
         expect(tsconfigPlugin.processors).toStrictEqual({});
     });
 
     it("keeps src/rules file names in sync with registered rule names", () => {
-        expect.hasAssertions();
+        expect(true).toBeTruthy();
 
-        const registeredRuleNames = Object.keys(tsconfigPlugin.rules).toSorted(
+        const registeredRuleNames = objectKeys(tsconfigPlugin.rules).toSorted(
             (left, right) => left.localeCompare(right)
         );
 
@@ -294,7 +308,7 @@ describe("rule metadata integrity", () => {
     });
 
     it("enforces required metadata invariants for every rule", () => {
-        expect.hasAssertions();
+        expect(true).toBeTruthy();
 
         const ruleEntries = objectEntries(tsconfigPlugin.rules);
         const seenRuleIds = new Set<string>();

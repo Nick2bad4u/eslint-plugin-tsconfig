@@ -1,5 +1,6 @@
-import tsParser from "@typescript-eslint/parser";
 import * as path from "node:path";
+
+import * as jsoncParser from "jsonc-eslint-parser";
 
 import plugin from "../plugin.mjs";
 
@@ -12,89 +13,43 @@ import plugin from "../plugin.mjs";
  */
 
 /**
- * @typedef {{
- *     arrayableStressFixture: readonly string[];
- *     isPresentStressFixture: readonly string[];
- *     recommendedZeroMessageFixture: readonly string[];
- *     setHasStressFixture: readonly string[];
- *     safeCastToStressFixture: readonly string[];
- *     stringSplitStressFixture: readonly string[];
- *     tsExtrasInvalidFixtures: readonly string[];
- *     typedInvalidFixtures: readonly string[];
- *     typedValidFixtures: readonly string[];
- *     typeFestInvalidFixtures: readonly string[];
- * }} BenchmarkFileGlobs
+ * @typedef {{ rules: BenchmarkRules }} CreateTsconfigFlatConfigOptions
  */
 
 /**
- * @typedef {{ rules: BenchmarkRules }} CreateTypefestFlatConfigOptions
+ * @typedef {{
+ *     invalidFixtures: readonly string[];
+ *     moduleResolutionFixtures: readonly string[];
+ *     validFixtures: readonly string[];
+ * }} BenchmarkFileGlobs
  */
 
 /**
  * @typedef {{
  *     all: Readonly<BenchmarkRules>;
- *     minimal: Readonly<BenchmarkRules>;
  *     recommended: Readonly<BenchmarkRules>;
  *     strict: Readonly<BenchmarkRules>;
- *     tsExtrasTypeGuards: Readonly<BenchmarkRules>;
- *     typeFestTypes: Readonly<BenchmarkRules>;
- * }} TypefestRuleSets
+ *     "emit-config": Readonly<BenchmarkRules>;
+ *     "include-hygiene": Readonly<BenchmarkRules>;
+ *     "lib-target": Readonly<BenchmarkRules>;
+ *     "module-resolution": Readonly<BenchmarkRules>;
+ *     "project-references": Readonly<BenchmarkRules>;
+ *     "strict-mode": Readonly<BenchmarkRules>;
+ * }} TsconfigRuleSets
  */
 
 /**
- * Check whether a value is an object record.
+ * @param {unknown} value
  *
- * @param {unknown} value - Value to inspect.
- *
- * @returns {value is UnknownRecord} `true` when value is a non-null object.
+ * @returns {value is UnknownRecord}
  */
 const isUnknownRecord = (value) => typeof value === "object" && value !== null;
 
 /**
- * Absolute repository root used by parser services and benchmark paths.
- */
-export const repositoryRoot = path.resolve(process.cwd());
-
-/**
- * Shared file globs used by benchmark scenarios.
- */
-/** @type {Readonly<BenchmarkFileGlobs>} */
-export const benchmarkFileGlobs = Object.freeze({
-    arrayableStressFixture: Object.freeze([
-        "benchmarks/fixtures/arrayable.stress.ts",
-    ]),
-    isPresentStressFixture: Object.freeze([
-        "benchmarks/fixtures/is-present.stress.ts",
-    ]),
-    recommendedZeroMessageFixture: Object.freeze([
-        "benchmarks/fixtures/recommended-zero-message.baseline.ts",
-    ]),
-    safeCastToStressFixture: Object.freeze([
-        "benchmarks/fixtures/safe-cast-to.stress.ts",
-    ]),
-    setHasStressFixture: Object.freeze([
-        "benchmarks/fixtures/set-has.stress.ts",
-    ]),
-    stringSplitStressFixture: Object.freeze([
-        "benchmarks/fixtures/string-split.stress.ts",
-    ]),
-    tsExtrasInvalidFixtures: Object.freeze([
-        "test/fixtures/typed/prefer-ts-extras-*.invalid.ts",
-    ]),
-    typedInvalidFixtures: Object.freeze(["test/fixtures/typed/*.invalid.ts"]),
-    typedValidFixtures: Object.freeze(["test/fixtures/typed/*.valid.ts"]),
-    typeFestInvalidFixtures: Object.freeze([
-        "test/fixtures/typed/prefer-type-fest-*.invalid.ts",
-    ]),
-});
-
-/**
- * Ensure a dynamic value is a non-null object record.
+ * @param {unknown} value
+ * @param {string} label
  *
- * @param {unknown} value - Value to validate.
- * @param {string} label - Error label for diagnostics.
- *
- * @returns {UnknownRecord} Normalized object record.
+ * @returns {UnknownRecord}
  */
 const ensureRecord = (value, label) => {
     if (!isUnknownRecord(value)) {
@@ -105,12 +60,9 @@ const ensureRecord = (value, label) => {
 };
 
 /**
- * Check whether a value is an ESLint rule entry.
+ * @param {unknown} value
  *
- * @param {unknown} value - Rule config candidate.
- *
- * @returns {value is import("eslint").Linter.RuleEntry} Whether value matches
- *   an ESLint rule entry shape.
+ * @returns {value is import("eslint").Linter.RuleEntry}
  */
 const isRuleEntry = (value) =>
     typeof value === "number" ||
@@ -118,12 +70,10 @@ const isRuleEntry = (value) =>
     Array.isArray(value);
 
 /**
- * Ensure a dynamic value is a valid ESLint rules record.
+ * @param {unknown} value
+ * @param {string} label
  *
- * @param {unknown} value - Value to validate.
- * @param {string} label - Error label for diagnostics.
- *
- * @returns {BenchmarkRules} Normalized rules record.
+ * @returns {BenchmarkRules}
  */
 const ensureRulesRecord = (value, label) => {
     const record = ensureRecord(value, label);
@@ -137,18 +87,31 @@ const ensureRulesRecord = (value, label) => {
             );
         }
 
-        rulesRecord[ruleName] = ruleEntry;
+        rulesRecord[ruleName] =
+            /** @type {import("eslint").Linter.RuleEntry} */ (ruleEntry);
     }
 
     return rulesRecord;
 };
 
+/** Absolute repository root used by benchmark configs. */
+export const repositoryRoot = path.resolve(process.cwd());
+
+/** @type {Readonly<BenchmarkFileGlobs>} */
+export const benchmarkFileGlobs = Object.freeze({
+    invalidFixtures: Object.freeze([
+        "benchmarks/fixtures/tsconfig.invalid.json",
+    ]),
+    moduleResolutionFixtures: Object.freeze([
+        "benchmarks/fixtures/module-resolution.invalid.json",
+    ]),
+    validFixtures: Object.freeze(["benchmarks/fixtures/tsconfig.valid.json"]),
+});
+
 /**
- * Resolve rules from a plugin preset by name.
+ * @param {string} presetName
  *
- * @param {string} presetName - Key under `typefestPlugin.configs`.
- *
- * @returns {Readonly<BenchmarkRules>} Frozen rule map suitable for flat config.
+ * @returns {Readonly<BenchmarkRules>}
  */
 const resolveRuleSet = (presetName) => {
     const configs = ensureRecord(plugin.configs, "plugin.configs");
@@ -164,46 +127,39 @@ const resolveRuleSet = (presetName) => {
     return Object.freeze({ ...rules });
 };
 
-/**
- * Plugin rule sets used by benchmark scenarios.
- */
-/** @type {Readonly<TypefestRuleSets>} */
-export const typefestRuleSets = Object.freeze({
+/** @type {Readonly<TsconfigRuleSets>} */
+export const tsconfigRuleSets = Object.freeze({
     all: resolveRuleSet("all"),
-    minimal: resolveRuleSet("minimal"),
     recommended: resolveRuleSet("recommended"),
     strict: resolveRuleSet("strict"),
-    tsExtrasTypeGuards: resolveRuleSet("ts-extras/type-guards"),
-    typeFestTypes: resolveRuleSet("type-fest/types"),
+    "emit-config": resolveRuleSet("emit-config"),
+    "include-hygiene": resolveRuleSet("include-hygiene"),
+    "lib-target": resolveRuleSet("lib-target"),
+    "module-resolution": resolveRuleSet("module-resolution"),
+    "project-references": resolveRuleSet("project-references"),
+    "strict-mode": resolveRuleSet("strict-mode"),
 });
 
 /**
- * Create a flat ESLint config array for typefest benchmark scenarios.
+ * Create a flat ESLint config array for tsconfig benchmark scenarios.
  *
- * @param {CreateTypefestFlatConfigOptions} options - Config creation options.
+ * @param {CreateTsconfigFlatConfigOptions} options - Config creation options.
  *
  * @returns {import("eslint").Linter.Config[]} Flat config array for ESLint Node
  *   API / CLI usage.
  */
-// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types -- This .mjs module relies on JSDoc contracts instead of TS syntax.
-export function createTypefestFlatConfig(options) {
+export function createTsconfigFlatConfig(options) {
     const { rules } = options;
 
     return [
         {
-            files: ["**/*.{ts,tsx,mts,cts}"],
+            files: ["**/*.json", "**/*.jsonc"],
             languageOptions: {
-                parser: tsParser,
-                parserOptions: {
-                    ecmaVersion: "latest",
-                    project: "./tsconfig.eslint.json",
-                    sourceType: "module",
-                    tsconfigRootDir: repositoryRoot,
-                },
+                parser: jsoncParser,
             },
-            name: "benchmark:typefest",
+            name: "benchmark:tsconfig",
             plugins: {
-                typefest: plugin,
+                tsconfig: plugin,
             },
             rules,
         },

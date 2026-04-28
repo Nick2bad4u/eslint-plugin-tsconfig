@@ -18,11 +18,11 @@ flowchart LR
     A[src/rules/*.ts\nmeta.docs + requiresTypeChecking]
     B[src/_internal/rule-catalog.ts]
     C[src/_internal/rule-docs-metadata.ts]
-    D[src/plugin.ts\ntypefestConfigs]
+    D[src/plugin.ts\ntsconfigConfigs]
 
-    E[typefest.configs.base]
-    F[typefest.configs.recommended]
-    G[typefest.configs.recommendedTypeChecked]
+    E[tsconfig.configs.base]
+    F[tsconfig.configs.recommended]
+    G[tsconfig.configs.recommendedTypeChecked]
 
     H[docs/rules/presets/*.md]
     I[Rule matrix sections]

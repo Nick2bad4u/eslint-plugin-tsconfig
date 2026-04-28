@@ -1,6 +1,6 @@
 ---
 title: Getting Started
-description: Enable eslint-plugin-typefest quickly in Flat Config.
+description: Enable eslint-plugin-tsconfig quickly in Flat Config.
 ---
 
 # Getting Started
@@ -8,68 +8,61 @@ description: Enable eslint-plugin-typefest quickly in Flat Config.
 Install the plugin:
 
 ```bash
-npm install --save-dev eslint-plugin-typefest typescript
+npm install --save-dev eslint-plugin-tsconfig
 ```
 
 Enable one preset in your Flat Config:
 
 ```ts
-import typefest from "eslint-plugin-typefest";
+import tsconfig from "eslint-plugin-tsconfig";
 
 export default [
-    typefest.configs.recommended,
+    tsconfig.configs.recommended,
 ];
 ```
 
-`recommended` does not require type information.
-
-If you want the same baseline plus type-aware helper rules, use
-`typefest.configs["recommended-type-checked"]`.
+Each preset automatically sets:
+- `files: ["**/*.{json,jsonc}"]` (targeting `tsconfig*.json` files)
+- `languageOptions.parser` set to `jsonc-eslint-parser`
 
 ## Alternative: manual scoped setup
 
-If you prefer to apply plugin rules inside your own file-scoped config object, spread the preset rules manually.
+If you prefer full control, spread the preset rules manually:
 
 ```ts
-import tsParser from "@typescript-eslint/parser";
-import typefest from "eslint-plugin-typefest";
+import * as jsoncParser from "jsonc-eslint-parser";
+import tsconfig from "eslint-plugin-tsconfig";
 
 export default [
     {
-        files: ["**/*.{ts,tsx,mts,cts}"],
+        files: ["**/tsconfig*.json"],
         languageOptions: {
-            parser: tsParser,
-            parserOptions: {
-                ecmaVersion: "latest",
-                // Enable only when using a type-aware preset.
-                // projectService: true,
-                sourceType: "module",
-            },
+            parser: jsoncParser,
         },
         plugins: {
-            typefest,
+            tsconfig,
         },
         rules: {
-            ...typefest.configs.recommended.rules,
+            ...tsconfig.configs.recommended.rules,
         },
     },
 ];
 ```
 
-Use this pattern when you only extend rules and want full control over parser setup per scope.
-
 ## Recommended rollout
 
-1. Start with `recommended` (or `minimal` if you want low initial noise).
-2. Fix violations in small batches.
-3. Move to `recommended-type-checked` when you are ready for typed rules.
-4. Move to `strict` once your baseline is stable.
-5. Use `all` when you want every stable rule.
-6. Use `experimental` only when you want report-only candidate rules under active evaluation.
+1. Start with `recommended` (two essential rules).
+2. Fix violations, then move to `strict` for stronger conventions.
+3. Add focused presets (`strict-mode`, `module-resolution`, `emit-config`, etc.) to opt in to focused rule subsets.
+4. Use `all` when you want every available rule.
 
-## Need a subset instead of a full preset?
+## Focused subsets
 
-- 💠 `typefest.configs["type-fest/types"]`
-- ✴️ `typefest.configs["ts-extras/type-guards"]`
+- 🔒 `tsconfig.configs["strict-mode"]`
+- 📦 `tsconfig.configs["module-resolution"]`
+- 📤 `tsconfig.configs["emit-config"]`
+- 🧹 `tsconfig.configs["include-hygiene"]`
+- 🎯 `tsconfig.configs["lib-target"]`
+- 🔗 `tsconfig.configs["project-references"]`
 
 See the **Presets** section in this sidebar for details and examples.

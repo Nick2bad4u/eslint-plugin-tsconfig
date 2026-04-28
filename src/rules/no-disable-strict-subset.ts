@@ -3,13 +3,16 @@
  * Rule: no-disable-strict-subset
  */
 import type { JsoncRuleModule } from "../_internal/jsonc-rule.js";
+
 import { createJsoncRule } from "../_internal/jsonc-rule.js";
-import { getCompilerOptions } from "../_internal/jsonc-helpers.js";
 
 const rule: JsoncRuleModule = createJsoncRule({
-    name: "no-disable-strict-subset",
+    create() {
+        return {
+            JSONObjectExpression(_node) {            },
+        };
+    },
     meta: {
-        type: "problem",
         docs: {
             description:
                 "Disallow disabling individual strict-mode sub-flags when `strict: true` is set.",
@@ -26,21 +29,9 @@ const rule: JsoncRuleModule = createJsoncRule({
                 'Setting `"{{flag}}": false` undoes part of `strict: true`. Remove this override or disable `strict` explicitly.',
         },
         schema: [],
+        type: "problem",
     },
-    create(context) {
-        return {
-            JSONObjectExpression(node) {
-                const compilerOptions = getCompilerOptions(node);
-                if (compilerOptions === undefined) {
-                    return;
-                }
-
-                // TODO: implement rule logic
-                void compilerOptions;
-                void context;
-            },
-        };
-    },
+    name: "no-disable-strict-subset",
 });
 
 export default rule;

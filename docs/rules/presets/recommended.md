@@ -9,27 +9,27 @@ Use as the default baseline for most TypeScript codebases.
 ## Config key
 
 ```ts
-typefest.configs.recommended
+tsconfig.configs.recommended
 ```
 
 ## Flat Config example
 
 ```ts
-import typefest from "eslint-plugin-typefest";
+import tsconfig from "eslint-plugin-tsconfig";
 
-export default [typefest.configs.recommended];
+export default [tsconfig.configs.recommended];
 ```
 
 This preset does **not** require type information.
 
 If you want the same baseline plus type-aware helper rules, use
-`typefest.configs["recommended-type-checked"]`.
+`tsconfig.configs["recommended-type-checked"]`.
 
 ## Alternative: apply recommended rules in your own scope
 
 ```ts
 import tsParser from "@typescript-eslint/parser";
-import typefest from "eslint-plugin-typefest";
+import tsconfig from "eslint-plugin-tsconfig";
 
 export default [
     {
@@ -42,10 +42,10 @@ export default [
             },
         },
         plugins: {
-            typefest,
+            tsconfig,
         },
         rules: {
-            ...typefest.configs.recommended.rules,
+            ...tsconfig.configs.recommended.rules,
         },
     },
 ];

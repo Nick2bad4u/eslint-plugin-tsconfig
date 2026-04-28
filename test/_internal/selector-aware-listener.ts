@@ -10,6 +10,10 @@
  * Supports both plain keys (e.g. `CallExpression`) and selector keys (e.g.
  * `CallExpression[callee.type="MemberExpression"]`).
  */
+import type { UnknownRecord } from "type-fest";
+
+import { objectEntries } from "ts-extras";
+
 export const getSelectorAwareNodeListener = (
     listenerMap: unknown,
     nodeType: string
@@ -18,14 +22,14 @@ export const getSelectorAwareNodeListener = (
         return undefined;
     }
 
-    const listenerRecord = listenerMap as Readonly<Record<string, unknown>>;
+    const listenerRecord = listenerMap as Readonly<UnknownRecord>;
     const directListener = listenerRecord[nodeType];
 
     if (typeof directListener === "function") {
         return directListener as (node: unknown) => void;
     }
 
-    for (const [listenerKey, candidateListener] of Object.entries(
+    for (const [listenerKey, candidateListener] of objectEntries(
         listenerRecord
     )) {
         if (

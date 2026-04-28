@@ -4,10 +4,11 @@
  */
 import type { UnknownArray, UnknownRecord } from "type-fest";
 
-import * as jsoncParser from "jsonc-eslint-parser";
 import { RuleTester } from "@typescript-eslint/rule-tester";
+import * as jsoncParser from "jsonc-eslint-parser";
 import * as path from "node:path";
 import pc from "picocolors";
+import { arrayJoin, safeCastTo } from "ts-extras";
 import { afterAll, describe, it } from "vitest";
 
 import tsconfigPlugin from "../../src/plugin";
@@ -43,21 +44,6 @@ const assertRuleTesterHook: (
 type RuleTesterCaseCallback = Parameters<typeof RuleTester.it>[1];
 
 /**
- * Vitest `it`-style hook shape that accepts per-test options.
- *
- * @remarks
- * `@typescript-eslint/rule-tester` invokes its framework adapter with two
- * arguments: the test name and its callback. That means an outer Vitest
- * describe timeout does not reliably propagate to the inner generated test
- * cases. We therefore inject the timeout at the `it(...)` boundary itself.
- */
-type TimedVitestTestHook = (
-    text: string,
-    options: Readonly<{ timeout: number }>,
-    callback: RuleTesterCaseCallback
-) => unknown;
-
-/**
  * Run a Vitest `it`-style hook with the repository-standard RuleTester timeout.
  *
  * @param callback - RuleTester-generated test body.
@@ -77,7 +63,7 @@ const runTimedRuleTesterCase = ({
     text: string;
 }>): void => {
     assertRuleTesterHook(hook, hookName);
-    Reflect.apply(hook as TimedVitestTestHook, undefined, [
+    Reflect.apply(hook, undefined, [
         text,
         ruleTesterCaseTimeoutOptions,
         callback,
@@ -109,9 +95,27 @@ RuleTester.itOnly = (text, callback) => {
 };
 
 /** Rule module parameter type accepted by `RuleTester#run`. */
-type PluginRuleModule = Parameters<RuleTester["run"]>[1];
+export type PluginRuleModule = Parameters<RuleTester["run"]>[1];
+/**
+ * Stand-alone tester interface exposed to test files.
+ *
+ * @remarks
+ * All `eslint-plugin-tsconfig` rules are JSONC-based and use ESLint's plain
+ * `Rule.RuleModule` interface, which is structurally incompatible with the
+ * parameterised `TSESLint.RuleModule` type that
+ * `@typescript-eslint/rule-tester` expects at the TypeScript level. Rather than
+ * intersecting with `RuleTester` (which would re-introduce the generic `run`
+ * overload via the prototype chain), this type is intentionally independent and
+ * exposes only the `run` method with a widened second parameter (`unknown`).
+ * This is safe because the underlying `RuleTester#run` implementation already
+ * forwards through an `UnknownArray` cast at runtime.
+ */
+interface PluginRuleTester {
+    run: (name: string, rule: unknown, cases: RuleRunCases) => void;
+}
 /** Full argument tuple for `RuleTester#run`. */
 type RuleRunArguments = Parameters<RuleTester["run"]>;
+
 /** Combined valid/invalid case payload accepted by `RuleTester#run`. */
 type RuleRunCases = RuleRunArguments[2];
 /** Single invalid-case entry shape. */
@@ -135,13 +139,16 @@ const deriveGeneratedCaseName = (
     caseIndex: number,
     caseFilename?: string
 ): string => {
-    const caseLabel = [
-        pc.bold(pc.magentaBright("UNNAMED")),
-        caseKind === "invalid"
-            ? pc.bold(pc.red("invalid"))
-            : pc.bold(pc.green("valid")),
-        pc.underline(pc.yellow(`#${String(caseIndex + 1)}`)),
-    ].join(" ");
+    const caseLabel = arrayJoin(
+        [
+            pc.bold(pc.magentaBright("UNNAMED")),
+            caseKind === "invalid"
+                ? pc.bold(pc.red("invalid"))
+                : pc.bold(pc.green("valid")),
+            pc.underline(pc.yellow(`#${String(caseIndex + 1)}`)),
+        ],
+        " "
+    );
     const caseSource =
         typeof caseFilename === "string" && caseFilename.length > 0
             ? pc.underline(pc.cyan(path.basename(caseFilename)))
@@ -224,17 +231,21 @@ const withGeneratedRuleCaseNames = (
  */
 const patchRuleTesterRunWithGeneratedCaseNames = (
     tester: Readonly<RuleTester>
-): RuleTester => {
+): PluginRuleTester => {
     const writableTester = tester as RuleTester;
     const originalRun = writableTester.run.bind(writableTester);
-    writableTester.run = (ruleName, ruleModule, runCases) => {
-        (originalRun as (...args: UnknownArray) => void)(
+    const wrappedRun: PluginRuleTester["run"] = (
+        ruleName,
+        ruleModule,
+        runCases
+    ) =>
+        originalRun(
             ruleName,
-            ruleModule,
+            ruleModule as Parameters<RuleTester["run"]>[1],
             withGeneratedRuleCaseNames(ruleName, runCases)
-        );
-    };
-    return writableTester;
+        ) as unknown;
+    writableTester.run = wrappedRun as unknown as RuleTester["run"];
+    return writableTester as unknown as PluginRuleTester;
 };
 
 /**
@@ -247,7 +258,7 @@ const patchRuleTesterRunWithGeneratedCaseNames = (
  */
 export const applySharedRuleTesterRunBehavior = (
     tester: Readonly<RuleTester>
-): RuleTester => patchRuleTesterRunWithGeneratedCaseNames(tester);
+): PluginRuleTester => patchRuleTesterRunWithGeneratedCaseNames(tester);
 
 /**
  * Resolve an absolute repository path from optional relative segments.
@@ -268,7 +279,7 @@ export const repoPath = (...segments: readonly string[]): string =>
  *
  * @returns Configured RuleTester instance.
  */
-export const createRuleTester = (): RuleTester =>
+export const createRuleTester = (): PluginRuleTester =>
     applySharedRuleTesterRunBehavior(
         new RuleTester({
             languageOptions: {
@@ -299,7 +310,7 @@ const isRuleModule = (value: unknown): value is PluginRuleModule => {
         return false;
     }
 
-    const maybeCreate = (value as { create?: unknown }).create;
+    const maybeCreate = safeCastTo<{ create?: unknown }>(value).create;
 
     return typeof maybeCreate === "function";
 };
@@ -313,7 +324,7 @@ const isRuleModule = (value: unknown): value is PluginRuleModule => {
  */
 export const getPluginRule = (ruleId: string): PluginRuleModule => {
     const { rules } = tsconfigPlugin;
-    const dynamicRules = rules as UnknownRecord;
+    const dynamicRules = safeCastTo<UnknownRecord>(rules);
     if (!Object.hasOwn(dynamicRules, ruleId)) {
         throw new Error(`Rule '${ruleId}' is not registered in tsconfigPlugin`);
     }

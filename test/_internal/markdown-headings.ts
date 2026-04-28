@@ -4,6 +4,7 @@
  */
 
 const CODE_FENCE_DELIMITER = "```" as const;
+const LINE_BREAK_PATTERN = /\r?\n/v;
 
 /**
  * Parse Markdown headings for an exact level while skipping fenced code.
@@ -22,7 +23,7 @@ export const parseMarkdownHeadingsAtLevel = (
     const headings: string[] = [];
     let isInsideFencedCodeBlock = false;
 
-    for (const line of markdown.split(/\r?\n/v)) {
+    for (const line of markdown.split(LINE_BREAK_PATTERN)) {
         const trimmedStartLine = line.trimStart();
 
         if (trimmedStartLine.startsWith(CODE_FENCE_DELIMITER)) {

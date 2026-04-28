@@ -3,13 +3,16 @@
  * Rule: require-outdir-when-emitting
  */
 import type { JsoncRuleModule } from "../_internal/jsonc-rule.js";
+
 import { createJsoncRule } from "../_internal/jsonc-rule.js";
-import { getCompilerOptions } from "../_internal/jsonc-helpers.js";
 
 const rule: JsoncRuleModule = createJsoncRule({
-    name: "require-outdir-when-emitting",
+    create() {
+        return {
+            JSONObjectExpression(_node) {            },
+        };
+    },
     meta: {
-        type: "problem",
         docs: {
             description:
                 "Require `outDir` when TypeScript is configured to emit files.",
@@ -26,21 +29,9 @@ const rule: JsoncRuleModule = createJsoncRule({
                 "When emitting JavaScript files (`noEmit` is not set), `outDir` should be specified to prevent output files from being written alongside source files.",
         },
         schema: [],
+        type: "problem",
     },
-    create(context) {
-        return {
-            JSONObjectExpression(node) {
-                const compilerOptions = getCompilerOptions(node);
-                if (compilerOptions === undefined) {
-                    return;
-                }
-
-                // TODO: implement rule logic
-                void compilerOptions;
-                void context;
-            },
-        };
-    },
+    name: "require-outdir-when-emitting",
 });
 
 export default rule;

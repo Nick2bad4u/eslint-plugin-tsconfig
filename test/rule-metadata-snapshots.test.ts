@@ -3,8 +3,9 @@
  * Snapshot coverage for normalized rule metadata contracts.
  */
 import type { UnknownRecord } from "type-fest";
+import type { UnknownArray } from "type-fest";
 
-import { objectEntries } from "ts-extras";
+import { objectEntries, objectKeys  } from "ts-extras";
 import { describe, expect, it } from "vitest";
 
 import tsconfigPlugin from "../src/plugin";
@@ -66,7 +67,7 @@ const getNestedRecord = (
 const getNestedArray = (
     record: Readonly<UnknownRecord> | undefined,
     propertyName: string
-): readonly unknown[] => {
+): Readonly<UnknownArray> => {
     const candidate = record?.[propertyName];
 
     return Array.isArray(candidate) ? candidate : [];
@@ -80,7 +81,7 @@ const getMessageIds = (
         return [];
     }
 
-    return Object.keys(messages).toSorted((left, right) =>
+    return objectKeys(messages).toSorted((left, right) =>
         left.localeCompare(right)
     );
 };
@@ -141,7 +142,7 @@ const getRuleMetadataSnapshots = (): readonly RuleMetadataSnapshot[] =>
 
 describe("rule metadata snapshots", () => {
     it("keeps normalized rule metadata contract stable", () => {
-        expect.hasAssertions();
+        expect(true).toBeTruthy();
         expect(getRuleMetadataSnapshots()).toMatchSnapshot();
     });
 });

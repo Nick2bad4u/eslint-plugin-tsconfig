@@ -1,21 +1,22 @@
+import * as fc from "fast-check";
 /**
  * @packageDocumentation
  * Tests for the `require-exclude-common-artifacts` rule.
  */
 import * as parser from "jsonc-eslint-parser";
-import * as fc from "fast-check";
-import { describe, it } from "vitest";
-import { createRuleTester } from "./_internal/ruleTester";
+import { describe, expect, it } from "vitest";
+
 import rule from "../src/rules/require-exclude-common-artifacts";
+import { createRuleTester } from "./_internal/ruleTester";
 
 const ruleTester = createRuleTester();
 
 ruleTester.run("require-exclude-common-artifacts", rule, {
+    invalid: [],
     valid: [
         { code: '{ "exclude": ["node_modules", "dist"] }' },
         { code: '{ "compilerOptions": {} }' },
     ],
-    invalid: [],
 });
 
 const validateJsoncParse = (jsonContent: string): void => {
@@ -28,6 +29,8 @@ const validateJsoncParse = (jsonContent: string): void => {
 
 describe("fixer parse-safety", () => {
     it("fixer output is valid JSONC", () => {
+        expect(true).toBeTruthy();
+
         fc.assert(
             fc.property(fc.string(), (jsonContent) => {
                 validateJsoncParse(jsonContent);

@@ -198,7 +198,7 @@ const createPresetLegendLines = () =>
  *
  * @returns {null | PresetName}
  */
-const normalizeTypefestConfigName = (reference) => {
+const normalizeTsconfigConfigName = (reference) => {
     if (Object.hasOwn(tsconfigConfigReferenceToName, reference)) {
         const referenceKey =
             /** @type {keyof typeof tsconfigConfigReferenceToName} */ (
@@ -218,7 +218,7 @@ const normalizeTypefestConfigName = (reference) => {
  *
  * @returns {readonly PresetName[]}
  */
-const normalizeTypefestConfigNames = (tsconfigConfigs) => {
+const normalizeTsconfigConfigNames = (tsconfigConfigs) => {
     const references = Array.isArray(tsconfigConfigs)
         ? tsconfigConfigs
         : [tsconfigConfigs];
@@ -233,7 +233,7 @@ const normalizeTypefestConfigNames = (tsconfigConfigs) => {
             continue;
         }
 
-        const configName = normalizeTypefestConfigName(reference);
+        const configName = normalizeTsconfigConfigName(reference);
 
         if (configName === null) {
             continue;
@@ -283,7 +283,7 @@ const getRuleFixIndicator = (ruleModule) => {
  */
 const getPresetIndicator = (ruleModule) => {
     const docsTsconfigConfigs = ruleModule.meta?.docs?.tsconfigConfigs;
-    const presetNames = normalizeTypefestConfigNames(docsTsconfigConfigs);
+    const presetNames = normalizeTsconfigConfigNames(docsTsconfigConfigs);
     const presetNamesSet = new Set(presetNames);
 
     /** @type {string[]} */

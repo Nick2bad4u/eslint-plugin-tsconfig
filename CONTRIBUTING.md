@@ -1,4 +1,4 @@
-# Contributing to eslint-plugin-typefest
+# Contributing to eslint-plugin-tsconfig
 
 Thanks for your interest in contributing.
 

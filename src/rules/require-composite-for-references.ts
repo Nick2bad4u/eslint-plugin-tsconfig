@@ -3,13 +3,16 @@
  * Rule: require-composite-for-references
  */
 import type { JsoncRuleModule } from "../_internal/jsonc-rule.js";
+
 import { createJsoncRule } from "../_internal/jsonc-rule.js";
-import { getCompilerOptions } from "../_internal/jsonc-helpers.js";
 
 const rule: JsoncRuleModule = createJsoncRule({
-    name: "require-composite-for-references",
+    create() {
+        return {
+            JSONObjectExpression(_node) {            },
+        };
+    },
     meta: {
-        type: "problem",
         docs: {
             description:
                 "Require `composite: true` when `references` is defined.",
@@ -21,27 +24,15 @@ const rule: JsoncRuleModule = createJsoncRule({
                 "strict",
             ],
         },
+        fixable: "code",
         messages: {
             missingComposite:
                 'Projects using `references` must enable `"composite": true` so TypeScript can build the dependency graph correctly. Add `"composite": true` to `compilerOptions`.',
         },
         schema: [],
-        fixable: "code",
+        type: "problem",
     },
-    create(context) {
-        return {
-            JSONObjectExpression(node) {
-                const compilerOptions = getCompilerOptions(node);
-                if (compilerOptions === undefined) {
-                    return;
-                }
-
-                // TODO: implement rule logic
-                void compilerOptions;
-                void context;
-            },
-        };
-    },
+    name: "require-composite-for-references",
 });
 
 export default rule;

@@ -3,41 +3,30 @@
  * Rule: require-no-unchecked-indexed-access
  */
 import type { JsoncRuleModule } from "../_internal/jsonc-rule.js";
+
 import { createJsoncRule } from "../_internal/jsonc-rule.js";
-import {
-    getCompilerOptions,
-} from "../_internal/jsonc-helpers.js";
 
 const rule: JsoncRuleModule = createJsoncRule({
-    name: "require-no-unchecked-indexed-access",
+    create() {
+        return {
+            JSONObjectExpression(_node) {            },
+        };
+    },
     meta: {
-        type: "suggestion",
         docs: {
             description: "Require `noUncheckedIndexedAccess: true` in strict configs.",
             recommended: false,
             requiresTypeChecking: false,
             tsconfigConfigs: ["all", "strict-mode"],
         },
+        fixable: "code",
         messages: {
         missingNoUncheckedIndexedAccess: "`noUncheckedIndexedAccess: true` adds `undefined` to array index signatures and index-signature types, preventing runtime errors from out-of-bounds access. Add it to `compilerOptions`.",
         },
         schema: [],
-            fixable: "code",
+            type: "suggestion",
     },
-    create(context) {
-        return {
-            JSONObjectExpression(node) {
-                const compilerOptions = getCompilerOptions(node);
-                if (compilerOptions === undefined) {
-                    return;
-                }
-
-                // TODO: implement rule logic
-                void compilerOptions;
-                void context;
-            },
-        };
-    },
+    name: "require-no-unchecked-indexed-access",
 });
 
 export default rule;

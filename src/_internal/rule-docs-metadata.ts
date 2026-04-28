@@ -6,19 +6,19 @@ import type { UnknownRecord } from "type-fest";
 
 import {
     arrayIncludes,
+    arrayJoin,
     isDefined,
     isEmpty,
-    isInteger,
-    objectEntries,
+    isInteger, objectEntries 
 } from "ts-extras";
+
+import type { JsoncRuleModule } from "./jsonc-rule.js";
 
 import { createRuleDocsUrl } from "./rule-docs-url.js";
 import {
     type TsconfigConfigName,
     tsconfigConfigNames,
 } from "./tsconfig-config-references.js";
-
-import type { JsoncRuleModule } from "./jsonc-rule.js";
 
 /** Normalized docs metadata derived for each rule. */
 export type RuleDocsMetadata = Readonly<{
@@ -111,7 +111,7 @@ const normalizeTsconfigConfigNames = (
     for (const candidate of candidates) {
         if (!arrayIncludes(tsconfigConfigNames, candidate)) {
             throw new TypeError(
-                `Rule '${ruleName}' has invalid docs.tsconfigConfigs value '${String(candidate)}'. Must be one of: ${tsconfigConfigNames.join(", ")}.`
+                `Rule '${ruleName}' has invalid docs.tsconfigConfigs value '${String(candidate)}'. Must be one of: ${arrayJoin(tsconfigConfigNames, ", ")}.`
             );
         }
 
@@ -204,7 +204,7 @@ const getRuleDocsContract = (
     if (typeof tsconfigConfigs === "string") {
         if (!arrayIncludes(tsconfigConfigNames, tsconfigConfigs)) {
             throw new TypeError(
-                `Rule '${ruleName}' has invalid docs.tsconfigConfigs value '${tsconfigConfigs}'. Must be one of: ${tsconfigConfigNames.join(", ")}.`
+                `Rule '${ruleName}' has invalid docs.tsconfigConfigs value '${tsconfigConfigs}'. Must be one of: ${arrayJoin(tsconfigConfigNames, ", ")}.`
             );
         }
 
@@ -233,7 +233,7 @@ const getRuleDocsContract = (
             !arrayIncludes(tsconfigConfigNames, candidate)
         ) {
             throw new TypeError(
-                `Rule '${ruleName}' has invalid docs.tsconfigConfigs value '${String(candidate)}'. Must be one of: ${tsconfigConfigNames.join(", ")}.`
+                `Rule '${ruleName}' has invalid docs.tsconfigConfigs value '${String(candidate)}'. Must be one of: ${arrayJoin(tsconfigConfigNames, ", ")}.`
             );
         }
 

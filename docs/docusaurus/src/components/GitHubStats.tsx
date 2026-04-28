@@ -12,8 +12,8 @@ type LiveBadge = {
     readonly src: string;
 };
 
-const packageName = "eslint-plugin-typefest";
-const repositorySlug = "Nick2bad4u/eslint-plugin-typefest";
+const packageName = "eslint-plugin-tsconfig";
+const repositorySlug = "Nick2bad4u/eslint-plugin-tsconfig";
 const badgeBaseUrl = "https://flat.badgen.net";
 
 const liveBadges = [

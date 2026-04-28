@@ -70,6 +70,18 @@ type TsconfigPluginContract = Except<ESLint.Plugin, "configs" | "rules"> & {
 const packageJsonValue = safeCastTo<unknown>(packageJson);
 
 /**
+ * Fully-qualified ESLint rule id used by this plugin.
+ *
+ * @remarks
+ * Consumers use this when building strongly typed rule maps or helper utilities
+ * that require namespaced rule identifiers.
+ */
+export type TsconfigRuleId = `tsconfig/${TsconfigRuleName}`;
+
+/** Unqualified rule name supported by `eslint-plugin-tsconfig`. */
+export type TsconfigRuleName = keyof typeof tsconfigRules;
+
+/**
  * Resolve package version from package.json data.
  *
  * @param pkg - Parsed package metadata value.
@@ -85,18 +97,6 @@ function getPackageVersion(pkg: unknown): string {
 
     return typeof version === "string" ? version : "0.0.0";
 }
-
-/**
- * Fully-qualified ESLint rule id used by this plugin.
- *
- * @remarks
- * Consumers use this when building strongly typed rule maps or helper utilities
- * that require namespaced rule identifiers.
- */
-export type TsconfigRuleId = `tsconfig/${TsconfigRuleName}`;
-
-/** Unqualified rule name supported by `eslint-plugin-tsconfig`. */
-export type TsconfigRuleName = keyof typeof tsconfigRules;
 
 /**
  * ESLint-compatible rule map view of the strongly typed internal rule record.
@@ -126,7 +126,7 @@ const tsconfigRuleEntries: readonly (readonly [
 
         const ruleDefinition = tsconfigRules[ruleName];
 
-        if (ruleDefinition === undefined) {
+        if (!isDefined(ruleDefinition)) {
             continue;
         }
 
@@ -271,7 +271,7 @@ const createTsconfigConfigsDefinition = (): TsconfigConfigsContract => {
         let rules: RulesConfig;
 
         if (isAllPreset) {
-            // all: each rule at its own default severity
+            // All: each rule at its own default severity
             rules = {};
             for (const ruleName of ruleNames) {
                 const ruleMeta = tsconfigRules[ruleName]?.meta;

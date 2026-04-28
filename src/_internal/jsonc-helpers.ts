@@ -8,7 +8,13 @@
  * JSONC AST traversal and accessor helpers for tsconfig rule implementations.
  */
 import type { Rule } from "eslint";
-import type { AST, RuleListener } from "jsonc-eslint-parser";
+import type { AST } from "jsonc-eslint-parser";
+import type { JsonPrimitive } from "type-fest";
+
+import { arrayAt, isDefined, isEmpty } from "ts-extras";
+
+/** Convenience alias for a JSONC rule fixer. */
+export type Fixer = Rule.RuleFixer;
 
 /** JSON array expression node from the JSONC AST. */
 export type JSONArrayExpression = AST.JSONArrayExpression;
@@ -22,26 +28,35 @@ export type JSONLiteral = AST.JSONLiteral;
 /** JSON object expression node from the JSONC AST. */
 export type JSONObjectExpression = AST.JSONObjectExpression;
 
+/** Primitive values that can be written into a JSON property. */
+export type JSONPrimitive = JsonPrimitive;
+
+/**
+ * Rule listener type from jsonc-eslint-parser, enabling JSONC-aware node
+ * selectors.
+ */
+
 /** JSON property node from the JSONC AST. */
 export type JSONProperty = AST.JSONProperty;
 
 /** JSON property key node from the JSONC AST. */
 export type JSONPropertyKey =
-    | AST.JSONStringLiteral
     | AST.JSONIdentifier
-    | AST.JSONNumberLiteral;
-
-/** Rule listener type from jsonc-eslint-parser, enabling JSONC-aware node
-selectors. */
-export type { RuleListener };
-
-/** Convenience alias for a JSONC rule fixer. */
-export type Fixer = Rule.RuleFixer;
-
-/** Primitive values that can be written into a JSON property. */
-export type JSONPrimitive = boolean | null | number | string;
+    | AST.JSONNumberLiteral
+    | AST.JSONStringLiteral;
 
 // ─── Property access ─────────────────────────────────────────────────────────
+
+/**
+ * JSON-encode a primitive value for insertion into source text.
+ *
+ * @param value - Value to encode.
+ *
+ * @returns JSON-safe string representation.
+ */
+export function encodeValue(value: JSONPrimitive): string {
+    return JSON.stringify(value);
+}
 
 /**
  * Find a named property within a `JSONObjectExpression`.
@@ -59,59 +74,6 @@ export function findProperty(
         (prop) => prop.type === "JSONProperty" && getKeyText(prop) === key
     );
 }
-
-/**
- * Extract the string key from a `JSONProperty`.
- *
- * @param prop - JSON property whose key to extract.
- *
- * @returns The resolved key string.
- */
-export function getKeyText(prop: JSONProperty): string {
-    if (prop.key.type === "JSONIdentifier") {
-        return prop.key.name;
-    }
-
-    if (prop.key.type === "JSONLiteral" && typeof prop.key.value === "string") {
-        return prop.key.value;
-    }
-
-    return "";
-}
-
-/**
- * Determine whether a named property exists in a `JSONObjectExpression`.
- *
- * @param obj - JSON object AST node.
- * @param key - Property key to look up.
- *
- * @returns `true` when the property is present.
- */
-export function hasProperty(obj: JSONObjectExpression, key: string): boolean {
-    return findProperty(obj, key) !== undefined;
-}
-
-/**
- * Resolve the `compilerOptions` object from a tsconfig root node.
- *
- * @param root - Root `JSONObjectExpression` of the tsconfig file.
- *
- * @returns The `compilerOptions` `JSONObjectExpression` when present; otherwise
- *   `undefined`.
- */
-export function getCompilerOptions(
-    root: JSONObjectExpression
-): JSONObjectExpression | undefined {
-    const prop = findProperty(root, "compilerOptions");
-
-    if (prop === undefined || prop.value.type !== "JSONObjectExpression") {
-        return undefined;
-    }
-
-    return prop.value;
-}
-
-// ─── Value extraction ─────────────────────────────────────────────────────────
 
 /**
  * Extract a boolean literal value from a `JSONProperty`.
@@ -133,22 +95,67 @@ export function getBooleanValue(prop: JSONProperty): boolean | undefined {
 }
 
 /**
- * Extract a string literal value from a `JSONProperty`.
+ * Resolve the `compilerOptions` object from a tsconfig root node.
  *
- * @param prop - JSON property to inspect.
+ * @param root - Root `JSONObjectExpression` of the tsconfig file.
  *
- * @returns The string value when the property holds a string literal; otherwise
+ * @returns The `compilerOptions` `JSONObjectExpression` when present; otherwise
  *   `undefined`.
  */
-export function getStringValue(prop: JSONProperty): string | undefined {
-    if (
-        prop.value.type === "JSONLiteral" &&
-        typeof prop.value.value === "string"
-    ) {
-        return prop.value.value;
+export function getCompilerOptions(
+    root: JSONObjectExpression
+): JSONObjectExpression | undefined {
+    const prop = findProperty(root, "compilerOptions");
+
+    if (prop?.value.type !== "JSONObjectExpression") {
+        return undefined;
     }
 
-    return undefined;
+    return prop.value;
+}
+
+// ─── Value extraction ─────────────────────────────────────────────────────────
+
+/**
+ * Extract the string key from a `JSONProperty`.
+ *
+ * @param prop - JSON property whose key to extract.
+ *
+ * @returns The resolved key string.
+ */
+export function getKeyText(prop: JSONProperty): string {
+    if (prop.key.type === "JSONIdentifier") {
+        return prop.key.name;
+    }
+
+    if (prop.key.type === "JSONLiteral" && typeof prop.key.value === "string") {
+        return prop.key.value;
+    }
+
+    return "";
+}
+
+/**
+ * Collect the string elements from a `JSONArrayExpression`.
+ *
+ * @param arr - Array node to iterate.
+ *
+ * @returns Array of string values found among the array elements.
+ */
+export function getStringArrayElements(arr: JSONArrayExpression): string[] {
+    const result: string[] = [];
+
+    for (const element of arr.elements) {
+        if (
+            element !== null &&
+            element.type === "JSONLiteral" &&
+            typeof element.value === "string"
+        ) {
+            result.push(element.value);
+        }
+    }
+
+    return result;
 }
 
 /**
@@ -172,14 +179,34 @@ export function getStringFromExpression(
 // ─── Fixer helpers ────────────────────────────────────────────────────────────
 
 /**
- * JSON-encode a primitive value for insertion into source text.
+ * Extract a string literal value from a `JSONProperty`.
  *
- * @param value - Value to encode.
+ * @param prop - JSON property to inspect.
  *
- * @returns JSON-safe string representation.
+ * @returns The string value when the property holds a string literal; otherwise
+ *   `undefined`.
  */
-export function encodeValue(value: JSONPrimitive): string {
-    return JSON.stringify(value);
+export function getStringValue(prop: JSONProperty): string | undefined {
+    if (
+        prop.value.type === "JSONLiteral" &&
+        typeof prop.value.value === "string"
+    ) {
+        return prop.value.value;
+    }
+
+    return undefined;
+}
+
+/**
+ * Determine whether a named property exists in a `JSONObjectExpression`.
+ *
+ * @param obj - JSON object AST node.
+ * @param key - Property key to look up.
+ *
+ * @returns `true` when the property is present.
+ */
+export function hasProperty(obj: JSONObjectExpression, key: string): boolean {
+    return isDefined(findProperty(obj, key));
 }
 
 /**
@@ -205,29 +232,31 @@ export function insertProperty(
     indent = "    "
 ): ReturnType<Fixer["insertTextAfter"]> {
     const encodedValue = encodeValue(value);
-    const newProp = `"${key}": ${encodedValue}`;
+    const propertyText = `"${key}": ${encodedValue}`;
 
-    if (obj.properties.length === 0) {
+    if (isEmpty(obj.properties)) {
         return fixer.replaceText(
             obj as unknown as Parameters<Fixer["replaceText"]>[0],
-            `{ ${newProp} }`
+            `{ ${propertyText} }`
         );
     }
 
-    const lastProp = obj.properties.at(-1);
+    const lastProp = arrayAt(obj.properties, -1);
 
-    if (lastProp === undefined) {
+    if (!isDefined(lastProp)) {
         return fixer.replaceText(
             obj as unknown as Parameters<Fixer["replaceText"]>[0],
-            `{ ${newProp} }`
+            `{ ${propertyText} }`
         );
     }
 
     return fixer.insertTextAfter(
         lastProp as unknown as Parameters<Fixer["insertTextAfter"]>[0],
-        `,\n${indent}${newProp}`
+        `,\n${indent}${propertyText}`
     );
 }
+
+// ─── Array helpers ────────────────────────────────────────────────────────────
 
 /**
  * Build fixer text for replacing a property's value within a JSON object.
@@ -247,29 +276,4 @@ export function replacePropertyValue(
         prop.value as unknown as Parameters<Fixer["replaceText"]>[0],
         encodeValue(value)
     );
-}
-
-// ─── Array helpers ────────────────────────────────────────────────────────────
-
-/**
- * Collect the string elements from a `JSONArrayExpression`.
- *
- * @param arr - Array node to iterate.
- *
- * @returns Array of string values found among the array elements.
- */
-export function getStringArrayElements(arr: JSONArrayExpression): string[] {
-    const result: string[] = [];
-
-    for (const element of arr.elements) {
-        if (
-            element !== null &&
-            element.type === "JSONLiteral" &&
-            typeof element.value === "string"
-        ) {
-            result.push(element.value);
-        }
-    }
-
-    return result;
 }

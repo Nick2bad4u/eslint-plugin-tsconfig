@@ -416,7 +416,7 @@
         "ini",
         "diff"
     ],
-    "hostedBaseUrl": "https://nick2bad4u.github.io/eslint-plugin-typefest/",
+    "hostedBaseUrl": "https://nick2bad4u.github.io/eslint-plugin-tsconfig/",
     "includeDocCommentReferences": false,
     "includeVersion": true,
     "inlineTags": [
@@ -513,7 +513,7 @@
         "@sealed",
         "@virtual"
     ],
-    "name": "eslint-plugin-typefest Documentation",
+    "name": "eslint-plugin-tsconfig Documentation",
     "navigation": {
         "compactFolders": false,
         "excludeReferences": false,

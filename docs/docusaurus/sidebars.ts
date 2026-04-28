@@ -4,7 +4,7 @@
  */
 import type { SidebarsConfig } from "@docusaurus/plugin-content-docs";
 
-const packageName = "eslint-plugin-typefest";
+const packageName = "eslint-plugin-tsconfig";
 
 /** Main sidebar configuration for the default docs plugin instance. */
 const sidebars = {
@@ -45,20 +45,20 @@ const sidebars = {
                 },
                 {
                     className: "sb-api-overview-item",
-                    id: "developer/api/plugin/type-aliases/TypefestPlugin",
-                    label: "🧠 Type aliases · TypefestPlugin",
+                    id: "developer/api/plugin/type-aliases/tsconfigPlugin",
+                    label: "🧠 Type aliases · tsconfigPlugin",
                     type: "doc",
                 },
                 {
                     className: "sb-api-overview-item",
-                    id: "developer/api/plugin/variables/typefestPlugin",
-                    label: "⚙️ Runtime exports · typefestPlugin",
+                    id: "developer/api/plugin/variables/tsconfigPlugin",
+                    label: "⚙️ Runtime exports · tsconfigPlugin",
                     type: "doc",
                 },
                 {
                     className: "sb-api-overview-item",
-                    id: "developer/api/plugin/variables/typefestConfigs",
-                    label: "⚙️ Runtime exports · typefestConfigs",
+                    id: "developer/api/plugin/variables/tsconfigConfigs",
+                    label: "⚙️ Runtime exports · tsconfigConfigs",
                     type: "doc",
                 },
             ],
@@ -367,12 +367,12 @@ const sidebars = {
                     type: "link",
                 },
                 {
-                    href: "/blog/the-thinking-behind-eslint-plugin-typefest",
+                    href: "/blog/the-thinking-behind-eslint-plugin-tsconfig",
                     label: "🧠 Blog · Thinking behind plugin",
                     type: "link",
                 },
                 {
-                    href: "/blog/designing-safe-autofixes-for-eslint-plugin-typefest",
+                    href: "/blog/designing-safe-autofixes-for-eslint-plugin-tsconfig",
                     label: "🛡️ Blog · Designing safe autofixes",
                     type: "link",
                 },

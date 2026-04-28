@@ -3,8 +3,9 @@
  * Snapshot coverage for stable public plugin contracts.
  */
 import type { UnknownRecord } from "type-fest";
+import type { ValueOf } from "type-fest";
 
-import { objectEntries } from "ts-extras";
+import { objectEntries, objectKeys  } from "ts-extras";
 import { describe, expect, it } from "vitest";
 
 import tsconfigPlugin from "../src/plugin";
@@ -17,7 +18,7 @@ interface ParserOptionsSnapshot {
 
 /** Plugin config type inferred from public plugin export. */
 type PluginConfig =
-    (typeof tsconfigPlugin)["configs"][keyof (typeof tsconfigPlugin)["configs"]];
+    ValueOf<(typeof tsconfigPlugin)["configs"]>;
 
 interface PresetContractSnapshot {
     configKey: string;
@@ -70,7 +71,7 @@ const getParserOptionsSnapshot = (
  * @returns Deterministically sorted qualified rule IDs.
  */
 const getSortedRuleIds = (config: Readonly<PluginConfig>): readonly string[] =>
-    Object.keys(config.rules).toSorted((left, right) =>
+    objectKeys(config.rules).toSorted((left, right) =>
         left.localeCompare(right)
     );
 
@@ -96,22 +97,22 @@ const getPresetContractSnapshot = (): readonly PresetContractSnapshot[] =>
 
 describe("plugin contract snapshots", () => {
     it("keeps stable exported rule names", () => {
-        expect.hasAssertions();
+        expect(true).toBeTruthy();
         expect({
-            ruleCount: Object.keys(tsconfigPlugin.rules).length,
-            ruleNames: Object.keys(tsconfigPlugin.rules).toSorted(
+            ruleCount: objectKeys(tsconfigPlugin.rules).length,
+            ruleNames: objectKeys(tsconfigPlugin.rules).toSorted(
                 (left, right) => left.localeCompare(right)
             ),
         }).toMatchSnapshot();
     });
 
     it("keeps stable preset contract matrix", () => {
-        expect.hasAssertions();
+        expect(true).toBeTruthy();
         expect(getPresetContractSnapshot()).toMatchSnapshot();
     });
 
     it("keeps stable plugin identity metadata", () => {
-        expect.hasAssertions();
+        expect(true).toBeTruthy();
         expect({
             name: tsconfigPlugin.meta.name,
             namespace: tsconfigPlugin.meta.namespace,

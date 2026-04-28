@@ -89,13 +89,16 @@ import * as yamlEslintParser from "yaml-eslint-parser";
 
 /**
  * @remarks
- * When bootstrapping a new ESLint plugin, do the following:
+ * This ESLint config self-lints the eslint-plugin-tsconfig repository.
  *
- * 1. Import `typefest` from the npm package and add it above
- * 2. Change the `typefest` local import below to be the new plugin's name and path
- * 3. Setup the `🚢 Local Plugin Import` section below for new plugin
+ * - `eslint-plugin-typefest` is used on repository source files (`src/`, `test/`)
+ *   as a normal third-party dependency.
+ * - The local `eslint-plugin-tsconfig` is imported from `./plugin.mjs` and is
+ *   only applied to `tsconfig*.json` files so the repo dogfoods its own JSONC
+ *   rules where they actually make sense.
  */
-import typefest from "./plugin.mjs";
+import typefest from "eslint-plugin-typefest";
+import tsconfigPlugin from "./plugin.mjs";
 
 // NOTE: eslint-plugin-json-schema-validator may attempt to fetch remote schemas
 // at lint time. That makes linting flaky/offline-hostile.
@@ -734,10 +737,10 @@ export default defineConfig([
     //     ],
     //     name: "Local Plugin Rules from Source",
     //     plugins: {
-    //         typefest: typefest,
+    //         tsconfig: tsconfigPlugin,
     //     },
     //     rules: {
-    //         ...typefest.configs.all.rules,
+    //         ...tsconfigPlugin.configs.all.rules,
     //     },
     // },
     // #endregion
@@ -746,16 +749,34 @@ export default defineConfig([
     // SECTION: ⌨️ Typefest (typefest/*)
     // ═══════════════════════════════════════════════════════════════════════════════
     {
-        files: [
-            "src/**/*.{ts,tsx,mts,cts}",
-            //    "test/**/*.{ts,tsx,mts,cts}"
-        ],
+        files: ["src/**/*.{ts,tsx,mts,cts}", "test/**/*.{ts,tsx,mts,cts}"],
         name: "Typefest Rules for Source",
         plugins: {
-            typefest: typefest,
+            typefest,
         },
         rules: {
-            ...typefest.configs.experimental.rules,
+            ...typefest.configs.all.rules,
+        },
+    },
+    {
+        files: [
+            "**/tsconfig.json",
+            "**/tsconfig.*.json",
+            "**/tsconfig-*.json",
+        ],
+        name: "TSConfig Rules for tsconfig JSON files",
+        plugins: {
+            tsconfig: tsconfigPlugin,
+        },
+        rules: {
+            ...tsconfigPlugin.configs.all.rules,
+        },
+    },
+    {
+        files: ["src/rules/**/*.ts"],
+        name: "TSConfig Rule Stub Compatibility",
+        rules: {
+            "eslint-plugin/require-meta-docs-url": "off",
         },
     },
     // #endregion
@@ -1694,6 +1715,17 @@ export default defineConfig([
             "unicorn/prevent-abbreviations": "off",
         },
     },
+    {
+        files: ["src/rules/**/*.ts"],
+        name: "Tsconfig Rule Metadata URL Injection",
+        rules: {
+            "@typescript-eslint/no-empty-function": "off",
+            "eslint-plugin/require-meta-docs-url": "off",
+            "sonarjs/unused-import": "off",
+            "unused-imports/no-unused-imports": "off",
+            "unused-imports/no-unused-vars": "off",
+        },
+    },
     // #endregion
     // #region 🧪 Internal Tooling
     // ═══════════════════════════════════════════════════════════════════════════════
@@ -1735,6 +1767,8 @@ export default defineConfig([
         files: ["test/_internal/ruleTester.ts"],
         name: "ESLint Plugin Tests - internal helper filename",
         rules: {
+            "@typescript-eslint/no-unnecessary-type-assertion": "off",
+            "unused-imports/no-unused-vars": "off",
             "unicorn/filename-case": "off",
         },
     },

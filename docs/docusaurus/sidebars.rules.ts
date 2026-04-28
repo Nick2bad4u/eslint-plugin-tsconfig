@@ -71,7 +71,7 @@ const createRuleItemsByPrefix = (prefix: string): SidebarDocItem[] =>
 /** Sidebar entries for `prefer-ts-extras-*` rule docs. */
 const tsExtrasRuleItems = createRuleItemsByPrefix("prefer-ts-extras-");
 /** Sidebar entries for `prefer-type-fest-*` rule docs. */
-const typeFestRuleItems = createRuleItemsByPrefix("prefer-type-fest-");
+const tsconfigRuleItems = createRuleItemsByPrefix("prefer-type-fest-");
 
 /** Complete sidebar structure for docs site navigation. */
 const sidebars = {
@@ -201,7 +201,7 @@ const sidebars = {
                 title: "Rule Reference",
                 slug: "/",
                 description:
-                    "Rule documentation for every eslint-plugin-typefest rule.",
+                    "Rule documentation for every eslint-plugin-tsconfig rule.",
             },
             items: [
                 {
@@ -236,7 +236,7 @@ const sidebars = {
                         description:
                             "Rules that prefer expressive type-fest utility types for clearer type-level code.",
                     },
-                    items: typeFestRuleItems,
+                    items: tsconfigRuleItems,
                 },
             ],
         },

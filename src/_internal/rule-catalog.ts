@@ -9,7 +9,7 @@ import { objectFromEntries, setHas } from "ts-extras";
  */
 export type TsconfigRuleCatalogEntry = Readonly<{
     ruleId: TsconfigRuleCatalogId;
-    ruleName: TsconfigRuleNamePattern;
+    ruleName: string;
     ruleNumber: number;
 }>;
 
@@ -19,7 +19,7 @@ export type TsconfigRuleCatalogEntry = Readonly<{
 export type TsconfigRuleCatalogId = `R${string}`;
 
 /** Pattern for unqualified rule names supported by eslint-plugin-tsconfig. */
-export type TsconfigRuleNamePattern = string;
+export type TsconfigRuleNamePattern = `${string}`;
 
 /**
  * Stable global ordering used for rule catalog IDs.
@@ -75,11 +75,9 @@ export const tsconfigRuleCatalogEntries: readonly TsconfigRuleCatalogEntry[] =
 /**
  * Fast lookup map for rule catalog metadata by rule name.
  */
-export const tsconfigRuleCatalogByRuleName: Readonly<
-    Partial<Record<string, TsconfigRuleCatalogEntry>>
-> = objectFromEntries(
+export const tsconfigRuleCatalogByRuleName = objectFromEntries(
     tsconfigRuleCatalogEntries.map((entry) => [entry.ruleName, entry])
-);
+) as Readonly<Record<string, TsconfigRuleCatalogEntry>>;
 
 /**
  * Resolve stable catalog metadata for a rule name when available.

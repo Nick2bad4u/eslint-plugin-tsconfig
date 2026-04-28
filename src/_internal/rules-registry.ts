@@ -64,6 +64,9 @@ const tsconfigRuleRegistry: Readonly<Record<string, JsoncRuleModule>> = {
     "require-verbatim-module-syntax": requireVerbatimModuleSyntax,
 };
 
+/**
+ * Canonical map of all plugin rule modules keyed by their rule id segment.
+ */
 export const tsconfigRules: Readonly<Record<string, JsoncRuleModule>> =
     tsconfigRuleRegistry;
 

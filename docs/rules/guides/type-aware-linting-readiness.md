@@ -1,6 +1,6 @@
 ---
 title: Type-aware linting readiness
-description: Checklist and rollout playbook for enabling type-aware eslint-plugin-typefest rules safely.
+description: Checklist and rollout playbook for enabling type-aware eslint-plugin-tsconfig rules safely.
 ---
 
 # Type-aware linting readiness
@@ -102,4 +102,4 @@ Likely causes:
 - [Rollout and fix safety](./rollout-and-fix-safety.md)
 - [Rule adoption checklist](./adoption-checklist.md)
 - [Preset selection strategy](./preset-selection-strategy.md)
-- [Typed service path inventory](https://nick2bad4u.github.io/eslint-plugin-typefest/docs/developer/typed-paths)
+- [Typed service path inventory](https://nick2bad4u.github.io/eslint-plugin-tsconfig/docs/developer/typed-paths)

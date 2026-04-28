@@ -9,15 +9,15 @@ Use when you explicitly want every plugin rule, including experimental coverage.
 ## Config key
 
 ```ts
-typefest.configs.all
+tsconfig.configs.all
 ```
 
 ## Flat Config example
 
 ```ts
-import typefest from "eslint-plugin-typefest";
+import tsconfig from "eslint-plugin-tsconfig";
 
-export default [typefest.configs.all];
+export default [tsconfig.configs.all];
 ```
 
 ## Rules in this preset

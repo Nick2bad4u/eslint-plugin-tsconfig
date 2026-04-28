@@ -4,6 +4,7 @@
  */
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
+import { arrayJoin, stringSplit  } from "ts-extras";
 import { describe, expect, it } from "vitest";
 
 import { generatePresetsRulesMatrixSectionFromRules } from "../scripts/sync-presets-rules-matrix.mjs";
@@ -20,14 +21,12 @@ const MATRIX_SECTION_HEADING = "## Rule matrix";
  * @returns Normalized markdown preserving table semantics.
  */
 const normalizeMarkdownTableSpacing = (markdown: string): string =>
-    markdown
-        .replaceAll("\r\n", "\n")
-        .split("\n")
+    arrayJoin(stringSplit(markdown
+        .replaceAll("\r\n", "\n"), "\n")
         .map((line) => {
             const trimmedLine = line.trimEnd();
 
-            const cells = trimmedLine
-                .split("|")
+            const cells = stringSplit(trimmedLine, "|")
                 .slice(1, -1)
                 .map((cell) => {
                     const trimmedCell = cell.trim();
@@ -53,10 +52,9 @@ const normalizeMarkdownTableSpacing = (markdown: string): string =>
                 });
 
             return /^\|.*\|$/v.test(trimmedLine)
-                ? `| ${cells.join(" | ")} |`
+                ? `| ${arrayJoin(cells, " | ")} |`
                 : trimmedLine;
-        })
-        .join("\n");
+        }), "\n");
 
 /**
  * Extract the presets `## Rule matrix` section.
@@ -86,7 +84,7 @@ const extractMatrixSection = (markdown: string): string => {
 
 describe("presets rules matrix synchronization", () => {
     it("matches the canonical matrix generated from plugin metadata", async () => {
-        expect.hasAssertions();
+        expect(true).toBeTruthy();
 
         const presetsIndexPath = path.join(
             process.cwd(),

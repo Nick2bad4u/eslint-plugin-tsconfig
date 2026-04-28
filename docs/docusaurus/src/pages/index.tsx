@@ -77,7 +77,7 @@ const overviewButtonIcon = "\udb81\udf1d";
 const comparePresetsButtonIcon = "\udb85\udc92";
 const heroKickerIcon = "\uf0ad";
 const heroKickerIcon2 = "\uf135";
-const packageName = "eslint-plugin-typefest";
+const packageName = "eslint-plugin-tsconfig";
 const homepageDescription = `Explore ${packageName} documentation, presets, and rule references for adopting type-fest and ts-extras patterns in modern TypeScript projects.`;
 const homepageKeywords = `${packageName}, type-fest, ts-extras, eslint rules, typescript linting, flat config`;
 const homepageStructuredData = {
@@ -161,7 +161,7 @@ export default function Home() {
                                 TypeScript types, type guards, and other
                                 patterns by utilizing{" "}
                                 <Link
-                                    className={`${styles.heroInlineLink} ${styles.heroInlineLinkTypeFest}`}
+                                    className={`${styles.heroInlineLink} ${styles.heroInlineLinkTsconfig}`}
                                     href="https://github.com/sindresorhus/type-fest"
                                     target="_blank"
                                     rel="noopener noreferrer"

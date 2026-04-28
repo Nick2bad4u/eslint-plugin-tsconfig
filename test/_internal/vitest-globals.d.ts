@@ -1,3 +1,5 @@
+import type { UnknownArray, UnknownRecord  } from "type-fest";
+
 import type { createTypedRule as createTypedRuleType } from "../../src/_internal/typed-rule.js";
 
 export type CreateTypedRuleSelectorAwarePassThrough =
@@ -13,8 +15,8 @@ declare module "vitest" {
         doMock(
             module: Promise<unknown>,
             factory?:
-                | ((...arguments_: readonly unknown[]) => unknown)
-                | Readonly<Record<string, unknown>>
+                | ((...arguments_: Readonly<UnknownArray>) => unknown)
+                | Readonly<UnknownRecord>
         ): void;
     }
 }

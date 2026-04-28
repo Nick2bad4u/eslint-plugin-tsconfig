@@ -9,15 +9,15 @@ Use when you want recommended-type-checked + additional stable runtime helpers.
 ## Config key
 
 ```ts
-typefest.configs.strict
+tsconfig.configs.strict
 ```
 
 ## Flat Config example
 
 ```ts
-import typefest from "eslint-plugin-typefest";
+import tsconfig from "eslint-plugin-tsconfig";
 
-export default [typefest.configs.strict];
+export default [tsconfig.configs.strict];
 ```
 
 ## Rules in this preset

@@ -11,6 +11,8 @@
  * @returns Sliced source text for the node range, or an empty string when the
  *   node is malformed or range-less.
  */
+import { arrayFirst } from "ts-extras";
+
 export const getSourceTextForNode = ({
     code,
     node,
@@ -32,5 +34,5 @@ export const getSourceTextForNode = ({
         return "";
     }
 
-    return code.slice(nodeRange[0], nodeRange[1]);
+    return code.slice(arrayFirst(nodeRange), nodeRange[1]);
 };

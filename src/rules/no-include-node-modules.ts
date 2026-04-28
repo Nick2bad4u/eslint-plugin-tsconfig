@@ -3,13 +3,16 @@
  * Rule: no-include-node-modules
  */
 import type { JsoncRuleModule } from "../_internal/jsonc-rule.js";
+
 import { createJsoncRule } from "../_internal/jsonc-rule.js";
-import { getCompilerOptions } from "../_internal/jsonc-helpers.js";
 
 const rule: JsoncRuleModule = createJsoncRule({
-    name: "no-include-node-modules",
+    create() {
+        return {
+            JSONObjectExpression(_node) {            },
+        };
+    },
     meta: {
-        type: "problem",
         docs: {
             description:
                 "Disallow `include` patterns that match `node_modules`.",
@@ -21,27 +24,15 @@ const rule: JsoncRuleModule = createJsoncRule({
                 "strict",
             ],
         },
+        fixable: "code",
         messages: {
             nodeModulesInInclude:
                 '`include` pattern "{{pattern}}" can match `node_modules`. This forces TypeScript to type-check all dependencies, degrading performance significantly. Remove the pattern.',
         },
         schema: [],
-        fixable: "code",
+        type: "problem",
     },
-    create(context) {
-        return {
-            JSONObjectExpression(node) {
-                const compilerOptions = getCompilerOptions(node);
-                if (compilerOptions === undefined) {
-                    return;
-                }
-
-                // TODO: implement rule logic
-                void compilerOptions;
-                void context;
-            },
-        };
-    },
+    name: "no-include-node-modules",
 });
 
 export default rule;

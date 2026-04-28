@@ -8,7 +8,7 @@ import { fileURLToPath } from "node:url";
 
 /** Route base path where docs site is deployed (GitHub Pages project path). */
 const baseUrl =
-    process.env["DOCUSAURUS_BASE_URL"] ?? "/eslint-plugin-typefest/";
+    process.env["DOCUSAURUS_BASE_URL"] ?? "/eslint-plugin-tsconfig/";
 /** Opt-in flag for experimental Docusaurus performance features. */
 const enableExperimentalFaster =
     process.env["DOCUSAURUS_ENABLE_EXPERIMENTAL"] === "true";
@@ -16,21 +16,21 @@ const enableExperimentalFaster =
 /** GitHub organization used for edit links and project metadata. */
 const organizationName = "Nick2bad4u";
 /** Repository name used for edit links and project metadata. */
-const projectName = "eslint-plugin-typefest";
+const projectName = "eslint-plugin-tsconfig";
 /** Public origin for the published documentation site. */
 const siteOrigin = "https://nick2bad4u.github.io";
 /** Canonical public site URL including the GitHub Pages project path. */
 const siteUrl = `${siteOrigin}${baseUrl}`;
 /** Global site description used for SEO and social cards. */
 const siteDescription =
-    "Type-safe ESLint rules for adopting type-fest and ts-extras patterns in modern TypeScript codebases.";
+    "ESLint rules for consistent and correct tsconfig.json configurations in modern TypeScript projects.";
 /** Global blog description used for SEO and social cards. */
 const projectBlogDescription = `Updates, architecture notes, and practical guidance for ${projectName} users.`;
 /** Global project tagline used for SEO metadata. */
-const projectTagline = `Type-safe ESLint rules for adopting type-fest and ts-extras patterns in modern TypeScript codebases.`;
+const projectTagline = `ESLint rules for consistent and correct tsconfig.json configurations in modern TypeScript projects.`;
 /** Global project keywords used for SEO metadata. */
 const projectKeywords =
-    "eslint, eslint-plugin, type-fest, ts-extras, typescript, flat config, static analysis";
+    "eslint, eslint-plugin, tsconfig, typescript, flat config, static analysis, jsonc";
 /** Social preview image used for Open Graph and Twitter cards. */
 const socialCardImagePath = "img/logo.png";
 /** Absolute social preview image URL. */

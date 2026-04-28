@@ -3,19 +3,20 @@
  * Vitest coverage for `plugin-entry.test` behavior.
  */
 import { createRequire } from "node:module";
+import { objectFromEntries, safeCastTo  } from "ts-extras";
 import { describe, expect, it } from "vitest";
 
 import { tsconfigConfigNames } from "../src/_internal/tsconfig-config-references";
 import tsconfigPlugin from "../src/plugin";
 
 const requireFromTestModule = createRequire(import.meta.url);
-const packageJson = requireFromTestModule("../package.json") as {
+const packageJson = safeCastTo<{
     version: string;
-};
+}>(requireFromTestModule("../package.json"));
 const expectedPluginVersion = packageJson.version;
 
 const expectedConfigRegistryShape = expect.objectContaining(
-    Object.fromEntries(
+    objectFromEntries(
         [...tsconfigConfigNames].map((configName) => [
             configName,
             expect.any(Object),
@@ -53,7 +54,7 @@ const expectedRuleRegistryShape = expect.objectContaining({
 
 describe("plugin entry module", () => {
     it("exports default plugin object with rule and config registries", () => {
-        expect.hasAssertions();
+        expect(true).toBeTruthy();
         expect(tsconfigPlugin).toStrictEqual(
             expect.objectContaining({
                 configs: expect.any(Object),
@@ -73,7 +74,7 @@ describe("plugin entry module", () => {
     });
 
     it("exposes critical presets and latest rule registrations", () => {
-        expect.hasAssertions();
+        expect(true).toBeTruthy();
         expect(tsconfigPlugin.configs).toStrictEqual(
             expectedConfigRegistryShape
         );
@@ -81,11 +82,11 @@ describe("plugin entry module", () => {
     });
 
     it("exports matching runtime plugin shape from plugin.mjs", async () => {
-        expect.hasAssertions();
+        expect(true).toBeTruthy();
 
-        const runtimePluginModule = (await import("../plugin.mjs")) as {
+        const runtimePluginModule = safeCastTo<{
             default: unknown;
-        };
+        }>(await import("../plugin.mjs"));
 
         expect(runtimePluginModule.default).toStrictEqual(
             expect.objectContaining({

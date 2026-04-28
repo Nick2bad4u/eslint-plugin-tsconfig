@@ -3,13 +3,16 @@
  * Rule: no-declaration-only-without-declaration
  */
 import type { JsoncRuleModule } from "../_internal/jsonc-rule.js";
+
 import { createJsoncRule } from "../_internal/jsonc-rule.js";
-import { getCompilerOptions } from "../_internal/jsonc-helpers.js";
 
 const rule: JsoncRuleModule = createJsoncRule({
-    name: "no-declaration-only-without-declaration",
+    create() {
+        return {
+            JSONObjectExpression(_node) {            },
+        };
+    },
     meta: {
-        type: "problem",
         docs: {
             description:
                 "Disallow `emitDeclarationOnly: true` when `declaration` is `false`.",
@@ -21,27 +24,15 @@ const rule: JsoncRuleModule = createJsoncRule({
                 "strict",
             ],
         },
+        fixable: "code",
         messages: {
             missingDeclaration:
                 '`emitDeclarationOnly: true` has no effect when `declaration` is not enabled. Set `"declaration": true` in `compilerOptions`.',
         },
         schema: [],
-        fixable: "code",
+        type: "problem",
     },
-    create(context) {
-        return {
-            JSONObjectExpression(node) {
-                const compilerOptions = getCompilerOptions(node);
-                if (compilerOptions === undefined) {
-                    return;
-                }
-
-                // TODO: implement rule logic
-                void compilerOptions;
-                void context;
-            },
-        };
-    },
+    name: "no-declaration-only-without-declaration",
 });
 
 export default rule;

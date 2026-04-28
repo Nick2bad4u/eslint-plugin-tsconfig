@@ -1,5 +1,7 @@
-type EslintPluginModule = Readonly<Record<string, unknown>>;
-type RemarkPluginModule = (...arguments_: readonly unknown[]) => unknown;
+import type { UnknownArray, UnknownRecord  } from "type-fest";
+
+type EslintPluginModule = Readonly<UnknownRecord>;
+type RemarkPluginModule = (...arguments_: Readonly<UnknownArray>) => unknown;
 
 declare module "eslint-plugin-array-func" {
     const plugin: EslintPluginModule;
@@ -70,7 +72,7 @@ declare module "eslint-plugin-css-modules" {
     type CssModulesPlugin = EslintPluginModule & {
         readonly configs: {
             readonly recommended: {
-                readonly rules: Readonly<Record<string, unknown>>;
+                readonly rules: Readonly<UnknownRecord>;
             };
         };
     };

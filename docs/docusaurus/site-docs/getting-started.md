@@ -7,31 +7,26 @@ sidebar_position: 2
 Install the plugin:
 
 ```bash
-npm install --save-dev eslint-plugin-typefest
+npm install --save-dev eslint-plugin-tsconfig
 ```
 
 Then enable it in your Flat Config:
 
 ```ts
-import typefest from "eslint-plugin-typefest";
+import tsconfig from "eslint-plugin-tsconfig";
 
 export default [
-    {
-        plugins: {
-            typefest,
-        },
-        rules: {
-            "typefest/prefer-ts-extras-is-defined": "error",
-        },
-    },
+    tsconfig.configs.recommended,
 ];
 ```
 
+This lints all `tsconfig*.json` files in your project.
+
 ## Recommended approach
 
-- Start with one ruleset (`typefest.configs.recommended` or `typefest.configs.strict`).
-- Fix violations in small batches.
-- Promote warnings to errors after stabilization.
+- Start with `tsconfig.configs.recommended` (two essential rules).
+- Expand to `tsconfig.configs.strict` or `tsconfig.configs.all` as your team grows comfortable.
+- Use focused presets (`strict-mode`, `module-resolution`, `emit-config`, etc.) to opt in rule-by-rule.
 
 ## Rule navigation
 

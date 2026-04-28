@@ -3,10 +3,14 @@
  * Vitest global setup helpers used by selector-aware unit-test doubles.
  */
 
-type RuleCreateFunction = (...args: readonly unknown[]) => unknown;
+import type { UnknownArray, UnknownRecord  } from "type-fest";
+
+import { objectEntries } from "ts-extras";
+
+type RuleCreateFunction = (...args: Readonly<UnknownArray>) => unknown;
 
 /** Guard unknown values into object records. */
-const isRecord = (value: unknown): value is Readonly<Record<string, unknown>> =>
+const isRecord = (value: unknown): value is Readonly<UnknownRecord> =>
     typeof value === "object" && value !== null;
 
 /**
@@ -20,10 +24,10 @@ const isSelectorListenerKey = (listenerKey: string): boolean =>
  * Resolve a selector listener that targets a plain node type key.
  */
 const resolveSelectorListener = (
-    listeners: Readonly<Record<string, unknown>>,
+    listeners: Readonly<UnknownRecord>,
     nodeType: string
 ): unknown => {
-    for (const [listenerKey, listener] of Object.entries(listeners)) {
+    for (const [listenerKey, listener] of objectEntries(listeners)) {
         if (
             typeof listener === "function" &&
             isSelectorListenerKey(listenerKey) &&
@@ -90,7 +94,7 @@ const createTypedRuleSelectorAwarePassThroughImpl = (
 
     return {
         ...definition,
-        create: (...args: readonly unknown[]) =>
+        create: (...args: Readonly<UnknownArray>) =>
             createSelectorAwareListenerMap(create(...args)),
     };
 };

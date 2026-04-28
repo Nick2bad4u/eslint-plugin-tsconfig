@@ -6,15 +6,15 @@ export default defineConfig({
         {
             cases: [
                 {
-                    testPath: "./cases/prefer-ts-extras-is-defined/baseline.ts",
+                    testPath: "./cases/consistent-module-resolution/baseline.json",
                 },
                 {
-                    testPath: "./cases/prefer-ts-extras-is-defined/complex.ts",
+                    testPath: "./cases/consistent-module-resolution/complex.json",
                 },
             ],
-            name: "Rule: prefer-ts-extras-is-defined",
-            ruleId: "typefest/prefer-ts-extras-is-defined",
-            rulePath: "../src/rules/prefer-ts-extras-is-defined.ts",
+            name: "Rule: consistent-module-resolution",
+            ruleId: "tsconfig/consistent-module-resolution",
+            rulePath: "../src/rules/consistent-module-resolution.ts",
             warmup: {
                 iterations: 15,
             },

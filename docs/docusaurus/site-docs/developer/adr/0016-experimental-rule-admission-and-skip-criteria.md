@@ -24,7 +24,7 @@ Without a documented policy, the project risks one of two failure modes:
 
 Adopt a precision-first admission policy for experimental rules.
 
-1. A candidate may ship in `typefest.configs.experimental` only when it has a narrow, defensible matcher and a canonical upstream replacement.
+1. A candidate may ship in `tsconfig.configs.experimental` only when it has a narrow, defensible matcher and a canonical upstream replacement.
 2. Experimental rules should usually begin as report-only unless the autofix is mechanically safe and equivalent.
 3. If a candidate's real-world manual forms are too varied, too semantic, or too easy to mis-detect, the project should document it as intentionally skipped rather than forcing a noisy rule.
 4. Skipped candidates remain eligible for future reconsideration if a tighter matcher or stronger adoption evidence emerges.

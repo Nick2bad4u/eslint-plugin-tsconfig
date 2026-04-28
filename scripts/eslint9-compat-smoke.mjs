@@ -219,7 +219,7 @@ const createCompatibilityConfig = (ruleId, typed, fixturePath) => {
             },
             name: `compat-smoke:${ruleId}`,
             plugins: {
-                typefest: plugin,
+                tsconfig: plugin,
             },
             rules: {
                 [ruleId]: "error",
@@ -315,7 +315,7 @@ const scenarios = /** @type {const} */ ([
         fix: false,
         fixturePath: typedFixturePath,
         name: "typed-detection",
-        ruleId: "typefest/prefer-ts-extras-safe-cast-to",
+        ruleId: "tsconfig/prefer-ts-extras-safe-cast-to",
         typed: true,
     },
     {
@@ -325,7 +325,7 @@ const scenarios = /** @type {const} */ ([
         fix: true,
         fixturePath: typedFixturePath,
         name: "typed-autofix",
-        ruleId: "typefest/prefer-ts-extras-safe-cast-to",
+        ruleId: "tsconfig/prefer-ts-extras-safe-cast-to",
         typed: true,
     },
     {
@@ -333,7 +333,7 @@ const scenarios = /** @type {const} */ ([
         fix: false,
         fixturePath: arrayableFixturePath,
         name: "non-typed-detection",
-        ruleId: "typefest/prefer-type-fest-arrayable",
+        ruleId: "tsconfig/prefer-type-fest-arrayable",
         typed: false,
     },
 ]);

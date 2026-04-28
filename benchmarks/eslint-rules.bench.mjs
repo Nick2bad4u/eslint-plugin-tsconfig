@@ -3,8 +3,8 @@ import { bench, describe, expect } from "vitest";
 
 import {
     benchmarkFileGlobs,
-    createTypefestFlatConfig,
-    typefestRuleSets,
+    createtsconfigFlatConfig,
+    tsconfigRuleSets,
 } from "./eslint-benchmark-config.mjs";
 
 /**
@@ -28,11 +28,11 @@ import {
  */
 
 const singleRuleBenchmarks = Object.freeze({
-    "typefest/prefer-ts-extras-is-present": "error",
-    "typefest/prefer-ts-extras-safe-cast-to": "error",
-    "typefest/prefer-ts-extras-set-has": "error",
-    "typefest/prefer-ts-extras-string-split": "error",
-    "typefest/prefer-type-fest-arrayable": "error",
+    "tsconfig/prefer-ts-extras-is-present": "error",
+    "tsconfig/prefer-ts-extras-safe-cast-to": "error",
+    "tsconfig/prefer-ts-extras-set-has": "error",
+    "tsconfig/prefer-ts-extras-string-split": "error",
+    "tsconfig/prefer-type-fest-arrayable": "error",
 });
 
 const standardBenchmarkOptions = Object.freeze({
@@ -202,7 +202,7 @@ const lintScenario = async ({ filePatterns, fix, rules }) => {
     const eslint = new ESLint({
         cache: false,
         fix,
-        overrideConfig: createTypefestFlatConfig({ rules }),
+        overrideConfig: createtsconfigFlatConfig({ rules }),
         overrideConfigFile: true,
         stats: true,
     });
@@ -210,7 +210,7 @@ const lintScenario = async ({ filePatterns, fix, rules }) => {
     return eslint.lintFiles([...filePatterns]);
 };
 
-describe("eslint-plugin-typefest meaningful benchmarks", () => {
+describe("eslint-plugin-tsconfig meaningful benchmarks", () => {
     bench(
         "recommended preset on full invalid typed fixture corpus",
         async () => {
@@ -219,7 +219,7 @@ describe("eslint-plugin-typefest meaningful benchmarks", () => {
             const lintResults = await lintScenario({
                 filePatterns: benchmarkFileGlobs.typedInvalidFixtures,
                 fix: false,
-                rules: typefestRuleSets.recommended,
+                rules: tsconfigRuleSets.recommended,
             });
 
             assertMeaningfulBenchmarkSignal(
@@ -238,7 +238,7 @@ describe("eslint-plugin-typefest meaningful benchmarks", () => {
             const lintResults = await lintScenario({
                 filePatterns: benchmarkFileGlobs.typedInvalidFixtures,
                 fix: false,
-                rules: typefestRuleSets.strict,
+                rules: tsconfigRuleSets.strict,
             });
 
             assertMeaningfulBenchmarkSignal(
@@ -257,7 +257,7 @@ describe("eslint-plugin-typefest meaningful benchmarks", () => {
             const lintResults = await lintScenario({
                 filePatterns: benchmarkFileGlobs.typedValidFixtures,
                 fix: false,
-                rules: typefestRuleSets.recommended,
+                rules: tsconfigRuleSets.recommended,
             });
 
             assertMeaningfulBenchmarkSignal(
@@ -277,7 +277,7 @@ describe("eslint-plugin-typefest meaningful benchmarks", () => {
             const lintResults = await lintScenario({
                 filePatterns: benchmarkFileGlobs.recommendedZeroMessageFixture,
                 fix: false,
-                rules: typefestRuleSets.recommended,
+                rules: tsconfigRuleSets.recommended,
             });
 
             assertMeaningfulBenchmarkSignal(
@@ -297,7 +297,7 @@ describe("eslint-plugin-typefest meaningful benchmarks", () => {
             const lintResults = await lintScenario({
                 filePatterns: benchmarkFileGlobs.tsExtrasInvalidFixtures,
                 fix: false,
-                rules: typefestRuleSets.tsExtrasTypeGuards,
+                rules: tsconfigRuleSets.tsExtrasTypeGuards,
             });
 
             assertMeaningfulBenchmarkSignal(
@@ -314,9 +314,9 @@ describe("eslint-plugin-typefest meaningful benchmarks", () => {
             expect.hasAssertions();
 
             const lintResults = await lintScenario({
-                filePatterns: benchmarkFileGlobs.typeFestInvalidFixtures,
+                filePatterns: benchmarkFileGlobs.tsconfigInvalidFixtures,
                 fix: false,
-                rules: typefestRuleSets.typeFestTypes,
+                rules: tsconfigRuleSets.tsconfigTypes,
             });
 
             assertMeaningfulBenchmarkSignal(
@@ -335,7 +335,7 @@ describe("eslint-plugin-typefest meaningful benchmarks", () => {
             const lintResults = await lintScenario({
                 filePatterns: benchmarkFileGlobs.tsExtrasInvalidFixtures,
                 fix: true,
-                rules: typefestRuleSets.recommended,
+                rules: tsconfigRuleSets.recommended,
             });
 
             assertMeaningfulBenchmarkSignal(
@@ -355,9 +355,9 @@ describe("eslint-plugin-typefest meaningful benchmarks", () => {
                 filePatterns: benchmarkFileGlobs.isPresentStressFixture,
                 fix: false,
                 rules: {
-                    "typefest/prefer-ts-extras-is-present":
+                    "tsconfig/prefer-ts-extras-is-present":
                         singleRuleBenchmarks[
-                            "typefest/prefer-ts-extras-is-present"
+                            "tsconfig/prefer-ts-extras-is-present"
                         ],
                 },
             });
@@ -379,9 +379,9 @@ describe("eslint-plugin-typefest meaningful benchmarks", () => {
                 filePatterns: benchmarkFileGlobs.safeCastToStressFixture,
                 fix: false,
                 rules: {
-                    "typefest/prefer-ts-extras-safe-cast-to":
+                    "tsconfig/prefer-ts-extras-safe-cast-to":
                         singleRuleBenchmarks[
-                            "typefest/prefer-ts-extras-safe-cast-to"
+                            "tsconfig/prefer-ts-extras-safe-cast-to"
                         ],
                 },
             });
@@ -403,9 +403,9 @@ describe("eslint-plugin-typefest meaningful benchmarks", () => {
                 filePatterns: benchmarkFileGlobs.setHasStressFixture,
                 fix: false,
                 rules: {
-                    "typefest/prefer-ts-extras-set-has":
+                    "tsconfig/prefer-ts-extras-set-has":
                         singleRuleBenchmarks[
-                            "typefest/prefer-ts-extras-set-has"
+                            "tsconfig/prefer-ts-extras-set-has"
                         ],
                 },
             });
@@ -427,9 +427,9 @@ describe("eslint-plugin-typefest meaningful benchmarks", () => {
                 filePatterns: benchmarkFileGlobs.stringSplitStressFixture,
                 fix: false,
                 rules: {
-                    "typefest/prefer-ts-extras-string-split":
+                    "tsconfig/prefer-ts-extras-string-split":
                         singleRuleBenchmarks[
-                            "typefest/prefer-ts-extras-string-split"
+                            "tsconfig/prefer-ts-extras-string-split"
                         ],
                 },
             });
@@ -451,9 +451,9 @@ describe("eslint-plugin-typefest meaningful benchmarks", () => {
                 filePatterns: benchmarkFileGlobs.safeCastToStressFixture,
                 fix: true,
                 rules: {
-                    "typefest/prefer-ts-extras-safe-cast-to":
+                    "tsconfig/prefer-ts-extras-safe-cast-to":
                         singleRuleBenchmarks[
-                            "typefest/prefer-ts-extras-safe-cast-to"
+                            "tsconfig/prefer-ts-extras-safe-cast-to"
                         ],
                 },
             });
@@ -476,9 +476,9 @@ describe("eslint-plugin-typefest meaningful benchmarks", () => {
                 filePatterns: benchmarkFileGlobs.arrayableStressFixture,
                 fix: false,
                 rules: {
-                    "typefest/prefer-type-fest-arrayable":
+                    "tsconfig/prefer-type-fest-arrayable":
                         singleRuleBenchmarks[
-                            "typefest/prefer-type-fest-arrayable"
+                            "tsconfig/prefer-type-fest-arrayable"
                         ],
                 },
             });

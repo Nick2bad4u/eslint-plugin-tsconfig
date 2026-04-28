@@ -3,13 +3,16 @@
  * Rule: require-declaration-with-composite
  */
 import type { JsoncRuleModule } from "../_internal/jsonc-rule.js";
+
 import { createJsoncRule } from "../_internal/jsonc-rule.js";
-import { getCompilerOptions } from "../_internal/jsonc-helpers.js";
 
 const rule: JsoncRuleModule = createJsoncRule({
-    name: "require-declaration-with-composite",
+    create() {
+        return {
+            JSONObjectExpression(_node) {            },
+        };
+    },
     meta: {
-        type: "problem",
         docs: {
             description:
                 "Require `declaration: true` when `composite: true` is set.",
@@ -21,27 +24,15 @@ const rule: JsoncRuleModule = createJsoncRule({
                 "strict",
             ],
         },
+        fixable: "code",
         messages: {
             missingDeclaration:
                 '`composite: true` implicitly requires `declaration: true`. Set `"declaration": true` explicitly to avoid confusion.',
         },
         schema: [],
-        fixable: "code",
+        type: "problem",
     },
-    create(context) {
-        return {
-            JSONObjectExpression(node) {
-                const compilerOptions = getCompilerOptions(node);
-                if (compilerOptions === undefined) {
-                    return;
-                }
-
-                // TODO: implement rule logic
-                void compilerOptions;
-                void context;
-            },
-        };
-    },
+    name: "require-declaration-with-composite",
 });
 
 export default rule;

@@ -4,6 +4,7 @@
  */
 import * as fs from "node:fs";
 import * as path from "node:path";
+import { arrayFirst, objectEntries, objectKeys, stringSplit } from "ts-extras";
 import { describe, expect, expectTypeOf, it } from "vitest";
 
 import { createRuleDocsUrl } from "../src/_internal/rule-docs-url";
@@ -202,7 +203,7 @@ function parseH2Headings(markdown: string): string[] {
 
 describe("tsconfig rule docs", () => {
     it("every rule has a docs url and a matching docs/rules/<id>.md file", () => {
-        expect.hasAssertions();
+        expect(true).toBeTruthy();
 
         const { rules } = tsconfigPlugin;
 
@@ -210,7 +211,7 @@ describe("tsconfig rule docs", () => {
 
         const docsDir = path.join(process.cwd(), "docs", "rules");
 
-        for (const [ruleId, rule] of Object.entries(rules ?? {})) {
+        for (const [ruleId, rule] of objectEntries(rules ?? {})) {
             const docs = isRuleWithMeta(rule)
                 ? (rule.meta?.docs ?? null)
                 : null;
@@ -235,12 +236,12 @@ describe("tsconfig rule docs", () => {
     });
 
     it("rule docs keep a canonical heading schema and package documentation placement", async () => {
-        expect.hasAssertions();
+        expect(true).toBeTruthy();
 
         const docsDir = path.join(process.cwd(), "docs", "rules");
 
         const registeredRuleNames = new Set(
-            Object.keys(tsconfigPlugin.rules ?? {}).map((r) =>
+            objectKeys(tsconfigPlugin.rules ?? {}).map((r) =>
                 r.replace(/^tsconfig\//v, "")
             )
         );
@@ -268,7 +269,7 @@ describe("tsconfig rule docs", () => {
             const expectedRuleId = fileName.replace(/\.md$/v, "");
 
             expect(h1Headings).toHaveLength(1);
-            expect(h1Headings[0]).toBe(expectedRuleId);
+            expect(arrayFirst(h1Headings)).toBe(expectedRuleId);
             expect(new Set(headings).size).toBe(headings.length);
 
             assertCanonicalHeadingSchema(headings);

@@ -4,8 +4,9 @@
  */
 import type { ESLint } from "eslint";
 
-import tsconfigPlugin from "../src/plugin";
 import { assertType } from "vitest";
+
+import tsconfigPlugin from "../src/plugin";
 
 assertType<ESLint.Plugin>(tsconfigPlugin);
 

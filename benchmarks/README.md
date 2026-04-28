@@ -1,6 +1,6 @@
 # ESLint Benchmark Suite
 
-This directory contains **meaningful ESLint performance benchmarks** for `eslint-plugin-typefest`.
+This directory contains **meaningful ESLint performance benchmarks** for `eslint-plugin-tsconfig`.
 
 The suite intentionally measures three complementary workloads:
 

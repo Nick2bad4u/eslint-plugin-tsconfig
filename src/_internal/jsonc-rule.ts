@@ -1,3 +1,4 @@
+import type { TSESLint } from "@typescript-eslint/utils";
 /**
  * @remarks
  * Unlike TypeScript-AST rules that use `@typescript-eslint/utils`, these rules
@@ -10,23 +11,30 @@
  * Typed factory for JSONC-based ESLint rules in eslint-plugin-tsconfig.
  */
 import type { Rule } from "eslint";
-import type { TSESLint } from "@typescript-eslint/utils";
 import type { RuleListener } from "jsonc-eslint-parser";
-
-/**
- * The public module type for a JSONC-based tsconfig ESLint rule.
- *
- * @remarks
- * Using `TSESLint.RuleModule` ensures structural compatibility with
- * `@typescript-eslint/rule-tester`'s `RuleTester.run()` method while staying
- * compatible with ESLint's plugin shape.
- */
-export type JsoncRuleModule = TSESLint.RuleModule<string, readonly unknown[]>;
+import type { Except } from "type-fest";
 
 import type { TsconfigConfigName } from "./tsconfig-config-references.js";
 
 import { getRuleCatalogEntryForRuleNameOrNull } from "./rule-catalog.js";
 import { createRuleDocsUrl } from "./rule-docs-url.js";
+
+/**
+ * Input definition passed to `createJsoncRule`.
+ */
+export type JsoncRuleDefinition = {
+    /**
+     * Rule factory function receiving the ESLint rule context and returning a
+     * JSONC-aware node listener map.
+     */
+    create: (context: Rule.RuleContext) => RuleListener;
+
+    /** ESLint rule metadata. */
+    meta: JsoncRuleMeta;
+
+    /** Rule name matching the key in `rules-registry.ts`. */
+    name: string;
+};
 
 /**
  * Typed `meta.docs` block required on every JSONC rule in this plugin.
@@ -53,15 +61,6 @@ export type JsoncRuleDocs = {
     requiresTypeChecking: false;
 
     /**
-     * Canonical docs page URL (injected automatically by `createJsoncRule`).
-     *
-     * @remarks
-     * Do not set this manually; it will be overwritten with the canonical value
-     * derived from `meta.name`.
-     */
-    url?: string;
-
-    /**
      * Catalog rule identifier in the `R###` format (injected automatically when
      * the rule is present in the rule catalog).
      */
@@ -82,30 +81,38 @@ export type JsoncRuleDocs = {
      * preset for categorized membership.
      */
     tsconfigConfigs: readonly TsconfigConfigName[] | TsconfigConfigName;
+
+    /**
+     * Canonical docs page URL (injected automatically by `createJsoncRule`).
+     *
+     * @remarks
+     * Do not set this manually; it will be overwritten with the canonical value
+     * derived from `meta.name`.
+     */
+    url?: string;
 };
+
+/**
+ * The public module type for a JSONC-based tsconfig ESLint rule.
+ *
+ * @remarks
+ * Using `any` for TOptions, TRuleContext, and TRuleListener bypasses generic
+ * constraint checks and ensures structural compatibility with both
+ * `@typescript-eslint/rule-tester`'s `RuleTester.run()` (which expects
+ * `RuleModule<string, any[], unknown, RuleListener>`) and ESLint's plugin
+ * shape.
+ */
+
+/**
+ * Concrete ESLint rule module type returned by {@link createJsoncRule}.
+ */
+export type JsoncRuleModule = TSESLint.RuleModule<string, any[], any, any>;
 
 /**
  * Full rule meta block expected by `createJsoncRule`.
  */
-type JsoncRuleMeta = Omit<Rule.RuleMetaData, "docs"> & {
+type JsoncRuleMeta = Except<Rule.RuleMetaData, "docs"> & {
     docs: JsoncRuleDocs;
-};
-
-/**
- * Input definition passed to `createJsoncRule`.
- */
-export type JsoncRuleDefinition = {
-    /** Rule name matching the key in `rules-registry.ts`. */
-    name: string;
-
-    /** ESLint rule metadata. */
-    meta: JsoncRuleMeta;
-
-    /**
-     * Rule factory function receiving the ESLint rule context and returning a
-     * JSONC-aware node listener map.
-     */
-    create: (context: Rule.RuleContext) => RuleListener;
 };
 
 /**
@@ -120,7 +127,7 @@ export type JsoncRuleDefinition = {
 export function createJsoncRule(
     definition: JsoncRuleDefinition
 ): JsoncRuleModule {
-    const { name, meta, create } = definition;
+    const { create, meta, name } = definition;
 
     const catalogEntry = getRuleCatalogEntryForRuleNameOrNull(name);
     const docsUrl = createRuleDocsUrl(name);
@@ -143,11 +150,11 @@ export function createJsoncRule(
     // compatible at runtime, but the @typescript-eslint/utils generic
     // RuleModule type uses a different RuleContext generic signature.
     return {
+        create: (context: Rule.RuleContext) =>
+            create(context) as unknown as Rule.RuleListener,
         meta: {
             ...meta,
             docs,
         },
-        create: (context: Rule.RuleContext) =>
-            create(context) as unknown as Rule.RuleListener,
     } as unknown as JsoncRuleModule;
 }

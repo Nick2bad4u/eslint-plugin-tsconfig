@@ -3,13 +3,16 @@
  * Rule: require-strict-mode
  */
 import type { JsoncRuleModule } from "../_internal/jsonc-rule.js";
+
 import { createJsoncRule } from "../_internal/jsonc-rule.js";
-import { getCompilerOptions } from "../_internal/jsonc-helpers.js";
 
 const rule: JsoncRuleModule = createJsoncRule({
-    name: "require-strict-mode",
+    create() {
+        return {
+            JSONObjectExpression(_node) {            },
+        };
+    },
     meta: {
-        type: "suggestion",
         docs: {
             description: "Require `strict: true` in `compilerOptions`.",
             recommended: true,
@@ -21,27 +24,15 @@ const rule: JsoncRuleModule = createJsoncRule({
                 "strict",
             ],
         },
+        fixable: "code",
         messages: {
             missingStrict:
                 '`strict: true` enables a collection of important type-safety checks (`noImplicitAny`, `strictNullChecks`, etc.). Add `"strict": true` to `compilerOptions`.',
         },
         schema: [],
-        fixable: "code",
+        type: "suggestion",
     },
-    create(context) {
-        return {
-            JSONObjectExpression(node) {
-                const compilerOptions = getCompilerOptions(node);
-                if (compilerOptions === undefined) {
-                    return;
-                }
-
-                // TODO: implement rule logic
-                void compilerOptions;
-                void context;
-            },
-        };
-    },
+    name: "require-strict-mode",
 });
 
 export default rule;

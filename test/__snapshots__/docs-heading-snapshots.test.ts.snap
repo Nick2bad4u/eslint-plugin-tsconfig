@@ -46,7 +46,7 @@ exports[`rule docs heading snapshots > keeps canonical rule docs heading matrix 
     "sectionHeadings": [
       "Alternative: manual scoped setup",
       "Recommended rollout",
-      "Need a subset instead of a full preset?",
+      "Focused subsets",
     ],
   },
   {

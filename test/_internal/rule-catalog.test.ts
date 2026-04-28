@@ -1,4 +1,4 @@
-import { assertDefined } from "ts-extras";
+import { arrayAt, assertDefined, objectKeys } from "ts-extras";
 import { describe, expect, it } from "vitest";
 
 import {
@@ -23,7 +23,7 @@ const withMutatedCatalogEntry = (
 ): void => {
     const mutableEntries =
         tsconfigRuleCatalogEntries as unknown as MutableRuleCatalogEntry[];
-    const originalEntry = mutableEntries.at(index);
+    const originalEntry = arrayAt(mutableEntries, index);
     assertDefined(originalEntry);
 
     mutableEntries[index] = {
@@ -44,9 +44,11 @@ describe("rule-catalog", () => {
 
         const catalogRuleNames = tsconfigRuleCatalogEntries
             .map((entry) => entry.ruleName)
-            .toSorted((left, right) => left.localeCompare(right));
-        const registryRuleNames = Object.keys(tsconfigRules).toSorted(
-            (left, right) => left.localeCompare(right)
+            .toSorted((left, right) =>
+                String(left).localeCompare(String(right))
+            );
+        const registryRuleNames = objectKeys(tsconfigRules).toSorted(
+            (left, right) => String(left).localeCompare(String(right))
         );
 
         expect(catalogRuleNames).toStrictEqual(
@@ -96,7 +98,7 @@ describe("rule-catalog", () => {
     it("detects duplicate rule ids", () => {
         expect.hasAssertions();
 
-        const firstEntry = tsconfigRuleCatalogEntries.at(0);
+        const firstEntry = arrayAt(tsconfigRuleCatalogEntries, 0);
         assertDefined(firstEntry);
 
         withMutatedCatalogEntry(

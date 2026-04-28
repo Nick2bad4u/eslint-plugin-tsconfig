@@ -12,16 +12,16 @@ Use this pattern when embedding linting in scripts, custom tooling, or release c
 
 ```js
 import { ESLint } from "eslint";
-import typefest from "eslint-plugin-typefest";
+import tsconfig from "eslint-plugin-tsconfig";
 
 const eslint = new ESLint({
   overrideConfig: {
     files: ["**/*.ts"],
     plugins: {
-      typefest,
+      tsconfig,
     },
     rules: {
-      "typefest/prefer-type-fest-primitive": "error",
+      "tsconfig/prefer-type-fest-primitive": "error",
     },
   },
 });

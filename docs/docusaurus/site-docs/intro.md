@@ -2,12 +2,11 @@
 sidebar_position: 1
 ---
 
-# eslint-plugin-typefest
+# eslint-plugin-tsconfig
 
-`eslint-plugin-typefest` helps TypeScript codebases adopt more explicit, safer patterns with:
+`eslint-plugin-tsconfig` helps TypeScript codebases maintain consistent and correct `tsconfig.json` configurations by enforcing rules as ESLint diagnostics.
 
-- [`type-fest`](https://github.com/sindresorhus/type-fest) utility types.
-- [`ts-extras`](https://github.com/sindresorhus/ts-extras) runtime helpers.
+Rules use [`jsonc-eslint-parser`](https://github.com/ota-meshi/jsonc-eslint-parser) to statically analyze your `tsconfig*.json` files.
 
 ## What this documentation includes
 

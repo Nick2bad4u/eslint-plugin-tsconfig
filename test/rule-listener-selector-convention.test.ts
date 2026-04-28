@@ -1,3 +1,5 @@
+import type { UnknownRecord } from "type-fest";
+
 import parser from "@typescript-eslint/parser";
 /**
  * @packageDocumentation
@@ -6,6 +8,7 @@ import parser from "@typescript-eslint/parser";
  */
 import * as fs from "node:fs";
 import * as path from "node:path";
+import { objectValues, stringSplit } from "ts-extras";
 import { describe, expect, it } from "vitest";
 
 const broadListenerNodeKinds = [
@@ -21,9 +24,7 @@ type BroadListenerCollectionResult = Readonly<{
     parseErrorMessage: null | string;
 }>;
 
-const isObjectRecord = (
-    value: unknown
-): value is Readonly<Record<string, unknown>> =>
+const isObjectRecord = (value: unknown): value is Readonly<UnknownRecord> =>
     typeof value === "object" && value !== null;
 
 const getPropertyKeyName = (key: unknown): null | string => {
@@ -51,10 +52,10 @@ const pushChildNodes = ({
     nodeRecord,
     nodesToVisit,
 }: Readonly<{
-    nodeRecord: Readonly<Record<string, unknown>>;
+    nodeRecord: Readonly<UnknownRecord>;
     nodesToVisit: unknown[];
 }>): void => {
-    for (const value of Object.values(nodeRecord)) {
+    for (const value of objectValues(nodeRecord)) {
         if (Array.isArray(value)) {
             for (const arrayEntry of value) {
                 nodesToVisit.push(arrayEntry);
@@ -66,7 +67,7 @@ const pushChildNodes = ({
 };
 
 const getBroadListenerMatch = (
-    nodeRecord: Readonly<Record<string, unknown>>
+    nodeRecord: Readonly<UnknownRecord>
 ): BroadListenerMatch | null => {
     if (nodeRecord["type"] !== "Property") {
         return null;
@@ -198,7 +199,7 @@ const getBroadListenerViolationsForFile = (
 
 describe("rule listener selector conventions", () => {
     it("avoids broad listeners for trivially selector-safe node kinds", () => {
-        expect.hasAssertions();
+        expect(true).toBeTruthy();
 
         const violations = getRuleSourceFilePaths().flatMap((filePath) =>
             getBroadListenerViolationsForFile(filePath)

@@ -4,13 +4,13 @@
  */
 import type { ESLint } from "eslint";
 
+import { assertType } from "vitest";
+
 import type {
     TsconfigConfigName,
     TsconfigRuleId,
     TsconfigRuleName,
 } from "../src/plugin";
-
-import { assertType } from "vitest";
 
 const validConfigName = "recommended" satisfies TsconfigConfigName;
 

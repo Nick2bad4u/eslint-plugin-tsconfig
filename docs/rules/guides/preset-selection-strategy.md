@@ -1,6 +1,6 @@
 ---
 title: Preset selection strategy
-description: Choose the right eslint-plugin-typefest preset and roll it out with minimal migration risk.
+description: Choose the right eslint-plugin-tsconfig preset and roll it out with minimal migration risk.
 ---
 
 # Preset selection strategy

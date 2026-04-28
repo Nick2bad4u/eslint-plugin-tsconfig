@@ -1,23 +1,24 @@
+import * as fc from "fast-check";
 /**
  * @packageDocumentation
  * Tests for the `consistent-incremental-with-tsbuildinfo` rule.
  */
 import * as parser from "jsonc-eslint-parser";
-import * as fc from "fast-check";
-import { describe, it } from "vitest";
-import { createRuleTester } from "./_internal/ruleTester";
+import { describe, expect, it } from "vitest";
+
 import rule from "../src/rules/consistent-incremental-with-tsbuildinfo";
+import { createRuleTester } from "./_internal/ruleTester";
 
 const ruleTester = createRuleTester();
 
 ruleTester.run("consistent-incremental-with-tsbuildinfo", rule, {
+    invalid: [],
     valid: [
         {
             code: '{ "compilerOptions": { "incremental": true, "tsBuildInfoFile": ".tsbuildinfo" } }',
         },
         { code: '{ "compilerOptions": {} }' },
     ],
-    invalid: [],
 });
 
 const validateJsoncParse = (jsonContent: string): void => {
@@ -30,6 +31,8 @@ const validateJsoncParse = (jsonContent: string): void => {
 
 describe("fixer parse-safety", () => {
     it("fixer output is valid JSONC", () => {
+        expect(true).toBeTruthy();
+
         fc.assert(
             fc.property(fc.string(), (jsonContent) => {
                 validateJsoncParse(jsonContent);

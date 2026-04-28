@@ -1,6 +1,6 @@
 ---
 name: Bug report
-about: Report a reproducible bug in eslint-plugin-typefest
+about: Report a reproducible bug in eslint-plugin-tsconfig
 title: "Bug: "
 labels:
     - bug
@@ -53,7 +53,7 @@ assignees: []
 - ESLint version:
 - TypeScript version:
 - `@typescript-eslint/*` version:
-- `eslint-plugin-typefest` version/commit:
+- `eslint-plugin-tsconfig` version/commit:
 - OS:
 
 ## Additional context

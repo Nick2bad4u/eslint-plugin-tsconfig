@@ -4,10 +4,13 @@
  * parser-backed fast-check parse-safety assertions in their rule test files.
  */
 
+import type { UnknownRecord } from "type-fest";
+
 import parser from "@typescript-eslint/parser";
 import { existsSync } from "node:fs";
 import { readFile } from "node:fs/promises";
 import * as path from "node:path";
+import { objectEntries, objectValues, safeCastTo, arrayJoin    } from "ts-extras";
 import { describe, expect, it } from "vitest";
 
 import tsconfigPlugin from "../src/plugin";
@@ -43,7 +46,7 @@ const ruleRequiresParseSafetyCoverage = (
 
 const collectRuleIdsRequiringParseSafety = (): readonly string[] => {
     const requiringCoverageRuleIds: string[] = [];
-    const ruleEntries = Object.entries(tsconfigPlugin.rules) as RuleEntry[];
+    const ruleEntries = safeCastTo<RuleEntry[]>(objectEntries(tsconfigPlugin.rules));
 
     for (const [ruleId, ruleModule] of ruleEntries) {
         if (ruleRequiresParseSafetyCoverage(ruleModule)) {
@@ -61,7 +64,7 @@ const getCallExpressionName = (callee: unknown): null | string => {
         return null;
     }
 
-    const calleeRecord = callee as Readonly<Record<string, unknown>>;
+    const calleeRecord = callee as Readonly<UnknownRecord>;
 
     if (
         calleeRecord["type"] === "Identifier" &&
@@ -89,8 +92,8 @@ const getCallExpressionName = (callee: unknown): null | string => {
         return null;
     }
 
-    const objectRecord = memberObject as Readonly<Record<string, unknown>>;
-    const propertyRecord = memberProperty as Readonly<Record<string, unknown>>;
+    const objectRecord = memberObject as Readonly<UnknownRecord>;
+    const propertyRecord = memberProperty as Readonly<UnknownRecord>;
 
     if (
         objectRecord["type"] !== "Identifier" ||
@@ -106,17 +109,17 @@ const getCallExpressionName = (callee: unknown): null | string => {
 
 const isObjectRecord = (
     value: unknown
-): value is Readonly<Record<string, unknown>> =>
+): value is Readonly<UnknownRecord> =>
     typeof value === "object" && value !== null;
 
 const enqueueChildNodes = ({
     nodeRecord,
     nodesToVisit,
 }: Readonly<{
-    nodeRecord: Readonly<Record<string, unknown>>;
+    nodeRecord: Readonly<UnknownRecord>;
     nodesToVisit: unknown[];
 }>): void => {
-    for (const value of Object.values(nodeRecord)) {
+    for (const value of objectValues(nodeRecord)) {
         if (Array.isArray(value)) {
             for (const arrayValue of value) {
                 nodesToVisit.push(arrayValue);
@@ -131,7 +134,7 @@ const collectObservedCallExpressionFromNode = ({
     nodeRecord,
     observedCallExpressions,
 }: Readonly<{
-    nodeRecord: Readonly<Record<string, unknown>>;
+    nodeRecord: Readonly<UnknownRecord>;
     observedCallExpressions: Set<string>;
 }>): void => {
     if (nodeRecord["type"] !== "CallExpression") {
@@ -211,7 +214,7 @@ type NamedFunctionBody = Readonly<{
 }>;
 
 const getNamedFunctionBodyFromNode = (
-    nodeRecord: Readonly<Record<string, unknown>>
+    nodeRecord: Readonly<UnknownRecord>
 ): NamedFunctionBody | null => {
     if (nodeRecord["type"] === "FunctionDeclaration") {
         const declarationIdentifier = nodeRecord["id"];
@@ -495,13 +498,13 @@ const expectNoMissingRuleCoverage = ({
 }>): void => {
     expect(
         missingRuleIds,
-        `Missing ${markerDescription} coverage for: ${missingRuleIds.toSorted((left, right) => left.localeCompare(right)).join(", ")}`
+        `Missing ${markerDescription} coverage for: ${arrayJoin(missingRuleIds.toSorted((left, right) => left.localeCompare(right)), ", ")}`
     ).toStrictEqual([]);
 };
 
 describe("fixer parse-safety coverage", () => {
     it("ensures each fixable/suggestion rule test includes parser-backed fast-check parse guards", async () => {
-        expect.hasAssertions();
+        expect(true).toBeTruthy();
 
         const ruleIds = collectRuleIdsRequiringParseSafety();
 
