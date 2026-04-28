@@ -7,7 +7,7 @@ import type { UnknownRecord } from "type-fest";
 import { objectEntries } from "ts-extras";
 import { describe, expect, it } from "vitest";
 
-import typefestPlugin from "../src/plugin";
+import tsconfigPlugin from "../src/plugin";
 
 interface ParserOptionsSnapshot {
     ecmaVersion: null | string;
@@ -17,7 +17,7 @@ interface ParserOptionsSnapshot {
 
 /** Plugin config type inferred from public plugin export. */
 type PluginConfig =
-    (typeof typefestPlugin)["configs"][keyof (typeof typefestPlugin)["configs"]];
+    (typeof tsconfigPlugin)["configs"][keyof (typeof tsconfigPlugin)["configs"]];
 
 interface PresetContractSnapshot {
     configKey: string;
@@ -80,7 +80,7 @@ const getSortedRuleIds = (config: Readonly<PluginConfig>): readonly string[] =>
  * @returns Normalized preset contract snapshots sorted by config key.
  */
 const getPresetContractSnapshot = (): readonly PresetContractSnapshot[] =>
-    objectEntries(typefestPlugin.configs)
+    objectEntries(tsconfigPlugin.configs)
         .toSorted(([left], [right]) => left.localeCompare(right))
         .map(([configKey, config]) => {
             const presetName = config.name;
@@ -98,8 +98,8 @@ describe("plugin contract snapshots", () => {
     it("keeps stable exported rule names", () => {
         expect.hasAssertions();
         expect({
-            ruleCount: Object.keys(typefestPlugin.rules).length,
-            ruleNames: Object.keys(typefestPlugin.rules).toSorted(
+            ruleCount: Object.keys(tsconfigPlugin.rules).length,
+            ruleNames: Object.keys(tsconfigPlugin.rules).toSorted(
                 (left, right) => left.localeCompare(right)
             ),
         }).toMatchSnapshot();
@@ -113,12 +113,12 @@ describe("plugin contract snapshots", () => {
     it("keeps stable plugin identity metadata", () => {
         expect.hasAssertions();
         expect({
-            name: typefestPlugin.meta.name,
-            namespace: typefestPlugin.meta.namespace,
+            name: tsconfigPlugin.meta.name,
+            namespace: tsconfigPlugin.meta.namespace,
         }).toMatchInlineSnapshot(`
             {
-              "name": "eslint-plugin-typefest",
-              "namespace": "typefest",
+              "name": "eslint-plugin-tsconfig",
+              "namespace": "tsconfig",
             }
         `);
     });

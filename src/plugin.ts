@@ -1,77 +1,62 @@
 /**
  * @packageDocumentation
- * Public plugin entrypoint for eslint-plugin-typefest exports and preset wiring.
+ * Public plugin entrypoint for eslint-plugin-tsconfig exports and preset wiring.
  */
 import type { ESLint, Linter } from "eslint";
 import type { Except } from "type-fest";
 
-import typeScriptParser from "@typescript-eslint/parser";
+import * as jsoncParser from "jsonc-eslint-parser";
 import {
     isDefined,
     isEmpty,
     objectEntries,
     objectHasIn,
     safeCastTo,
-    setHas,
 } from "ts-extras";
 
 import packageJson from "../package.json" with { type: "json" };
 import {
     deriveRuleDocsMetadataByName,
     deriveRulePresetMembershipByRuleName,
-    deriveTypeCheckedRuleNameSet,
 } from "./_internal/rule-docs-metadata.js";
-import { typefestRules } from "./_internal/rules-registry.js";
+import { tsconfigRules } from "./_internal/rules-registry.js";
 import {
-    type TypefestConfigName as InternalTypefestConfigName,
-    typefestConfigMetadataByName,
-    typefestConfigNames,
-} from "./_internal/typefest-config-references.js";
+    type TsconfigConfigName as InternalTsconfigConfigName,
+    tsconfigConfigNames,
+} from "./_internal/tsconfig-config-references.js";
 
-/** ESLint severity used by generated preset rule maps. */
+/** ESLint severity constants for preset rule maps. */
 const ERROR_SEVERITY = "error" as const;
+const WARN_SEVERITY = "warn" as const;
 
 /** Default file globs targeted by plugin presets when `files` is omitted. */
-const TYPE_SCRIPT_FILES = ["**/*.{ts,tsx,mts,cts}"] as const;
+const TSCONFIG_FILES = [
+    "**/tsconfig.json",
+    "**/tsconfig.*.json",
+    "**/tsconfig-*.json",
+] as const;
 
 /**
  * Canonical flat-config preset keys exposed through `plugin.configs`.
- *
- * @remarks
- * These names are used by consumers when composing presets in ESLint flat
- * config arrays.
  */
-export type TypefestConfigName = InternalTypefestConfigName;
+export type TsconfigConfigName = InternalTsconfigConfigName;
 
 /**
  * Flat-config preset shape produced by this plugin.
- *
- * @remarks
- * The `rules` map is required so preset composition can always merge concrete
- * rule severity entries without additional null checks.
  */
-export type TypefestPresetConfig = Linter.Config & {
+export type TsconfigPresetConfig = Linter.Config & {
     rules: NonNullable<Linter.Config["rules"]>;
 };
 
-/** Internal alias for flat config objects handled by preset builders. */
-type FlatConfig = Linter.Config;
-
-/** Normalized language-options shape for preset composition helpers. */
-type FlatLanguageOptions = NonNullable<FlatConfig["languageOptions"]>;
-
-/** Normalized parser-options shape for preset composition helpers. */
-type FlatParserOptions = NonNullable<FlatLanguageOptions["parserOptions"]>;
-
 /** Rule-map type used by preset rule-list expansion helpers. */
-type RulesConfig = TypefestPresetConfig["rules"];
+type RulesConfig = TsconfigPresetConfig["rules"];
 
 /** Contract for the `configs` object exported by this plugin. */
-type TypefestConfigsContract = Record<TypefestConfigName, TypefestPresetConfig>;
+type TsconfigConfigsContract = Record<TsconfigConfigName, TsconfigPresetConfig>;
 
 /** Fully assembled plugin contract used by the runtime default export. */
-type TypefestPluginContract = Except<ESLint.Plugin, "configs" | "rules"> & {
-    configs: TypefestConfigsContract;
+type TsconfigPluginContract = Except<ESLint.Plugin, "configs" | "rules"> & {
+    configs: TsconfigConfigsContract;
     meta: {
         name: string;
         namespace: string;
@@ -80,6 +65,9 @@ type TypefestPluginContract = Except<ESLint.Plugin, "configs" | "rules"> & {
     processors: NonNullable<ESLint.Plugin["processors"]>;
     rules: NonNullable<ESLint.Plugin["rules"]>;
 };
+
+/** Package metadata used to populate plugin runtime `meta.version`. */
+const packageJsonValue = safeCastTo<unknown>(packageJson);
 
 /**
  * Resolve package version from package.json data.
@@ -98,69 +86,45 @@ function getPackageVersion(pkg: unknown): string {
     return typeof version === "string" ? version : "0.0.0";
 }
 
-/** Package metadata used to populate plugin runtime `meta.version`. */
-const packageJsonValue = safeCastTo<unknown>(packageJson);
-
-/** Parser module reused across preset construction. */
-const typeScriptParserValue: FlatLanguageOptions["parser"] = typeScriptParser;
-
-/** Default parser options applied when a preset omits parser options. */
-const defaultParserOptions = {
-    ecmaVersion: "latest",
-    sourceType: "module",
-} satisfies FlatParserOptions;
-
-/**
- * Normalize unknown parser options into a mutable parser-options object.
- */
-const normalizeParserOptions = (
-    parserOptions: FlatLanguageOptions["parserOptions"]
-): FlatParserOptions =>
-    parserOptions !== null &&
-    typeof parserOptions === "object" &&
-    !Array.isArray(parserOptions)
-        ? { ...parserOptions }
-        : { ...defaultParserOptions };
-
 /**
  * Fully-qualified ESLint rule id used by this plugin.
  *
  * @remarks
- * Consumers typically use this when building strongly typed rule maps or helper
- * utilities that require namespaced rule identifiers.
+ * Consumers use this when building strongly typed rule maps or helper utilities
+ * that require namespaced rule identifiers.
  */
-export type TypefestRuleId = `typefest/${TypefestRuleName}`;
+export type TsconfigRuleId = `tsconfig/${TsconfigRuleName}`;
 
-/** Unqualified rule name supported by `eslint-plugin-typefest`. */
-export type TypefestRuleName = keyof typeof typefestRules;
+/** Unqualified rule name supported by `eslint-plugin-tsconfig`. */
+export type TsconfigRuleName = keyof typeof tsconfigRules;
 
 /**
  * ESLint-compatible rule map view of the strongly typed internal rule record.
  */
-const typefestEslintRules: NonNullable<ESLint.Plugin["rules"]> &
-    typeof typefestRules = typefestRules as NonNullable<
+const tsconfigEslintRules: NonNullable<ESLint.Plugin["rules"]> &
+    typeof tsconfigRules = tsconfigRules as NonNullable<
     ESLint.Plugin["rules"]
 > &
-    typeof typefestRules;
+    typeof tsconfigRules;
 
-const isTypefestRuleName = (value: string): value is TypefestRuleName =>
-    objectHasIn(typefestRules, value);
+const isTsconfigRuleName = (value: string): value is TsconfigRuleName =>
+    objectHasIn(tsconfigRules, value);
 
-const typefestRuleEntries: readonly (readonly [
-    TypefestRuleName,
-    (typeof typefestRules)[TypefestRuleName],
+const tsconfigRuleEntries: readonly (readonly [
+    TsconfigRuleName,
+    (typeof tsconfigRules)[TsconfigRuleName],
 ])[] = (() => {
     const entries: (readonly [
-        TypefestRuleName,
-        (typeof typefestRules)[TypefestRuleName],
+        TsconfigRuleName,
+        (typeof tsconfigRules)[TsconfigRuleName],
     ])[] = [];
 
-    for (const [ruleName] of objectEntries(typefestRules)) {
-        if (!isTypefestRuleName(ruleName)) {
+    for (const [ruleName] of objectEntries(tsconfigRules)) {
+        if (!isTsconfigRuleName(ruleName)) {
             continue;
         }
 
-        const ruleDefinition = typefestRules[ruleName];
+        const ruleDefinition = tsconfigRules[ruleName];
 
         if (ruleDefinition === undefined) {
             continue;
@@ -172,21 +136,18 @@ const typefestRuleEntries: readonly (readonly [
     return entries;
 })();
 
-const ruleDocsMetadataByRuleName = deriveRuleDocsMetadataByName(typefestRules);
+const ruleDocsMetadataByRuleName = deriveRuleDocsMetadataByName(tsconfigRules);
 const rulePresetMembership = deriveRulePresetMembershipByRuleName(
-    ruleDocsMetadataByRuleName
-);
-const typeCheckedRuleNames = deriveTypeCheckedRuleNameSet(
     ruleDocsMetadataByRuleName
 );
 
 const createEmptyPresetRuleMap = (): Record<
-    TypefestConfigName,
-    TypefestRuleName[]
+    TsconfigConfigName,
+    TsconfigRuleName[]
 > => {
-    const presetRuleMap = {} as Record<TypefestConfigName, TypefestRuleName[]>;
+    const presetRuleMap = {} as Record<TsconfigConfigName, TsconfigRuleName[]>;
 
-    for (const configName of typefestConfigNames) {
+    for (const configName of tsconfigConfigNames) {
         presetRuleMap[configName] = [];
     }
 
@@ -194,15 +155,15 @@ const createEmptyPresetRuleMap = (): Record<
 };
 
 const dedupeRuleNames = (
-    ruleNames: readonly TypefestRuleName[]
-): TypefestRuleName[] => [...new Set(ruleNames)];
+    ruleNames: readonly TsconfigRuleName[]
+): TsconfigRuleName[] => [...new Set(ruleNames)];
 
 const derivePresetRuleNamesByConfig = (): Readonly<
-    Record<TypefestConfigName, readonly TypefestRuleName[]>
+    Record<TsconfigConfigName, readonly TsconfigRuleName[]>
 > => {
     const presetRuleNamesByConfig = createEmptyPresetRuleMap();
 
-    for (const [ruleName] of typefestRuleEntries) {
+    for (const [ruleName] of tsconfigRuleEntries) {
         const configNames = rulePresetMembership[ruleName];
 
         if (!isDefined(configNames) || isEmpty(configNames)) {
@@ -216,191 +177,157 @@ const derivePresetRuleNamesByConfig = (): Readonly<
         }
     }
 
-    return {
-        all: dedupeRuleNames(presetRuleNamesByConfig.all),
-        experimental: dedupeRuleNames(presetRuleNamesByConfig.experimental),
-        minimal: dedupeRuleNames(presetRuleNamesByConfig.minimal),
-        recommended: dedupeRuleNames(presetRuleNamesByConfig.recommended),
-        "recommended-type-checked": dedupeRuleNames(
-            presetRuleNamesByConfig["recommended-type-checked"]
-        ),
-        strict: dedupeRuleNames(presetRuleNamesByConfig.strict),
-        "ts-extras/type-guards": dedupeRuleNames(
-            presetRuleNamesByConfig["ts-extras/type-guards"]
-        ),
-        "type-fest/types": dedupeRuleNames(
-            presetRuleNamesByConfig["type-fest/types"]
-        ),
-    };
+    const result = {} as Record<
+        TsconfigConfigName,
+        readonly TsconfigRuleName[]
+    >;
+
+    for (const configName of tsconfigConfigNames) {
+        result[configName] = dedupeRuleNames(
+            presetRuleNamesByConfig[configName]
+        );
+    }
+
+    return result;
 };
 
+const presetRuleNamesByConfig = derivePresetRuleNamesByConfig();
+
 /**
- * Build an ESLint rules map that enables each provided rule at error level.
+ * Build an ESLint rules map that enables each provided rule at the given
+ * severity.
  *
  * @param ruleNames - Rule names to enable.
+ * @param severity - ESLint severity string.
  *
  * @returns Rules config object compatible with flat config.
  */
-function errorRulesFor(ruleNames: readonly TypefestRuleName[]): RulesConfig {
+function severityRulesFor(
+    ruleNames: readonly TsconfigRuleName[],
+    severity: typeof ERROR_SEVERITY | typeof WARN_SEVERITY
+): RulesConfig {
     const rules: RulesConfig = {};
 
     for (const ruleName of ruleNames) {
-        rules[`typefest/${ruleName}`] = ERROR_SEVERITY;
+        rules[`tsconfig/${ruleName}`] = severity;
     }
 
     return rules;
 }
 
 /**
- * Remove duplicates while preserving first-seen ordering.
- *
- * @param ruleNames - Candidate rule list.
- *
- * @returns Deduplicated rule list.
- */
-const presetRuleNamesByConfig = derivePresetRuleNamesByConfig();
-
-/** Recommended preset rule list for zero-type-info usage. */
-const recommendedRuleNames: TypefestRuleName[] = [];
-
-for (const ruleName of presetRuleNamesByConfig.recommended) {
-    if (setHas(typeCheckedRuleNames, ruleName)) {
-        continue;
-    }
-
-    recommendedRuleNames.push(ruleName);
-}
-
-/** Type-aware recommended preset rule list. */
-const recommendedTypeCheckedRuleNames = dedupeRuleNames([
-    ...recommendedRuleNames,
-    ...presetRuleNamesByConfig["recommended-type-checked"],
-]);
-
-/** Effective per-preset rule lists after applying derived policy overlays. */
-const effectivePresetRuleNamesByConfig: Readonly<
-    Record<TypefestConfigName, readonly TypefestRuleName[]>
-> = {
-    ...presetRuleNamesByConfig,
-    experimental: dedupeRuleNames([
-        ...presetRuleNamesByConfig.all,
-        ...presetRuleNamesByConfig.experimental,
-    ]),
-    recommended: recommendedRuleNames,
-    "recommended-type-checked": recommendedTypeCheckedRuleNames,
-};
-
-/**
  * Apply parser and plugin metadata required by all plugin presets.
  *
  * @param config - Preset-specific config fragment.
- * @param plugin - Plugin object registered under the `typefest` namespace.
- * @param options - Preset-level wiring options.
+ * @param plugin - Plugin object registered under the `tsconfig` namespace.
  *
  * @returns Normalized preset config.
  */
-function withTypefestPlugin(
-    config: Readonly<TypefestPresetConfig>,
-    plugin: Readonly<ESLint.Plugin>,
-    options: Readonly<{ requiresTypeChecking: boolean }>
-): TypefestPresetConfig {
-    const existingLanguageOptions = config.languageOptions ?? {};
-    const existingParserOptions = existingLanguageOptions["parserOptions"];
-    const parserOptions = normalizeParserOptions(existingParserOptions);
-
-    if (
-        options.requiresTypeChecking &&
-        !objectHasIn(parserOptions, "projectService")
-    ) {
-        Reflect.set(parserOptions, "projectService", true);
-    }
-
-    const languageOptions: FlatLanguageOptions = {
-        ...existingLanguageOptions,
-        parser: existingLanguageOptions["parser"] ?? typeScriptParserValue,
-        parserOptions,
-    };
-
+function withTsconfigPlugin(
+    config: Readonly<TsconfigPresetConfig>,
+    plugin: Readonly<ESLint.Plugin>
+): TsconfigPresetConfig {
     return {
         ...config,
-        files: config.files ?? [...TYPE_SCRIPT_FILES],
-        languageOptions,
+        files: config.files ?? [...TSCONFIG_FILES],
+        languageOptions: {
+            ...config.languageOptions,
+            parser: jsoncParser,
+        },
         plugins: {
             ...config.plugins,
-            typefest: plugin,
+            tsconfig: plugin,
         },
     };
 }
 
 /** Minimal plugin object used when assembling flat-config presets. */
 const pluginForConfigs: ESLint.Plugin = {
-    rules: typefestEslintRules,
+    rules: tsconfigEslintRules,
 };
 
 /**
- * Flat config presets distributed by eslint-plugin-typefest.
+ * Flat config presets distributed by eslint-plugin-tsconfig.
+ *
+ * @remarks
+ * `all` enables every rule at its default severity. `recommended` enables
+ * warn-severity rules safe to add to any project. `strict` enables
+ * error-severity rules requiring deliberate adoption. Category presets
+ * (`strict-mode`, `module-resolution`, etc.) enable only the rules belonging to
+ * that category.
  */
-const createTypefestConfigsDefinition = (): TypefestConfigsContract => {
-    const configs = {} as TypefestConfigsContract;
+const createTsconfigConfigsDefinition = (): TsconfigConfigsContract => {
+    const configs = {} as TsconfigConfigsContract;
 
-    for (const configName of typefestConfigNames) {
-        const configMetadata = typefestConfigMetadataByName[configName];
+    for (const configName of tsconfigConfigNames) {
+        const ruleNames = presetRuleNamesByConfig[configName];
 
-        configs[configName] = withTypefestPlugin(
-            {
-                name: configMetadata.presetName,
-                rules: errorRulesFor(
-                    effectivePresetRuleNamesByConfig[configName]
-                ),
-            },
-            pluginForConfigs,
-            {
-                requiresTypeChecking: configMetadata.requiresTypeChecking,
+        // For "all", mix error and warn based on each rule's default severity.
+        // For "strict", use error. For "recommended", use warn.
+        // Category presets use the default severity from rule metadata.
+        const isAllPreset = configName === "all";
+        const isStrictPreset = configName === "strict";
+
+        let rules: RulesConfig;
+
+        if (isAllPreset) {
+            // all: each rule at its own default severity
+            rules = {};
+            for (const ruleName of ruleNames) {
+                const ruleMeta = tsconfigRules[ruleName]?.meta;
+                const ruleType = ruleMeta?.type;
+                const severity =
+                    ruleType === "problem" ? ERROR_SEVERITY : WARN_SEVERITY;
+                rules[`tsconfig/${ruleName}`] = severity;
             }
+        } else if (isStrictPreset) {
+            rules = severityRulesFor(ruleNames, ERROR_SEVERITY);
+        } else {
+            rules = severityRulesFor(ruleNames, WARN_SEVERITY);
+        }
+
+        configs[configName] = withTsconfigPlugin(
+            {
+                name: `tsconfig/${configName}`,
+                rules,
+            },
+            pluginForConfigs
         );
     }
 
     return configs;
 };
 
-const typefestConfigsDefinition = createTypefestConfigsDefinition();
+const tsconfigConfigsDefinition = createTsconfigConfigsDefinition();
 
 /** Finalized typed view of all exported preset configurations. */
-const typefestConfigs: TypefestConfigsContract = typefestConfigsDefinition;
+const tsconfigConfigs: TsconfigConfigsContract = tsconfigConfigsDefinition;
 
 /**
  * Runtime type for the plugin's generated config presets.
- *
- * @remarks
- * Mirrors `plugin.configs` and is useful when composing typed preset-aware
- * tooling in external integrations.
  */
-export type TypefestConfigs = typeof typefestConfigs;
+export type TsconfigConfigs = typeof tsconfigConfigs;
 
 /**
  * Main plugin object exported for ESLint consumption.
  */
-const typefestPlugin: TypefestPluginContract = {
-    configs: typefestConfigs,
+const tsconfigPlugin: TsconfigPluginContract = {
+    configs: tsconfigConfigs,
     meta: {
-        name: "eslint-plugin-typefest",
-        namespace: "typefest",
+        name: "eslint-plugin-tsconfig",
+        namespace: "tsconfig",
         version: getPackageVersion(packageJsonValue),
     },
     processors: {},
-    rules: typefestEslintRules,
+    rules: tsconfigEslintRules,
 };
 
 /**
  * Runtime type for the plugin object exported as default.
- *
- * @remarks
- * Includes resolved `meta`, `rules`, and `configs` contracts after plugin
- * assembly.
  */
-export type TypefestPlugin = typeof typefestPlugin;
+export type TsconfigPlugin = typeof tsconfigPlugin;
 
 /**
  * Default plugin export consumed by ESLint flat config.
  */
-export default typefestPlugin;
+export default tsconfigPlugin;

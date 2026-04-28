@@ -15,7 +15,7 @@ import { generateReadmeRulesSectionFromRules } from "./sync-readme-rules-table.m
  * @typedef {Readonly<{
  *     meta?: {
  *         docs?: {
- *             typefestConfigs?: readonly string[] | string;
+ *             tsconfigConfigs?: readonly string[] | string;
  *             url?: string;
  *         };
  *         fixable?: string;
@@ -28,20 +28,18 @@ import { generateReadmeRulesSectionFromRules } from "./sync-readme-rules-table.m
 
 /**
  * @typedef {"all"
- *     | "experimental"
- *     | "minimal"
+ *     | "emit-config"
+ *     | "include-hygiene"
+ *     | "lib-target"
+ *     | "module-resolution"
+ *     | "project-references"
  *     | "recommended"
- *     | "recommended-type-checked"
  *     | "strict"
- *     | "ts-extras/type-guards"
- *     | "type-fest/types"} PresetConfigName
+ *     | "strict-mode"} PresetConfigName
  */
 
 const matrixSectionHeading = "## Rule matrix";
 const presetRulesSectionHeading = "## Rules in this preset";
-const recommendedTypeCheckedLegacyHeading =
-    "## What this preset adds on top of `recommended`";
-const experimentalLegacyHeading = "## What this preset adds on top of `all`";
 const presetsDocsDirectoryPath = "docs/rules/presets";
 
 /**
@@ -64,23 +62,27 @@ const normalizeMarkdownLineEndings = (markdown, lineEnding) =>
 /** @type {Readonly<Record<PresetConfigName, string>>} */
 const presetDocSlugByConfigName = {
     all: "all",
-    experimental: "experimental",
-    minimal: "minimal",
+    "emit-config": "emit-config",
+    "include-hygiene": "include-hygiene",
+    "lib-target": "lib-target",
+    "module-resolution": "module-resolution",
+    "project-references": "project-references",
     recommended: "recommended",
-    "recommended-type-checked": "recommended-type-checked",
     strict: "strict",
-    "ts-extras/type-guards": "ts-extras-type-guards",
-    "type-fest/types": "type-fest-types",
+    "strict-mode": "strict-mode",
 };
 
 /** @type {readonly PresetConfigName[]} */
 const standardPresetConfigNames = [
     "all",
-    "minimal",
+    "emit-config",
+    "include-hygiene",
+    "lib-target",
+    "module-resolution",
+    "project-references",
     "recommended",
     "strict",
-    "ts-extras/type-guards",
-    "type-fest/types",
+    "strict-mode",
 ];
 
 /**
@@ -105,11 +107,11 @@ const sortStrings = (values) =>
  * @returns {null | string}
  */
 const toPluginRuleName = (configRuleKey) => {
-    if (!configRuleKey.startsWith("typefest/")) {
+    if (!configRuleKey.startsWith("tsconfig/")) {
         return null;
     }
 
-    return configRuleKey.slice("typefest/".length);
+    return configRuleKey.slice("tsconfig/".length);
 };
 
 /**
@@ -239,62 +241,6 @@ const generateStandardPresetRulesSection = (presetConfigName) => {
         ...createFixLegendLines(),
         "",
         createPresetRulesTable(presetRuleNames),
-        "",
-    ].join("\n");
-};
-
-/**
- * @returns {string}
- */
-const generateRecommendedTypeCheckedRulesSection = () => {
-    const recommendedRuleNames = collectPresetRuleNames("recommended");
-    const recommendedTypeCheckedRuleNames = collectPresetRuleNames(
-        "recommended-type-checked"
-    );
-    const recommendedRuleNameSet = new Set(recommendedRuleNames);
-    const additionalTypeAwareRuleNames = recommendedTypeCheckedRuleNames.filter(
-        (ruleName) => !recommendedRuleNameSet.has(ruleName)
-    );
-
-    return [
-        presetRulesSectionHeading,
-        "",
-        ...createFixLegendLines(),
-        "",
-        "### Type-aware additions over `recommended`",
-        "",
-        createPresetRulesTable(additionalTypeAwareRuleNames),
-        "",
-        "### Baseline rules inherited from `recommended`",
-        "",
-        createPresetRulesTable(recommendedRuleNames),
-        "",
-    ].join("\n");
-};
-
-/**
- * @returns {string}
- */
-const generateExperimentalRulesSection = () => {
-    const allRuleNames = collectPresetRuleNames("all");
-    const experimentalRuleNames = collectPresetRuleNames("experimental");
-    const allRuleNameSet = new Set(allRuleNames);
-    const experimentalOnlyRuleNames = experimentalRuleNames.filter(
-        (ruleName) => !allRuleNameSet.has(ruleName)
-    );
-
-    return [
-        presetRulesSectionHeading,
-        "",
-        ...createFixLegendLines(),
-        "",
-        "### Experimental additions over `all`",
-        "",
-        createPresetRulesTable(experimentalOnlyRuleNames),
-        "",
-        "### Baseline rules inherited from `all`",
-        "",
-        createPresetRulesTable(allRuleNames),
         "",
     ].join("\n");
 };
@@ -539,72 +485,6 @@ const syncPresetPageRuleTables = async ({ workspaceRoot, writeChanges }) => {
                 "utf8"
             );
         }
-    }
-
-    const recommendedTypeCheckedDocPath = resolve(
-        workspaceRoot,
-        presetsDocsDirectoryPath,
-        `${presetDocSlugByConfigName["recommended-type-checked"]}.md`
-    );
-    const recommendedTypeCheckedMarkdown = await readFile(
-        recommendedTypeCheckedDocPath,
-        "utf8"
-    );
-    const recommendedTypeCheckedSection =
-        generateRecommendedTypeCheckedRulesSection();
-    const recommendedTypeCheckedReplacementResult = replaceMarkdownSection({
-        generatedSection: recommendedTypeCheckedSection,
-        headingCandidates: [
-            presetRulesSectionHeading,
-            recommendedTypeCheckedLegacyHeading,
-        ],
-        markdown: recommendedTypeCheckedMarkdown,
-    });
-
-    if (!recommendedTypeCheckedReplacementResult.changed) {
-        // Continue on to the experimental preset page update below.
-    } else {
-        changed = true;
-
-        if (writeChanges) {
-            await writeFile(
-                recommendedTypeCheckedDocPath,
-                recommendedTypeCheckedReplacementResult.nextMarkdown,
-                "utf8"
-            );
-        }
-    }
-
-    const experimentalDocPath = resolve(
-        workspaceRoot,
-        presetsDocsDirectoryPath,
-        `${presetDocSlugByConfigName.experimental}.md`
-    );
-    const experimentalMarkdown = await readFile(experimentalDocPath, "utf8");
-    const experimentalSection = generateExperimentalRulesSection();
-    const experimentalReplacementResult = replaceMarkdownSection({
-        generatedSection: experimentalSection,
-        headingCandidates: [
-            presetRulesSectionHeading,
-            experimentalLegacyHeading,
-        ],
-        markdown: experimentalMarkdown,
-    });
-
-    if (!experimentalReplacementResult.changed) {
-        return {
-            changed,
-        };
-    }
-
-    changed = true;
-
-    if (writeChanges) {
-        await writeFile(
-            experimentalDocPath,
-            experimentalReplacementResult.nextMarkdown,
-            "utf8"
-        );
     }
 
     return {

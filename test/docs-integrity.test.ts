@@ -7,7 +7,7 @@ import * as path from "node:path";
 import { describe, expect, expectTypeOf, it } from "vitest";
 
 import { createRuleDocsUrl } from "../src/_internal/rule-docs-url";
-import typefestPlugin from "../src/plugin";
+import tsconfigPlugin from "../src/plugin";
 import { parseMarkdownHeadingsAtLevel } from "./_internal/markdown-headings";
 
 interface RuleWithMeta {
@@ -54,8 +54,6 @@ const legacyHeadingsPattern =
 const legacyExampleHeadingLabelPattern =
     /\((?:additional scenario|team-scale usage)\)/v;
 
-const unlinkedTopSummaryPattern =
-    /^(?:Prefer|Require) `[^`]+` from `(?:ts-extras|type-fest)`/mv;
 const ruleCatalogIdLinePattern = /^> \*\*Rule catalog ID:\*\* R\d{3}$/gmv;
 
 /**
@@ -148,22 +146,6 @@ function assertOptionalDetailHeadingPlacement(markdown: string): void {
 }
 
 /**
- * Assert package documentation label by rule family.
- *
- * @param fileName - Rule docs file name.
- * @param markdown - Rule documentation markdown.
- */
-function assertPackageLabel(fileName: string, markdown: string): void {
-    if (fileName.startsWith("prefer-type-fest-")) {
-        expect(markdown).toMatch(/^TypeFest package documentation:$/mv);
-    }
-
-    if (fileName.startsWith("prefer-ts-extras-")) {
-        expect(markdown).toMatch(/^ts-extras package documentation:$/mv);
-    }
-}
-
-/**
  * Assert that each rule doc defines exactly one canonical Rule catalog ID line.
  *
  * @param markdown - Rule documentation markdown.
@@ -218,11 +200,11 @@ function parseH2Headings(markdown: string): string[] {
     return [...parseMarkdownHeadingsAtLevel(markdown, 2)];
 }
 
-describe("typefest rule docs", () => {
+describe("tsconfig rule docs", () => {
     it("every rule has a docs url and a matching docs/rules/<id>.md file", () => {
         expect.hasAssertions();
 
-        const { rules } = typefestPlugin;
+        const { rules } = tsconfigPlugin;
 
         expect(rules).toBeDefined();
 
@@ -257,10 +239,18 @@ describe("typefest rule docs", () => {
 
         const docsDir = path.join(process.cwd(), "docs", "rules");
 
+        const registeredRuleNames = new Set(
+            Object.keys(tsconfigPlugin.rules ?? {}).map((r) =>
+                r.replace(/^tsconfig\//v, "")
+            )
+        );
+
         const ruleDocFiles = fs
             .readdirSync(docsDir)
             .filter(
-                (entry) => entry.startsWith("prefer-") && entry.endsWith(".md")
+                (entry) =>
+                    entry.endsWith(".md") &&
+                    registeredRuleNames.has(entry.replace(/\.md$/v, ""))
             )
             .toSorted((left, right) => left.localeCompare(right));
 
@@ -272,7 +262,6 @@ describe("typefest rule docs", () => {
 
             expect(markdown).not.toMatch(legacyHeadingsPattern);
             expect(markdown).not.toMatch(legacyExampleHeadingLabelPattern);
-            expect(markdown).not.toMatch(unlinkedTopSummaryPattern);
 
             const h1Headings = parseH1Headings(markdown);
             const headings = parseH2Headings(markdown);
@@ -284,7 +273,6 @@ describe("typefest rule docs", () => {
 
             assertCanonicalHeadingSchema(headings);
             assertOptionalDetailHeadingPlacement(markdown);
-            assertPackageLabel(fileName, markdown);
             assertRuleCatalogIdLine(markdown);
         }
     });

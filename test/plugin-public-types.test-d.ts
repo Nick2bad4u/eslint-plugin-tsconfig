@@ -2,39 +2,43 @@
  * @packageDocumentation
  * Type-level contract tests for public plugin exports.
  */
+import type { ESLint } from "eslint";
+
 import type {
-    TypefestConfigName,
-    TypefestPlugin,
-    TypefestRuleId,
-    TypefestRuleName,
-} from "eslint-plugin-typefest";
+    TsconfigConfigName,
+    TsconfigRuleId,
+    TsconfigRuleName,
+} from "../src/plugin";
 
 import { assertType } from "vitest";
 
-const validConfigName = "recommended-type-checked";
+const validConfigName = "recommended" satisfies TsconfigConfigName;
 
-assertType<TypefestConfigName>(validConfigName);
-// @ts-expect-error Invalid preset key must not satisfy TypefestConfigName.
-assertType<TypefestConfigName>("recommendedTypeChecked");
+assertType<TsconfigConfigName>(validConfigName);
+// @ts-expect-error Invalid preset key must not satisfy TsconfigConfigName.
+assertType<TsconfigConfigName>("recommendedTypeChecked");
 
-const validRuleId = "typefest/prefer-type-fest-arrayable";
+const validRuleId = "tsconfig/require-strict-mode" satisfies TsconfigRuleId;
 
-assertType<TypefestRuleId>(validRuleId);
-// @ts-expect-error Rule ids must include the `typefest/` namespace prefix.
-assertType<TypefestRuleId>("prefer-type-fest-arrayable");
+assertType<TsconfigRuleId>(validRuleId);
+// @ts-expect-error Rule ids must include the `tsconfig/` namespace prefix.
+assertType<TsconfigRuleId>("require-strict-mode");
 
-type RuleNameFromRuleId = TypefestRuleId extends `typefest/${infer RuleName}`
+type RuleNameFromRuleId = TsconfigRuleId extends `tsconfig/${infer RuleName}`
     ? RuleName
     : never;
 
-declare const pluginContract: TypefestPlugin;
-
-assertType<TypefestRuleName>(
-    "prefer-type-fest-arrayable" satisfies RuleNameFromRuleId
+assertType<TsconfigRuleName>(
+    "require-strict-mode" satisfies RuleNameFromRuleId
 );
-assertType(pluginContract.configs.recommended);
-assertType(pluginContract.configs.all);
-assertType(pluginContract.configs.experimental);
-assertType(pluginContract.configs);
-assertType(pluginContract.meta.name);
-assertType(pluginContract.meta.namespace);
+
+/**
+ * Validate that the default plugin export satisfies the ESLint.Plugin contract.
+ */
+declare const pluginExport: typeof import("../src/plugin").default;
+
+assertType<ESLint.Plugin>(pluginExport);
+assertType<string | undefined>(pluginExport.meta?.name);
+assertType<string | undefined>(pluginExport.meta?.version);
+assertType<ESLint.Plugin["configs"] | undefined>(pluginExport.configs);
+assertType<ESLint.Plugin["rules"] | undefined>(pluginExport.rules);

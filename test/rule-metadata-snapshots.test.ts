@@ -7,7 +7,7 @@ import type { UnknownRecord } from "type-fest";
 import { objectEntries } from "ts-extras";
 import { describe, expect, it } from "vitest";
 
-import typefestPlugin from "../src/plugin";
+import tsconfigPlugin from "../src/plugin";
 
 interface RuleMetadataSnapshot {
     defaultOptionsLength: number;
@@ -16,7 +16,7 @@ interface RuleMetadataSnapshot {
         requiresTypeChecking: boolean;
         ruleId: null | string;
         ruleNumber: null | number;
-        typefestConfigs: readonly string[];
+        tsconfigConfigs: readonly string[];
         url: null | string;
     };
     fixable: null | string;
@@ -32,7 +32,7 @@ const isRecord = (value: unknown): value is UnknownRecord =>
     typeof value === "object" && value !== null;
 
 /** Normalize unknown docs preset references into sorted string entries. */
-const normalizeTypefestConfigs = (value: unknown): readonly string[] => {
+const normalizeTsconfigConfigs = (value: unknown): readonly string[] => {
     if (typeof value === "string") {
         return [value];
     }
@@ -113,8 +113,8 @@ const toRuleMetadataSnapshot = (
             ruleId: typeof docsRuleId === "string" ? docsRuleId : null,
             ruleNumber:
                 typeof docsRuleNumber === "number" ? docsRuleNumber : null,
-            typefestConfigs: normalizeTypefestConfigs(
-                docs?.["typefestConfigs"]
+            tsconfigConfigs: normalizeTsconfigConfigs(
+                docs?.["tsconfigConfigs"]
             ),
             url: typeof docsUrl === "string" ? docsUrl : null,
         },
@@ -133,7 +133,7 @@ const toRuleMetadataSnapshot = (
  * @returns One normalized snapshot payload per rule id.
  */
 const getRuleMetadataSnapshots = (): readonly RuleMetadataSnapshot[] =>
-    objectEntries(typefestPlugin.rules)
+    objectEntries(tsconfigPlugin.rules)
         .toSorted(([left], [right]) => left.localeCompare(right))
         .map(([ruleId, ruleModule]) =>
             toRuleMetadataSnapshot(ruleId, ruleModule)

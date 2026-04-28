@@ -10,16 +10,16 @@ import { fileURLToPath, pathToFileURL } from "node:url";
 
 import builtPlugin from "../dist/plugin.js";
 import {
-    typefestConfigMetadataByName,
-    typefestConfigNamesByReadmeOrder,
-    typefestConfigReferenceToName,
-} from "../dist/_internal/typefest-config-references.js";
+    tsconfigConfigMetadataByName,
+    tsconfigConfigNamesByReadmeOrder,
+    tsconfigConfigReferenceToName,
+} from "../dist/_internal/tsconfig-config-references.js";
 
 /**
  * @typedef {Readonly<{
  *     meta?: {
  *         docs?: {
- *             typefestConfigs?: readonly string[] | string;
+ *             tsconfigConfigs?: readonly string[] | string;
  *             url?: string;
  *         };
  *         fixable?: string;
@@ -30,14 +30,14 @@ import {
 
 /** @typedef {Readonly<Record<string, ReadmeRuleModule>>} ReadmeRulesMap */
 
-/** @typedef {import("../dist/_internal/typefest-config-references.js").TypefestConfigName} PresetName */
+/** @typedef {import("../dist/_internal/tsconfig-config-references.js").TsconfigConfigName} PresetName */
 
-const presetOrder = [...typefestConfigNamesByReadmeOrder];
+const presetOrder = [...tsconfigConfigNamesByReadmeOrder];
 const presetNameSet = new Set(presetOrder);
 
 const rulesSectionHeading = "## Rules";
 const PRESET_DOCS_URL_BASE =
-    "https://nick2bad4u.github.io/eslint-plugin-typefest/docs/rules/presets";
+    "https://nick2bad4u.github.io/eslint-plugin-tsconfig/docs/rules/presets";
 
 /**
  * @param {string} markdown
@@ -150,25 +150,27 @@ export const normalizeRulesSectionMarkdown = (markdown) =>
 /** @type {Readonly<Record<PresetName, string>>} */
 const presetDocsSlugByName = {
     all: "all",
-    experimental: "experimental",
-    minimal: "minimal",
+    "emit-config": "emit-config",
+    "include-hygiene": "include-hygiene",
+    "lib-target": "lib-target",
+    "module-resolution": "module-resolution",
+    "project-references": "project-references",
     recommended: "recommended",
-    "recommended-type-checked": "recommended-type-checked",
     strict: "strict",
-    "ts-extras/type-guards": "ts-extras-type-guards",
-    "type-fest/types": "type-fest-types",
+    "strict-mode": "strict-mode",
 };
 
 /** @type {Readonly<Record<PresetName, string>>} */
 const presetConfigReferenceByName = {
-    all: "typefest.configs.all",
-    experimental: "typefest.configs.experimental",
-    minimal: "typefest.configs.minimal",
-    recommended: "typefest.configs.recommended",
-    "recommended-type-checked": 'typefest.configs["recommended-type-checked"]',
-    strict: "typefest.configs.strict",
-    "ts-extras/type-guards": 'typefest.configs["ts-extras/type-guards"]',
-    "type-fest/types": 'typefest.configs["type-fest/types"]',
+    all: "tsconfig.configs.all",
+    "emit-config": 'tsconfig.configs["emit-config"]',
+    "include-hygiene": 'tsconfig.configs["include-hygiene"]',
+    "lib-target": 'tsconfig.configs["lib-target"]',
+    "module-resolution": 'tsconfig.configs["module-resolution"]',
+    "project-references": 'tsconfig.configs["project-references"]',
+    recommended: "tsconfig.configs.recommended",
+    strict: "tsconfig.configs.strict",
+    "strict-mode": 'tsconfig.configs["strict-mode"]',
 };
 
 /**
@@ -185,7 +187,7 @@ const createPresetDocsUrl = (presetName) =>
 const createPresetLegendLines = () =>
     presetOrder.map((presetName) => {
         const docsUrl = createPresetDocsUrl(presetName);
-        const presetIcon = typefestConfigMetadataByName[presetName].icon;
+        const presetIcon = tsconfigConfigMetadataByName[presetName].icon;
         const configReference = presetConfigReferenceByName[presetName];
 
         return `  - [${presetIcon}](${docsUrl}) — [\`${configReference}\`](${docsUrl})`;
@@ -197,13 +199,13 @@ const createPresetLegendLines = () =>
  * @returns {null | PresetName}
  */
 const normalizeTypefestConfigName = (reference) => {
-    if (Object.hasOwn(typefestConfigReferenceToName, reference)) {
+    if (Object.hasOwn(tsconfigConfigReferenceToName, reference)) {
         const referenceKey =
-            /** @type {keyof typeof typefestConfigReferenceToName} */ (
+            /** @type {keyof typeof tsconfigConfigReferenceToName} */ (
                 reference
             );
 
-        return typefestConfigReferenceToName[referenceKey];
+        return tsconfigConfigReferenceToName[referenceKey];
     }
 
     const presetName = /** @type {PresetName} */ (reference);
@@ -212,14 +214,14 @@ const normalizeTypefestConfigName = (reference) => {
 };
 
 /**
- * @param {readonly string[] | string | undefined} typefestConfigs
+ * @param {readonly string[] | string | undefined} tsconfigConfigs
  *
  * @returns {readonly PresetName[]}
  */
-const normalizeTypefestConfigNames = (typefestConfigs) => {
-    const references = Array.isArray(typefestConfigs)
-        ? typefestConfigs
-        : [typefestConfigs];
+const normalizeTypefestConfigNames = (tsconfigConfigs) => {
+    const references = Array.isArray(tsconfigConfigs)
+        ? tsconfigConfigs
+        : [tsconfigConfigs];
 
     /** @type {PresetName[]} */
     const names = [];
@@ -280,8 +282,8 @@ const getRuleFixIndicator = (ruleModule) => {
  * @returns {string}
  */
 const getPresetIndicator = (ruleModule) => {
-    const docsTypefestConfigs = ruleModule.meta?.docs?.typefestConfigs;
-    const presetNames = normalizeTypefestConfigNames(docsTypefestConfigs);
+    const docsTsconfigConfigs = ruleModule.meta?.docs?.tsconfigConfigs;
+    const presetNames = normalizeTypefestConfigNames(docsTsconfigConfigs);
     const presetNamesSet = new Set(presetNames);
 
     /** @type {string[]} */
@@ -290,7 +292,7 @@ const getPresetIndicator = (ruleModule) => {
     for (const presetName of presetOrder) {
         if (presetNamesSet.has(presetName)) {
             const docsUrl = createPresetDocsUrl(presetName);
-            const presetIcon = typefestConfigMetadataByName[presetName].icon;
+            const presetIcon = tsconfigConfigMetadataByName[presetName].icon;
 
             icons.push(`[${presetIcon}](${docsUrl})`);
         }
@@ -420,6 +422,7 @@ const runCli = async () => {
     console.error(
         "README rules table is out of sync. Run: npm run sync:readme-rules-table:write (or npm run sync:readme-rules-table:update to refresh snapshots too)."
     );
+
     process.exitCode = 1;
 };
 

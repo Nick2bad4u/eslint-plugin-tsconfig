@@ -10,7 +10,7 @@ import {
     generateReadmeRulesSectionFromRules,
     syncReadmeRulesTable,
 } from "../scripts/sync-readme-rules-table.mjs";
-import typefestPlugin from "../src/plugin";
+import tsconfigPlugin from "../src/plugin";
 
 const RULES_SECTION_HEADING = "## Rules";
 const RULES_SECTION_SNAPSHOT_PATH = path.join(
@@ -21,7 +21,7 @@ const processEnvironment = globalThis.process.env;
 const SHOULD_SYNC_README_IN_UPDATE_MODE =
     process.argv.includes("-u") ||
     process.argv.includes("--update") ||
-    processEnvironment["TYPEFEST_UPDATE_GENERATED_DOCS"] === "1";
+    processEnvironment["TSCONFIG_UPDATE_GENERATED_DOCS"] === "1";
 
 const syncReadmeRulesTableIfRequested = async (): Promise<void> => {
     if (!SHOULD_SYNC_README_IN_UPDATE_MODE) {
@@ -116,7 +116,7 @@ describe("readme rules table synchronization", () => {
 
         const readmeRulesSection = extractRulesSection(readmeMarkdown);
         const expectedRulesSection = generateReadmeRulesSectionFromRules(
-            typefestPlugin.rules
+            tsconfigPlugin.rules
         );
 
         expect(normalizeMarkdownTableSpacing(readmeRulesSection)).toBe(
@@ -128,7 +128,7 @@ describe("readme rules table synchronization", () => {
         expect.hasAssertions();
 
         const generatedRulesSection = generateReadmeRulesSectionFromRules(
-            typefestPlugin.rules
+            tsconfigPlugin.rules
         );
 
         await expect(generatedRulesSection).toMatchFileSnapshot(

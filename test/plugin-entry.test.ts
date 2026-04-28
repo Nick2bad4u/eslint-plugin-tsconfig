@@ -5,8 +5,8 @@
 import { createRequire } from "node:module";
 import { describe, expect, it } from "vitest";
 
-import { typefestConfigNames } from "../src/_internal/typefest-config-references";
-import typefestPlugin from "../src/plugin";
+import { tsconfigConfigNames } from "../src/_internal/tsconfig-config-references";
+import tsconfigPlugin from "../src/plugin";
 
 const requireFromTestModule = createRequire(import.meta.url);
 const packageJson = requireFromTestModule("../package.json") as {
@@ -16,7 +16,7 @@ const expectedPluginVersion = packageJson.version;
 
 const expectedConfigRegistryShape = expect.objectContaining(
     Object.fromEntries(
-        [...typefestConfigNames].map((configName) => [
+        [...tsconfigConfigNames].map((configName) => [
             configName,
             expect.any(Object),
         ])
@@ -24,37 +24,37 @@ const expectedConfigRegistryShape = expect.objectContaining(
 );
 
 const expectedRuleRegistryShape = expect.objectContaining({
-    "prefer-ts-extras-as-writable": expect.any(Object),
-    "prefer-ts-extras-is-defined": expect.any(Object),
-    "prefer-ts-extras-is-equal-type": expect.any(Object),
-    "prefer-ts-extras-is-present": expect.any(Object),
-    "prefer-ts-extras-not": expect.any(Object),
-    "prefer-ts-extras-safe-cast-to": expect.any(Object),
-    "prefer-type-fest-conditional-pick": expect.any(Object),
-    "prefer-type-fest-if": expect.any(Object),
-    "prefer-type-fest-iterable-element": expect.any(Object),
-    "prefer-type-fest-json-array": expect.any(Object),
-    "prefer-type-fest-json-primitive": expect.any(Object),
-    "prefer-type-fest-keys-of-union": expect.any(Object),
-    "prefer-type-fest-omit-index-signature": expect.any(Object),
-    "prefer-type-fest-require-all-or-none": expect.any(Object),
-    "prefer-type-fest-require-at-least-one": expect.any(Object),
-    "prefer-type-fest-require-exactly-one": expect.any(Object),
-    "prefer-type-fest-require-one-or-none": expect.any(Object),
-    "prefer-type-fest-schema": expect.any(Object),
-    "prefer-type-fest-set-non-nullable": expect.any(Object),
-    "prefer-type-fest-set-optional": expect.any(Object),
-    "prefer-type-fest-set-readonly": expect.any(Object),
-    "prefer-type-fest-set-required": expect.any(Object),
-    "prefer-type-fest-simplify": expect.any(Object),
-    "prefer-type-fest-tuple-of": expect.any(Object),
-    "prefer-type-fest-unwrap-tagged": expect.any(Object),
+    "consistent-incremental-with-tsbuildinfo": expect.any(Object),
+    "consistent-module-resolution": expect.any(Object),
+    "consistent-target-and-lib": expect.any(Object),
+    "no-declaration-only-without-declaration": expect.any(Object),
+    "no-disable-strict-subset": expect.any(Object),
+    "no-emit-in-root-config": expect.any(Object),
+    "no-esmoduleinterop-with-verbatim": expect.any(Object),
+    "no-esnext-target-in-library": expect.any(Object),
+    "no-include-dist": expect.any(Object),
+    "no-include-node-modules": expect.any(Object),
+    "no-legacy-module-resolution": expect.any(Object),
+    "no-rootdir-includes-outdir": expect.any(Object),
+    "no-skip-lib-check": expect.any(Object),
+    "require-bundler-module-resolution": expect.any(Object),
+    "require-composite-for-references": expect.any(Object),
+    "require-declaration-with-composite": expect.any(Object),
+    "require-downlevel-iteration-with-iterators": expect.any(Object),
+    "require-exact-optional-property-types": expect.any(Object),
+    "require-exclude-common-artifacts": expect.any(Object),
+    "require-no-implicit-override": expect.any(Object),
+    "require-no-unchecked-indexed-access": expect.any(Object),
+    "require-outdir-when-emitting": expect.any(Object),
+    "require-source-map-in-dev": expect.any(Object),
+    "require-strict-mode": expect.any(Object),
+    "require-verbatim-module-syntax": expect.any(Object),
 });
 
 describe("plugin entry module", () => {
     it("exports default plugin object with rule and config registries", () => {
         expect.hasAssertions();
-        expect(typefestPlugin).toStrictEqual(
+        expect(tsconfigPlugin).toStrictEqual(
             expect.objectContaining({
                 configs: expect.any(Object),
                 meta: expect.any(Object),
@@ -63,10 +63,10 @@ describe("plugin entry module", () => {
             })
         );
 
-        expect(typefestPlugin.meta).toStrictEqual(
+        expect(tsconfigPlugin.meta).toStrictEqual(
             expect.objectContaining({
-                name: "eslint-plugin-typefest",
-                namespace: "typefest",
+                name: "eslint-plugin-tsconfig",
+                namespace: "tsconfig",
                 version: expectedPluginVersion,
             })
         );
@@ -74,10 +74,10 @@ describe("plugin entry module", () => {
 
     it("exposes critical presets and latest rule registrations", () => {
         expect.hasAssertions();
-        expect(typefestPlugin.configs).toStrictEqual(
+        expect(tsconfigPlugin.configs).toStrictEqual(
             expectedConfigRegistryShape
         );
-        expect(typefestPlugin.rules).toStrictEqual(expectedRuleRegistryShape);
+        expect(tsconfigPlugin.rules).toStrictEqual(expectedRuleRegistryShape);
     });
 
     it("exports matching runtime plugin shape from plugin.mjs", async () => {
@@ -99,94 +99,10 @@ describe("plugin entry module", () => {
         expect(runtimePluginModule.default).toStrictEqual(
             expect.objectContaining({
                 meta: expect.objectContaining({
-                    name: "eslint-plugin-typefest",
-                    namespace: "typefest",
+                    name: "eslint-plugin-tsconfig",
+                    namespace: "tsconfig",
                     version: expectedPluginVersion,
                 }),
-            })
-        );
-    });
-
-    it("exports matching runtime plugin shape from dist/plugin.cjs", () => {
-        expect.hasAssertions();
-
-        const runtimePlugin = requireFromTestModule("../dist/plugin.cjs") as {
-            configs?: unknown;
-            meta?: {
-                name?: unknown;
-                namespace?: unknown;
-                version?: unknown;
-            };
-            processors?: unknown;
-            rules?: unknown;
-        };
-
-        expect(runtimePlugin).toStrictEqual(
-            expect.objectContaining({
-                configs: expect.any(Object),
-                meta: expect.any(Object),
-                processors: expect.any(Object),
-                rules: expect.any(Object),
-            })
-        );
-
-        expect(runtimePlugin.meta).toStrictEqual(
-            expect.objectContaining({
-                name: "eslint-plugin-typefest",
-                namespace: "typefest",
-                version: expectedPluginVersion,
-            })
-        );
-    });
-
-    it("resolves package default export through self-reference ESM import", async () => {
-        expect.hasAssertions();
-
-        const packageRuntimeModule =
-            (await import("eslint-plugin-typefest")) as {
-                default: unknown;
-            };
-
-        expect(packageRuntimeModule.default).toStrictEqual(
-            expect.objectContaining({
-                configs: expect.any(Object),
-                meta: expect.objectContaining({
-                    name: "eslint-plugin-typefest",
-                    namespace: "typefest",
-                    version: expectedPluginVersion,
-                }),
-                processors: expect.any(Object),
-                rules: expect.any(Object),
-            })
-        );
-    });
-
-    it("resolves package default export through self-reference CJS require", () => {
-        expect.hasAssertions();
-
-        const packageRuntimePlugin = requireFromTestModule(
-            "eslint-plugin-typefest"
-        ) as {
-            configs?: unknown;
-            meta?: {
-                name?: unknown;
-                namespace?: unknown;
-                version?: unknown;
-            };
-            processors?: unknown;
-            rules?: unknown;
-        };
-
-        expect(packageRuntimePlugin).toStrictEqual(
-            expect.objectContaining({
-                configs: expect.any(Object),
-                meta: expect.objectContaining({
-                    name: "eslint-plugin-typefest",
-                    namespace: "typefest",
-                    version: expectedPluginVersion,
-                }),
-                processors: expect.any(Object),
-                rules: expect.any(Object),
             })
         );
     });

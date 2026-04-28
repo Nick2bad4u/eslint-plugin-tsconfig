@@ -1,15 +1,15 @@
 /**
  * @packageDocumentation
- * Opt-in smoke test that lints ad-hoc fixture files with `typefest.configs.all`
+ * Opt-in smoke test that lints ad-hoc fixture files with `tsconfig.configs.all`
  * and executes ESLint autofix in memory (never writes fixes to disk).
  */
-import parser from "@typescript-eslint/parser";
+import * as jsoncParser from "jsonc-eslint-parser";
 import { ESLint } from "eslint";
 import * as fs from "node:fs";
 import * as path from "node:path";
 import { describe, expect, it } from "vitest";
 
-import typefestPlugin from "../src/plugin";
+import tsconfigPlugin from "../src/plugin";
 
 /** Process environment alias for lint-safe environment access. */
 const processEnvironment = globalThis.process.env;
@@ -19,7 +19,7 @@ const isCiEnvironment = processEnvironment["CI"] === "true";
 
 /** Environment variable gate for this intentionally expensive smoke test. */
 const shouldRunFixtureAutofixSmoke =
-    processEnvironment["TYPEFEST_AUTOFIX_SMOKE"] === "1" && !isCiEnvironment;
+    processEnvironment["TSCONFIG_AUTOFIX_SMOKE"] === "1" && !isCiEnvironment;
 
 /** Repository root used for path normalization and parser-service config. */
 const repositoryRootPath = process.cwd();
@@ -35,24 +35,13 @@ const defaultFixtureDirectoryPath = path.join(
     "autofix-smoke"
 );
 
-/** Supported fixture file extensions for typed all-rules linting. */
-const lintableFixtureExtensions = new Set([
-    ".cts",
-    ".mts",
-    ".ts",
-    ".tsx",
-]);
-
-/** Guard unknown values to object records. */
-const isObjectRecord = (
-    value: unknown
-): value is Readonly<Record<string, unknown>> =>
-    typeof value === "object" && value !== null;
+/** Supported fixture file extensions for JSONC all-rules linting. */
+const lintableFixtureExtensions = new Set([".json"]);
 
 /** Resolve fixture directory from environment override or default location. */
 const getFixtureDirectoryPath = (): string => {
     const configuredDirectory =
-        processEnvironment["TYPEFEST_AUTOFIX_FIXTURE_DIR"];
+        processEnvironment["TSCONFIG_AUTOFIX_FIXTURE_DIR"];
 
     if (typeof configuredDirectory !== "string") {
         return defaultFixtureDirectoryPath;
@@ -75,39 +64,13 @@ const getFixtureDirectoryPath = (): string => {
     if (!isInsideFixturesRoot) {
         throw new TypeError(
             [
-                "TYPEFEST_AUTOFIX_FIXTURE_DIR must resolve under test/fixtures.",
+                "TSCONFIG_AUTOFIX_FIXTURE_DIR must resolve under test/fixtures.",
                 `Received: ${resolvedFixtureDirectoryPath}`,
             ].join(" ")
         );
     }
 
     return resolvedFixtureDirectoryPath;
-};
-
-/** Normalize file-system paths to forward-slash form for ESLint glob patterns. */
-const toPosixPath = (filePath: string): string =>
-    filePath.replaceAll("\\", "/");
-
-/** Build allowDefaultProject file entries for ad-hoc fixture file paths. */
-const createAllowDefaultProjectEntries = (
-    fixtureFilePaths: readonly string[]
-): readonly string[] => {
-    const entries: string[] = [];
-
-    for (const fixtureFilePath of fixtureFilePaths) {
-        const relativeFixtureFilePath = toPosixPath(
-            path.relative(repositoryRootPath, fixtureFilePath)
-        );
-
-        if (
-            relativeFixtureFilePath.length > 0 &&
-            !relativeFixtureFilePath.startsWith("../")
-        ) {
-            entries.push(relativeFixtureFilePath);
-        }
-    }
-
-    return entries;
 };
 
 /** Return true when a fixture path has a lintable extension. */
@@ -168,8 +131,8 @@ const ensureFixtureFilesExist = (
         throw new Error(
             [
                 "No lintable fixtures were found.",
-                `Add *.ts/*.tsx/*.mts/*.cts files under: ${fixtureDirectoryPath}`,
-                "Then rerun with TYPEFEST_AUTOFIX_SMOKE=1.",
+                `Add *.json files under: ${fixtureDirectoryPath}`,
+                "Then rerun with TSCONFIG_AUTOFIX_SMOKE=1.",
             ].join(" ")
         );
     }
@@ -233,10 +196,7 @@ const collectAutofixOutputParseErrors = (
 
         if (typeof fixedOutput === "string") {
             try {
-                parser.parseForESLint(fixedOutput, {
-                    ecmaVersion: "latest",
-                    sourceType: "module",
-                });
+                jsoncParser.parseForESLint(fixedOutput, {});
             } catch (error: unknown) {
                 const parseErrorMessage =
                     error instanceof Error ? error.message : String(error);
@@ -262,27 +222,10 @@ const expectFixturesUnchangedOnDisk = (
     }
 };
 
-/** Collect only string entries from unknown input arrays. */
-const collectStringEntries = (value: unknown): readonly string[] => {
-    if (!Array.isArray(value)) {
-        return [];
-    }
-
-    const stringEntries: string[] = [];
-
-    for (const entry of value) {
-        if (typeof entry === "string") {
-            stringEntries.push(entry);
-        }
-    }
-
-    return stringEntries;
-};
-
 describe.runIf(shouldRunFixtureAutofixSmoke)(
     "all-rules fixture autofix smoke",
     () => {
-        it("runs typefest.configs.all against fixture files and executes in-memory autofix", async () => {
+        it("runs tsconfig.configs.all against fixture files and executes in-memory autofix", async () => {
             expect.hasAssertions();
 
             const fixtureDirectoryPath = getFixtureDirectoryPath();
@@ -293,50 +236,13 @@ describe.runIf(shouldRunFixtureAutofixSmoke)(
 
             const sourceSnapshotByPath =
                 snapshotFixtureSourceByPath(fixtureFilePaths);
-            const allConfig = typefestPlugin.configs.all;
-            const allowDefaultProject =
-                createAllowDefaultProjectEntries(fixtureFilePaths);
-            const parserOptions = isObjectRecord(
-                allConfig.languageOptions?.["parserOptions"]
-            )
-                ? allConfig.languageOptions["parserOptions"]
-                : {};
-            const projectServiceOptions = isObjectRecord(
-                parserOptions["projectService"]
-            )
-                ? parserOptions["projectService"]
-                : {};
-            const existingAllowDefaultProject = collectStringEntries(
-                projectServiceOptions["allowDefaultProject"]
-            );
+            const allConfig = tsconfigPlugin.configs.all;
 
             const eslint = new ESLint({
                 cwd: repositoryRootPath,
                 fix: true,
                 ignore: false,
-                overrideConfig: [
-                    {
-                        ...allConfig,
-                        languageOptions: {
-                            ...allConfig.languageOptions,
-                            parserOptions: {
-                                ...parserOptions,
-                                projectService: {
-                                    ...projectServiceOptions,
-                                    allowDefaultProject: [
-                                        ...new Set([
-                                            ...existingAllowDefaultProject,
-                                            ...allowDefaultProject,
-                                        ]),
-                                    ],
-                                    defaultProject: "tsconfig.eslint.json",
-                                },
-                                sourceType: "module",
-                                tsconfigRootDir: repositoryRootPath,
-                            },
-                        },
-                    },
-                ],
+                overrideConfig: [allConfig],
                 overrideConfigFile: true,
             });
 

@@ -5,14 +5,14 @@ import {
     getRuleCatalogEntryForRuleId,
     getRuleCatalogEntryForRuleName,
     getRuleCatalogEntryForRuleNameOrNull,
-    typefestRuleCatalogEntries,
+    tsconfigRuleCatalogEntries,
     validateRuleCatalogIntegrity,
 } from "../../src/_internal/rule-catalog";
-import { typefestRules } from "../../src/_internal/rules-registry";
+import tsconfigRules from "../../src/_internal/rules-registry";
 
 interface MutableRuleCatalogEntry {
     ruleId: `R${string}`;
-    ruleName: `prefer-${string}`;
+    ruleName: string;
     ruleNumber: number;
 }
 
@@ -22,7 +22,7 @@ const withMutatedCatalogEntry = (
     assertion: () => void
 ): void => {
     const mutableEntries =
-        typefestRuleCatalogEntries as unknown as MutableRuleCatalogEntry[];
+        tsconfigRuleCatalogEntries as unknown as MutableRuleCatalogEntry[];
     const originalEntry = mutableEntries.at(index);
     assertDefined(originalEntry);
 
@@ -39,30 +39,21 @@ const withMutatedCatalogEntry = (
 };
 
 describe("rule-catalog", () => {
-    it("contains every runtime rule plus reserved historical ids", () => {
+    it("contains every runtime rule", () => {
         expect.hasAssertions();
 
-        const catalogRuleNames = typefestRuleCatalogEntries
+        const catalogRuleNames = tsconfigRuleCatalogEntries
             .map((entry) => entry.ruleName)
             .toSorted((left, right) => left.localeCompare(right));
-        const registryRuleNames = Object.keys(typefestRules).toSorted(
+        const registryRuleNames = Object.keys(tsconfigRules).toSorted(
             (left, right) => left.localeCompare(right)
-        );
-        const reservedHistoricalRuleNames = [
-            "prefer-ts-extras-array-find",
-            "prefer-ts-extras-array-find-last",
-            "prefer-ts-extras-array-find-last-index",
-        ];
-        const catalogOnlyRuleNames = catalogRuleNames.filter(
-            (ruleName) => !registryRuleNames.includes(ruleName)
         );
 
         expect(catalogRuleNames).toStrictEqual(
             expect.arrayContaining(registryRuleNames)
         );
-        expect(catalogOnlyRuleNames).toStrictEqual(reservedHistoricalRuleNames);
-        expect(typefestRuleCatalogEntries).toHaveLength(
-            registryRuleNames.length + reservedHistoricalRuleNames.length
+        expect(tsconfigRuleCatalogEntries).toHaveLength(
+            registryRuleNames.length
         );
     });
 
@@ -70,33 +61,26 @@ describe("rule-catalog", () => {
         expect.hasAssertions();
 
         const byName = getRuleCatalogEntryForRuleName(
-            "prefer-ts-extras-array-at"
+            "consistent-incremental-with-tsbuildinfo"
         );
         const byId = getRuleCatalogEntryForRuleId("R001");
 
         expect(byName.ruleId).toBe("R001");
         expect(byName.ruleNumber).toBe(1);
-        expect(byName.ruleName).toBe("prefer-ts-extras-array-at");
+        expect(byName.ruleName).toBe("consistent-incremental-with-tsbuildinfo");
         expect(byId).toStrictEqual(byName);
     });
 
-    it("returns null for non-catalog or non-prefer rule names", () => {
+    it("returns null for non-catalog rule names", () => {
         expect.hasAssertions();
-        expect(
-            getRuleCatalogEntryForRuleNameOrNull("internal-helper-rule")
-        ).toBeNull();
-        expect(
-            getRuleCatalogEntryForRuleNameOrNull(
-                "prefer-internal-non-catalog-rule"
-            )
-        ).toBeNull();
+        expect(getRuleCatalogEntryForRuleNameOrNull("unknown-rule")).toBeNull();
     });
 
     it("throws for unknown rule names in strict lookup", () => {
         expect.hasAssertions();
-        expect(() =>
-            getRuleCatalogEntryForRuleName("prefer-internal-non-catalog-rule")
-        ).toThrow(/missing from the stable rule catalog/v);
+        expect(() => getRuleCatalogEntryForRuleName("unknown-rule")).toThrow(
+            /missing from the stable rule catalog/v
+        );
     });
 
     it("returns undefined for unknown rule ids", () => {
@@ -112,7 +96,7 @@ describe("rule-catalog", () => {
     it("detects duplicate rule ids", () => {
         expect.hasAssertions();
 
-        const firstEntry = typefestRuleCatalogEntries.at(0);
+        const firstEntry = tsconfigRuleCatalogEntries.at(0);
         assertDefined(firstEntry);
 
         withMutatedCatalogEntry(

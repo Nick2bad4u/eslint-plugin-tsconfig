@@ -10,7 +10,7 @@ import { readFile } from "node:fs/promises";
 import * as path from "node:path";
 import { describe, expect, it } from "vitest";
 
-import typefestPlugin from "../src/plugin";
+import tsconfigPlugin from "../src/plugin";
 
 const projectRootPath = process.cwd();
 const testsDirectoryPath = path.resolve(projectRootPath, "test");
@@ -26,8 +26,8 @@ type CoverageMarker = Readonly<{
 }>;
 
 type RuleEntry = readonly [RuleName, RuleModule];
-type RuleModule = (typeof typefestPlugin.rules)[RuleName];
-type RuleName = keyof typeof typefestPlugin.rules;
+type RuleModule = (typeof tsconfigPlugin.rules)[RuleName];
+type RuleName = keyof typeof tsconfigPlugin.rules;
 
 const ruleRequiresParseSafetyCoverage = (
     ruleModule: Readonly<RuleModule>
@@ -43,7 +43,7 @@ const ruleRequiresParseSafetyCoverage = (
 
 const collectRuleIdsRequiringParseSafety = (): readonly string[] => {
     const requiringCoverageRuleIds: string[] = [];
-    const ruleEntries = Object.entries(typefestPlugin.rules) as RuleEntry[];
+    const ruleEntries = Object.entries(tsconfigPlugin.rules) as RuleEntry[];
 
     for (const [ruleId, ruleModule] of ruleEntries) {
         if (ruleRequiresParseSafetyCoverage(ruleModule)) {

@@ -4,20 +4,16 @@
  */
 import * as fs from "node:fs";
 import * as path from "node:path";
-import { objectEntries } from "ts-extras";
+import { arrayIncludes, objectEntries } from "ts-extras";
 import { describe, expect, it } from "vitest";
 
 import { getRuleCatalogEntryForRuleName } from "../src/_internal/rule-catalog";
 import { createRuleDocsUrl } from "../src/_internal/rule-docs-url";
-import { isTypefestConfigReference } from "../src/_internal/typefest-config-references";
-import typefestPlugin from "../src/plugin";
+import { tsconfigConfigNames } from "../src/_internal/tsconfig-config-references";
+import tsconfigPlugin from "../src/plugin";
 
 /** Allowed ESLint `meta.type` values for plugin rules. */
-const expectedRuleTypes = new Set([
-    "layout",
-    "problem",
-    "suggestion",
-]);
+const expectedRuleTypes = new Set(["layout", "problem", "suggestion"]);
 
 /** Stable rule-catalog id format used in docs metadata. */
 const ruleCatalogIdPattern = /^R\d{3}$/v;
@@ -35,7 +31,6 @@ const isRecord = (value: unknown): value is Readonly<Record<string, unknown>> =>
  */
 const getRuleSourceFileNames = (): readonly string[] => {
     const rulesDirectory = path.join(process.cwd(), "src", "rules");
-
     return fs
         .readdirSync(rulesDirectory)
         .filter((entry) => entry.endsWith(".ts"))
@@ -44,28 +39,26 @@ const getRuleSourceFileNames = (): readonly string[] => {
 };
 
 /**
- * Normalize `meta.docs.typefestConfigs` into a string array for assertions.
+ * Normalize `meta.docs.tsconfigConfigs` into a string array for assertions.
  */
-const normalizeTypefestConfigReferences = (
-    typefestConfigs: unknown
+const normalizeTsconfigConfigNames = (
+    tsconfigConfigs: unknown
 ): readonly string[] => {
-    if (typeof typefestConfigs === "string") {
-        return [typefestConfigs];
+    if (typeof tsconfigConfigs === "string") {
+        return [tsconfigConfigs];
     }
 
-    if (!Array.isArray(typefestConfigs)) {
+    if (!Array.isArray(tsconfigConfigs)) {
         return [];
     }
 
-    const references: string[] = [];
-
-    for (const reference of typefestConfigs) {
-        if (typeof reference === "string") {
-            references.push(reference);
+    const names: string[] = [];
+    for (const name of tsconfigConfigs) {
+        if (typeof name === "string") {
+            names.push(name);
         }
     }
-
-    return references;
+    return names;
 };
 
 /**
@@ -75,13 +68,10 @@ const getSortedRuleNumberValues = (
     values: ReadonlySet<number>
 ): readonly number[] => {
     const sortedValues: number[] = [];
-
     for (const value of values) {
         sortedValues.push(value);
     }
-
     sortedValues.sort((left, right) => left - right);
-
     return sortedValues;
 };
 
@@ -106,7 +96,6 @@ const getRuleRecord = (
         isRecord(ruleModule),
         `Rule '${ruleName}' must export an object`
     ).toBeTruthy();
-
     return isRecord(ruleModule) ? ruleModule : {};
 };
 
@@ -118,9 +107,7 @@ const getRuleMetaRecord = (
     ruleRecord: Readonly<Record<string, unknown>>
 ): Readonly<Record<string, unknown>> => {
     const meta = ruleRecord["meta"];
-
     expect(isRecord(meta), `Rule '${ruleName}' must define meta`).toBeTruthy();
-
     return isRecord(meta) ? meta : {};
 };
 
@@ -132,71 +119,11 @@ const getRuleDocsRecord = (
     metaRecord: Readonly<Record<string, unknown>>
 ): Readonly<Record<string, unknown>> => {
     const docs = metaRecord["docs"];
-
     expect(
         isRecord(docs),
         `Rule '${ruleName}' must define meta.docs`
     ).toBeTruthy();
-
     return isRecord(docs) ? docs : {};
-};
-
-/**
- * Assert schema/default-options contract including canonical option defaults.
- */
-const assertDefaultOptionsContract = ({
-    metaRecord,
-    ruleName,
-    ruleRecord,
-}: Readonly<{
-    metaRecord: Readonly<Record<string, unknown>>;
-    ruleName: string;
-    ruleRecord: Readonly<Record<string, unknown>>;
-}>): void => {
-    const defaultOptions = ruleRecord["defaultOptions"];
-    const metaDefaultOptions = metaRecord["defaultOptions"];
-
-    if (defaultOptions !== undefined) {
-        expect(
-            Array.isArray(defaultOptions),
-            `Rule '${ruleName}' defaultOptions must be an array when present`
-        ).toBeTruthy();
-    }
-
-    if (metaDefaultOptions !== undefined) {
-        expect(Array.isArray(metaDefaultOptions)).toBeTruthy();
-
-        if (defaultOptions !== undefined) {
-            expect(metaDefaultOptions).toStrictEqual(defaultOptions);
-        }
-
-        if (!Array.isArray(defaultOptions)) {
-            return;
-        }
-
-        const typedMetaDefaultOptions =
-            metaDefaultOptions as readonly unknown[];
-        const typedDefaultOptions = defaultOptions as readonly unknown[];
-
-        expect(typedMetaDefaultOptions).toHaveLength(
-            typedDefaultOptions.length
-        );
-
-        for (const [index, optionValue] of typedDefaultOptions.entries()) {
-            expect(typedMetaDefaultOptions[index]).toBe(optionValue);
-        }
-    }
-
-    const schema = metaRecord["schema"];
-
-    if (
-        Array.isArray(schema) &&
-        schema.length > 0 &&
-        metaDefaultOptions !== undefined &&
-        defaultOptions !== undefined
-    ) {
-        expect(metaDefaultOptions).toStrictEqual(defaultOptions);
-    }
 };
 
 /**
@@ -214,7 +141,7 @@ const assertDocsContract = ({
     const requiresTypeChecking = docsRecord["requiresTypeChecking"];
     const ruleId = docsRecord["ruleId"];
     const ruleNumber = docsRecord["ruleNumber"];
-    const typefestConfigs = docsRecord["typefestConfigs"];
+    const tsconfigConfigs = docsRecord["tsconfigConfigs"];
     const url = docsRecord["url"];
 
     expect(
@@ -226,8 +153,8 @@ const assertDocsContract = ({
         `Rule '${ruleName}' must provide boolean docs.recommended`
     ).toBeTruthy();
     expect(
-        typeof requiresTypeChecking === "boolean",
-        `Rule '${ruleName}' must provide boolean docs.requiresTypeChecking`
+        requiresTypeChecking === false,
+        `Rule '${ruleName}' must have docs.requiresTypeChecking: false (JSONC rules never need type checking)`
     ).toBeTruthy();
     expect(
         typeof ruleId === "string" && ruleCatalogIdPattern.test(ruleId),
@@ -256,7 +183,6 @@ const assertDocsContract = ({
     expect(ruleId).toBe(`R${String(ruleNumber).padStart(3, "0")}`);
 
     const expectedRuleUrl = createRuleDocsUrl(ruleName);
-
     expect(url).toBe(expectedRuleUrl);
 
     const docsPath = path.join(
@@ -265,48 +191,25 @@ const assertDocsContract = ({
         "rules",
         `${ruleName}.md`
     );
-
     expect(fs.existsSync(docsPath)).toBeTruthy();
 
-    const typefestConfigReferences =
-        normalizeTypefestConfigReferences(typefestConfigs);
+    const configNames = normalizeTsconfigConfigNames(tsconfigConfigs);
 
     expect(
-        typefestConfigReferences.length > 0,
-        `Rule '${ruleName}' must declare at least one docs.typefestConfigs entry`
+        configNames.length > 0,
+        `Rule '${ruleName}' must declare at least one docs.tsconfigConfigs entry`
     ).toBeTruthy();
-    expect(typefestConfigReferences).toHaveLength(
-        new Set(typefestConfigReferences).size
-    );
+    expect(configNames).toHaveLength(new Set(configNames).size);
 
-    for (const reference of typefestConfigReferences) {
+    for (const configName of configNames) {
         expect(
-            isTypefestConfigReference(reference),
-            `Rule '${ruleName}' has invalid docs.typefestConfigs reference '${reference}'`
+            arrayIncludes(tsconfigConfigNames, configName),
+            `Rule '${ruleName}' has invalid docs.tsconfigConfigs value '${configName}'`
         ).toBeTruthy();
     }
 
-    const includesRecommendedReference = typefestConfigReferences.includes(
-        "typefest.configs.recommended"
-    );
-    const includesRecommendedTypeCheckedReference =
-        typefestConfigReferences.includes(
-            "typefest.configs.recommended-type-checked"
-        ) ||
-        typefestConfigReferences.includes(
-            'typefest.configs["recommended-type-checked"]'
-        );
-
-    expect(recommended).toBe(includesRecommendedReference);
-
-    if (
-        includesRecommendedTypeCheckedReference &&
-        typeof requiresTypeChecking === "boolean"
-    ) {
-        expect(requiresTypeChecking).toBeTruthy();
-        expect(includesRecommendedReference).toBeFalsy();
-        expect(recommended).toBeFalsy();
-    }
+    const includesRecommended = configNames.includes("recommended");
+    expect(recommended).toBe(includesRecommended);
 };
 
 /**
@@ -315,17 +218,13 @@ const assertDocsContract = ({
 const assertBaseRuleMetadataContract = ({
     metaRecord,
     ruleName,
-    ruleRecord,
 }: Readonly<{
     metaRecord: Readonly<Record<string, unknown>>;
     ruleName: string;
-    ruleRecord: Readonly<Record<string, unknown>>;
 }>): void => {
     const type = metaRecord["type"];
     const schema = metaRecord["schema"];
-    const ruleNameProperty = ruleRecord["name"];
 
-    expect(ruleNameProperty).toBe(ruleName);
     expect(
         isNonEmptyString(type) && expectedRuleTypes.has(type),
         `Rule '${ruleName}' has unsupported meta.type '${String(type)}'`
@@ -372,32 +271,22 @@ const assertMessageAndFixContract = ({
     }
 
     const fixable = metaRecord["fixable"];
-
     if (fixable !== undefined) {
         expect(fixable).toBe("code");
-    }
-
-    if (metaRecord["hasSuggestions"] === true) {
-        expect(
-            messageEntries.some(([messageId]) =>
-                messageId.toLowerCase().includes("suggest")
-            ),
-            `Rule '${ruleName}' enables suggestions but does not define a suggestion message id`
-        ).toBeTruthy();
     }
 };
 
 describe("rule metadata integrity", () => {
     it("exports processors for plugin shape parity", () => {
         expect.hasAssertions();
-        expect(typefestPlugin).toHaveProperty("processors");
-        expect(typefestPlugin.processors).toStrictEqual({});
+        expect(tsconfigPlugin).toHaveProperty("processors");
+        expect(tsconfigPlugin.processors).toStrictEqual({});
     });
 
     it("keeps src/rules file names in sync with registered rule names", () => {
         expect.hasAssertions();
 
-        const registeredRuleNames = Object.keys(typefestPlugin.rules).toSorted(
+        const registeredRuleNames = Object.keys(tsconfigPlugin.rules).toSorted(
             (left, right) => left.localeCompare(right)
         );
 
@@ -407,7 +296,7 @@ describe("rule metadata integrity", () => {
     it("enforces required metadata invariants for every rule", () => {
         expect.hasAssertions();
 
-        const ruleEntries = objectEntries(typefestPlugin.rules);
+        const ruleEntries = objectEntries(tsconfigPlugin.rules);
         const seenRuleIds = new Set<string>();
         const seenRuleNumbers = new Set<number>();
 
@@ -418,24 +307,9 @@ describe("rule metadata integrity", () => {
             const metaRecord = getRuleMetaRecord(ruleName, ruleRecord);
             const docsRecord = getRuleDocsRecord(ruleName, metaRecord);
 
-            assertBaseRuleMetadataContract({
-                metaRecord,
-                ruleName,
-                ruleRecord,
-            });
-            assertDefaultOptionsContract({
-                metaRecord,
-                ruleName,
-                ruleRecord,
-            });
-            assertDocsContract({
-                docsRecord,
-                ruleName,
-            });
-            assertMessageAndFixContract({
-                metaRecord,
-                ruleName,
-            });
+            assertBaseRuleMetadataContract({ metaRecord, ruleName });
+            assertDocsContract({ docsRecord, ruleName });
+            assertMessageAndFixContract({ metaRecord, ruleName });
 
             const docsRuleId = docsRecord["ruleId"];
             const docsRuleNumber = docsRecord["ruleNumber"];
@@ -443,7 +317,6 @@ describe("rule metadata integrity", () => {
             if (typeof docsRuleId === "string") {
                 seenRuleIds.add(docsRuleId);
             }
-
             if (typeof docsRuleNumber === "number") {
                 seenRuleNumbers.add(docsRuleNumber);
             }

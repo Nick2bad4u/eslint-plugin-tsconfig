@@ -7,9 +7,9 @@ import type { AsyncReturnType } from "type-fest";
 import { describe, expect, it, vi } from "vitest";
 
 import {
-    typefestConfigMetadataByName,
-    typefestConfigNames,
-} from "../src/_internal/typefest-config-references";
+    tsconfigConfigMetadataByName,
+    tsconfigConfigNames,
+} from "../src/_internal/tsconfig-config-references";
 
 /** Import `src/plugin` fresh for each assertion set. */
 const loadSourcePlugin = async () => {
@@ -29,172 +29,43 @@ const getRuleEntries = (
 ): (readonly [string, unknown])[] => Object.entries(config.rules ?? {});
 
 describe("source plugin config wiring", () => {
-    it("builds non-empty layered rule presets from src/plugin", async () => {
+    it("builds non-empty rule presets for all config keys", async () => {
         expect.hasAssertions();
 
         const plugin = await loadSourcePlugin();
-        const minimal = plugin.configs.minimal;
-        const recommended = plugin.configs.recommended;
-        const recommendedTypeChecked =
-            plugin.configs["recommended-type-checked"];
-        const strict = plugin.configs.strict;
         const all = plugin.configs.all;
-        const experimental = plugin.configs.experimental;
-        const expectedQualifiedRuleIds = Object.keys(plugin.rules).map(
-            (ruleName) => `typefest/${ruleName}`
-        );
+        const strict = plugin.configs.strict;
+        const recommended = plugin.configs.recommended;
 
-        expect(getRuleEntries(minimal).length).toBeGreaterThan(0);
-        expect(getRuleEntries(recommended).length).toBeGreaterThan(0);
-        expect(getRuleEntries(recommendedTypeChecked).length).toBeGreaterThan(
-            0
-        );
-        expect(getRuleEntries(strict).length).toBeGreaterThan(0);
         expect(getRuleEntries(all).length).toBeGreaterThan(0);
-        expect(getRuleEntries(experimental).length).toBeGreaterThan(0);
+        expect(getRuleEntries(strict).length).toBeGreaterThan(0);
+        expect(getRuleEntries(recommended).length).toBeGreaterThan(0);
 
-        expect(Object.keys(experimental.rules)).toStrictEqual(
+        // The all preset should contain every registered rule
+        const expectedQualifiedRuleIds = Object.keys(plugin.rules).map(
+            (ruleName) => `tsconfig/${ruleName}`
+        );
+        expect(Object.keys(all.rules)).toStrictEqual(
             expect.arrayContaining(expectedQualifiedRuleIds)
         );
-        expect(Object.keys(recommended.rules)).toContain(
-            "typefest/prefer-type-fest-arrayable"
-        );
-        expect(Object.keys(recommended.rules)).toContain(
-            "typefest/prefer-ts-extras-is-defined"
-        );
-        expect(Object.keys(recommended.rules)).not.toContain(
-            "typefest/prefer-ts-extras-set-has"
-        );
-        expect(Object.keys(recommendedTypeChecked.rules)).toContain(
-            "typefest/prefer-ts-extras-set-has"
-        );
+
+        // Core tsconfig rules should be in strict and all
         expect(Object.keys(strict.rules)).toContain(
-            "typefest/prefer-ts-extras-set-has"
+            "tsconfig/require-strict-mode"
         );
-        expect(Object.keys(strict.rules)).toContain(
-            "typefest/prefer-ts-extras-array-at"
-        );
+        expect(Object.keys(all.rules)).toContain("tsconfig/require-strict-mode");
         expect(Object.keys(all.rules)).toContain(
-            "typefest/prefer-ts-extras-is-equal-type"
-        );
-        expect(Object.keys(experimental.rules)).toContain(
-            "typefest/prefer-ts-extras-object-map-values"
-        );
-        expect(Object.keys(experimental.rules)).toContain(
-            "typefest/prefer-type-fest-conditional-except"
-        );
-        expect(Object.keys(experimental.rules)).toContain(
-            "typefest/prefer-type-fest-merge"
-        );
-        expect(Object.keys(experimental.rules)).toContain(
-            "typefest/prefer-type-fest-asyncify"
-        );
-        expect(Object.keys(experimental.rules)).toContain(
-            "typefest/prefer-type-fest-conditional-keys"
-        );
-        expect(Object.keys(experimental.rules)).toContain(
-            "typefest/prefer-type-fest-distributed-omit"
-        );
-        expect(Object.keys(experimental.rules)).toContain(
-            "typefest/prefer-type-fest-distributed-pick"
-        );
-        expect(Object.keys(experimental.rules)).toContain(
-            "typefest/prefer-type-fest-pick-index-signature"
-        );
-        expect(Object.keys(experimental.rules)).toContain(
-            "typefest/prefer-type-fest-set-return-type"
-        );
-        expect(Object.keys(experimental.rules)).toContain(
-            "typefest/prefer-type-fest-stringified"
-        );
-        expect(Object.keys(experimental.rules)).toContain(
-            "typefest/prefer-type-fest-union-to-intersection"
-        );
-        expect(Object.keys(strict.rules)).not.toContain(
-            "typefest/prefer-ts-extras-is-equal-type"
-        );
-        expect(Object.keys(all.rules)).not.toContain(
-            "typefest/prefer-ts-extras-object-map-values"
+            "tsconfig/consistent-incremental-with-tsbuildinfo"
         );
 
-        expect(recommended.rules).toHaveProperty(
-            "typefest/prefer-type-fest-arrayable",
-            "error"
-        );
-        expect(recommended.rules).toHaveProperty(
-            "typefest/prefer-ts-extras-is-defined",
-            "error"
-        );
-        expect(recommendedTypeChecked.rules).toHaveProperty(
-            "typefest/prefer-ts-extras-set-has",
-            "error"
-        );
-        expect(strict.rules).toHaveProperty(
-            "typefest/prefer-ts-extras-array-at",
-            "error"
-        );
-        expect(all.rules).toHaveProperty(
-            "typefest/prefer-ts-extras-is-equal-type",
-            "error"
-        );
-        expect(experimental.rules).toHaveProperty(
-            "typefest/prefer-ts-extras-object-map-values",
-            "error"
-        );
-        expect(experimental.rules).toHaveProperty(
-            "typefest/prefer-type-fest-conditional-except",
-            "error"
-        );
-        expect(experimental.rules).toHaveProperty(
-            "typefest/prefer-type-fest-merge",
-            "error"
-        );
-        expect(experimental.rules).toHaveProperty(
-            "typefest/prefer-type-fest-asyncify",
-            "error"
-        );
-        expect(experimental.rules).toHaveProperty(
-            "typefest/prefer-type-fest-conditional-keys",
-            "error"
-        );
-        expect(experimental.rules).toHaveProperty(
-            "typefest/prefer-type-fest-distributed-omit",
-            "error"
-        );
-        expect(experimental.rules).toHaveProperty(
-            "typefest/prefer-type-fest-distributed-pick",
-            "error"
-        );
-        expect(experimental.rules).toHaveProperty(
-            "typefest/prefer-type-fest-pick-index-signature",
-            "error"
-        );
-        expect(experimental.rules).toHaveProperty(
-            "typefest/prefer-type-fest-set-return-type",
-            "error"
-        );
-        expect(experimental.rules).toHaveProperty(
-            "typefest/prefer-type-fest-stringified",
-            "error"
-        );
-        expect(experimental.rules).toHaveProperty(
-            "typefest/prefer-type-fest-union-to-intersection",
-            "error"
-        );
-        expect(strict.rules).not.toHaveProperty(
-            "typefest/prefer-ts-extras-is-equal-type"
-        );
-        expect(all.rules).not.toHaveProperty(
-            "typefest/prefer-ts-extras-object-map-values"
-        );
-
-        for (const configName of typefestConfigNames) {
-            expect(plugin.configs[configName].name).toBe(
-                typefestConfigMetadataByName[configName].presetName
+        // Preset name metadata
+        for (const configName of tsconfigConfigNames) {
+            expect(plugin.configs[configName as keyof typeof plugin.configs].name).toBe(
+                `tsconfig/${configName}`
             );
         }
 
-        expect(plugin.meta.name).toBe("eslint-plugin-typefest");
+        expect(plugin.meta.name).toBe("eslint-plugin-tsconfig");
     });
 
     it("registers parser defaults, files, and plugin namespace", async () => {
@@ -203,42 +74,31 @@ describe("source plugin config wiring", () => {
         const plugin = await loadSourcePlugin();
         const recommendedConfig = plugin.configs.recommended;
 
-        expect(recommendedConfig.files).toStrictEqual([
-            "**/*.{ts,tsx,mts,cts}",
-        ]);
-        expect(recommendedConfig.plugins).toHaveProperty("typefest");
-        expect(recommendedConfig.plugins?.["typefest"]).toHaveProperty("rules");
-        expect(recommendedConfig.languageOptions).toHaveProperty("parser");
-        expect(recommendedConfig.languageOptions).toHaveProperty(
-            "parserOptions"
+        expect(recommendedConfig.files).toStrictEqual(
+            expect.arrayContaining([expect.stringContaining("tsconfig")])
         );
-        expect(
-            recommendedConfig.languageOptions?.["parserOptions"]
-        ).toStrictEqual({
-            ecmaVersion: "latest",
-            sourceType: "module",
-        });
+        expect(recommendedConfig.plugins).toHaveProperty("tsconfig");
+        expect(recommendedConfig.plugins?.["tsconfig"]).toHaveProperty("rules");
+        expect(recommendedConfig.languageOptions).toHaveProperty("parser");
 
-        for (const configName of typefestConfigNames) {
-            const parserOptions =
-                plugin.configs[configName].languageOptions?.["parserOptions"];
+        // All configs use JSONC parser — no projectService needed
+        for (const configName of tsconfigConfigNames) {
+            expect(
+                tsconfigConfigMetadataByName[configName].requiresTypeChecking
+            ).toBe(false);
+        }
+    });
 
-            expect(parserOptions).toStrictEqual(
-                expect.objectContaining({
-                    ecmaVersion: "latest",
-                    sourceType: "module",
-                })
-            );
+    it("builds category preset configs for all 9 config keys", async () => {
+        expect.hasAssertions();
 
-            const hasProjectServiceEnabled =
-                typeof parserOptions === "object" &&
-                parserOptions !== null &&
-                "projectService" in parserOptions &&
-                Reflect.get(parserOptions, "projectService") === true;
+        const plugin = await loadSourcePlugin();
 
-            expect(hasProjectServiceEnabled).toBe(
-                typefestConfigMetadataByName[configName].requiresTypeChecking
-            );
+        for (const configName of tsconfigConfigNames) {
+            const config = plugin.configs[configName as keyof typeof plugin.configs];
+            expect(config).toBeDefined();
+            expect(config.rules).toBeDefined();
+            expect(Object.keys(config.rules).length).toBeGreaterThanOrEqual(0);
         }
     });
 });

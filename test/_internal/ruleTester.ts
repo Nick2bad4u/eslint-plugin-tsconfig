@@ -1,16 +1,16 @@
 /**
  * @packageDocumentation
- * Shared testing utilities for eslint-plugin-typefest RuleTester and Vitest suites.
+ * Shared testing utilities for eslint-plugin-tsconfig RuleTester and Vitest suites.
  */
 import type { UnknownArray, UnknownRecord } from "type-fest";
 
-import tsParser from "@typescript-eslint/parser";
+import * as jsoncParser from "jsonc-eslint-parser";
 import { RuleTester } from "@typescript-eslint/rule-tester";
 import * as path from "node:path";
 import pc from "picocolors";
 import { afterAll, describe, it } from "vitest";
 
-import typefestPlugin from "../../src/plugin";
+import tsconfigPlugin from "../../src/plugin";
 
 /** Shared timeout applied to RuleTester-generated Vitest cases. */
 const ruleTesterCaseTimeoutMilliseconds = 120_000;
@@ -260,7 +260,11 @@ export const repoPath = (...segments: readonly string[]): string =>
     path.join(process.cwd(), ...segments);
 
 /**
- * Create a RuleTester instance configured for TypeScript parser usage.
+ * Create a RuleTester instance configured for JSONC parser usage.
+ *
+ * @remarks
+ * All `eslint-plugin-tsconfig` rules analyze `tsconfig*.json` files as JSONC
+ * ASTs, so every RuleTester suite must use `jsonc-eslint-parser`.
  *
  * @returns Configured RuleTester instance.
  */
@@ -268,11 +272,7 @@ export const createRuleTester = (): RuleTester =>
     applySharedRuleTesterRunBehavior(
         new RuleTester({
             languageOptions: {
-                parser: tsParser,
-                parserOptions: {
-                    ecmaVersion: "latest",
-                    sourceType: "module",
-                },
+                parser: jsoncParser,
             },
         })
     );
@@ -307,15 +307,15 @@ const isRuleModule = (value: unknown): value is PluginRuleModule => {
 /**
  * Lookup a rule module from the plugin by its unqualified rule id.
  *
- * @param ruleId - Rule id without the `typefest/` prefix.
+ * @param ruleId - Rule id without the `tsconfig/` prefix.
  *
  * @returns Matching RuleTester-compatible rule module.
  */
 export const getPluginRule = (ruleId: string): PluginRuleModule => {
-    const { rules } = typefestPlugin;
+    const { rules } = tsconfigPlugin;
     const dynamicRules = rules as UnknownRecord;
     if (!Object.hasOwn(dynamicRules, ruleId)) {
-        throw new Error(`Rule '${ruleId}' is not registered in typefestPlugin`);
+        throw new Error(`Rule '${ruleId}' is not registered in tsconfigPlugin`);
     }
 
     const rule = dynamicRules[ruleId];
