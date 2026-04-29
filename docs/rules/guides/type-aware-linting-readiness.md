@@ -1,105 +1,144 @@
 ---
-title: Type-aware linting readiness
-description: Checklist and rollout playbook for enabling type-aware eslint-plugin-tsconfig rules safely.
+title: Parser and scope readiness
+description: Checklist for configuring eslint-plugin-tsconfig parser scope and file targeting correctly.
 ---
 
-# Type-aware linting readiness
+# Parser and scope readiness
 
-Use this guide before enabling type-aware presets or rules in a large codebase.
+Use this guide before enabling `eslint-plugin-tsconfig` rules to ensure the parser and file-targeting are
+configured correctly.
+
+> **No type-aware rules.** `eslint-plugin-tsconfig` rules operate on `tsconfig.json` file structure using
+> `jsonc-eslint-parser`. None of them require TypeScript type services. You do not need `projectService`
+> or `@typescript-eslint/parser` wired for typed linting just to use this plugin.
 
 ## When this guide applies
 
-Use this checklist when adopting:
+Use this checklist when:
 
-- `recommended-type-checked`
-- `strict` or `all` in projects with type-aware rules
-- `ts-extras/type-guards`
+- Adding `eslint-plugin-tsconfig` to an existing ESLint setup for the first time.
+- Linting runs are not reporting on `tsconfig.json` files even though the plugin is installed.
+- You want to confirm file targeting is scoped correctly in a monorepo.
 
 ## Readiness checklist
 
-### 1) Parser-service availability
+### 1) Parser assignment
 
-Confirm the lint runtime can provide full type services:
+Rules in this plugin require `jsonc-eslint-parser` to be active for `tsconfig*.json` files.
+Confirm your flat config applies it to the right files:
 
-- ESLint uses `@typescript-eslint/parser`
-- your lint config resolves the intended `tsconfig`(s)
-- the targeted files are included in those `tsconfig`(s)
+```ts
+import tsconfig from "eslint-plugin-tsconfig";
 
-### 2) Project graph stability
-
-Before enabling strict typed checks:
-
-- `npm run typecheck` is green
-- baseline linting is green (or has a controlled known backlog)
-- generated types/artifacts are not stale
-
-### 3) Performance baseline
-
-Capture a baseline to detect regressions:
-
-```bash
-npx eslint "src/**/*.{ts,tsx}" --stats
+export default [
+  // The plugin's preset configs already configure the parser and files scope.
+  tsconfig.configs.recommended,
+];
 ```
 
-Track:
+If you are applying rules manually rather than through a preset, wire the parser explicitly:
 
-- total runtime
-- expensive files
-- hot rules that call type-checker operations frequently
+```ts
+import tsconfig from "eslint-plugin-tsconfig";
+import jsoncParser from "jsonc-eslint-parser";
+
+export default [
+  {
+    files: ["**/tsconfig*.json"],
+    languageOptions: { parser: jsoncParser },
+    plugins: { tsconfig },
+    rules: {
+      "tsconfig/require-strict-mode": "error",
+    },
+  },
+];
+```
+
+### 2) File glob coverage
+
+Confirm the files glob includes every `tsconfig*.json` file you intend to lint:
+
+- Root: `tsconfig.json`, `tsconfig.build.json`, `tsconfig.test.json`, etc.
+- Monorepo: `packages/*/tsconfig*.json`, `apps/*/tsconfig*.json`.
+
+Check which files ESLint is actually processing:
+
+```bash
+npx eslint "tsconfig*.json" --debug 2>&1 | grep "Processing"
+```
+
+### 3) Preset configuration sanity check
+
+Run a quick targeted lint to confirm rules fire correctly:
+
+```bash
+npx eslint tsconfig.json
+```
+
+An empty output (no errors/warnings) means the tsconfig is compliant with the active preset.
+An `"All files matched by ... are ignored"` message means the file glob or parser wiring needs adjustment.
 
 ### 4) CI gate ordering
 
-Prefer this order:
+In CI pipelines, these checks complement each other but are independent:
 
-1. typecheck
-2. lint (typed rules enabled)
-3. tests
+```text
+typecheck  →  (TypeScript compiler checks types)
+lint       →  (ESLint lints tsconfig*.json files via this plugin + other source files)
+test       →  (Vitest/Jest runs unit and integration tests)
+```
 
-This keeps typed-service failures easy to classify.
+Lint failures from this plugin indicate tsconfig configuration problems, not type errors.
 
-## Recommended rollout sequence
+## Monorepo considerations
 
-1. Start with one package/folder.
-2. Enable type-aware rules as `warn` first.
-3. Fix baseline findings in small batches.
-4. Promote to `error` once the scope stays green.
-5. Expand scope incrementally.
+In monorepos, run the lint check from each package root, or scope the file glob to cover all packages:
+
+```ts
+{
+  files: ["tsconfig*.json", "packages/*/tsconfig*.json"],
+}
+```
+
+Some monorepo configs extend a root `tsconfig.base.json`. Rules apply per-file, so the root base config
+is linted independently from each package's extending config.
 
 ## Fast validation commands
 
 ```bash
-npm run typecheck
+# Lint all tsconfig files in the repo
+npx eslint "tsconfig*.json" "packages/*/tsconfig*.json"
+
+# Full lint + typecheck + test cycle
 npm run lint
+npm run typecheck
 npm run test
-```
-
-For focused typed checks during migration:
-
-```bash
-npx eslint "src/**/*.{ts,tsx}" --stats
 ```
 
 ## Common failure modes
 
-### "Typed rule requires type information"
+### Rules not reporting on tsconfig.json
 
 Likely causes:
 
-- file not included in the active `tsconfig`
-- parser-service wiring mismatch for the current workspace
-- incorrect project root assumptions in local/CI lint execution
+- `jsonc-eslint-parser` is not configured for the file pattern.
+- The file is matched by an ESLint `ignores` glob.
+- The plugin is loaded but no preset or rule config is active.
 
-### Large runtime regressions
+**Fix:** Confirm the flat config has a matching `files` pattern with `jsonc-eslint-parser` assigned, and
+that the plugin rules are explicitly enabled or a preset is applied.
+
+### "All files matched by ... are ignored"
 
 Likely causes:
 
-- expensive semantic checks on broad selectors
-- repeated checker calls without syntax prefilters
-- too-large rollout scope for first pass
+- `tsconfig.json` is listed in `.eslintignore` or an `ignores` array.
+- The file is outside the directory scope where ESLint is run.
+
+**Fix:** Remove the file from the ignore list, or run ESLint from the correct working directory.
 
 ## Related docs
 
 - [Rollout and fix safety](./rollout-and-fix-safety.md)
 - [Rule adoption checklist](./adoption-checklist.md)
 - [Preset selection strategy](./preset-selection-strategy.md)
-- [Typed service path inventory](https://nick2bad4u.github.io/eslint-plugin-tsconfig/docs/developer/typed-paths)

@@ -8,16 +8,17 @@ description: Preset reference and selection guide for eslint-plugin-tsconfig.
 Use one of these presets based on how aggressively you want to enforce plugin rules.
 
 - `Preset key` legend:
-  - [🟢](../presets/minimal.md) — [`tsconfig.configs.minimal`](../presets/minimal.md)
-  - [🟡](../presets/recommended.md) — [`tsconfig.configs.recommended`](../presets/recommended.md)
-  - [🟠](../presets/recommended-type-checked.md) — [`tsconfig.configs["recommended-type-checked"]`](../presets/recommended-type-checked.md)
-  - [🔴](../presets/strict.md) — [`tsconfig.configs.strict`](../presets/strict.md)
-  - [�](../presets/strictest.md) — [`tsconfig.configs.strictest`](../presets/strictest.md)
-  - [🟢](../presets/jsconfig.md) — [`tsconfig.configs.jsconfig`](../presets/jsconfig.md)
-  - [�🟣](../presets/all.md) — [`tsconfig.configs.all`](../presets/all.md)
-  - [🧪](../presets/experimental.md) — [`tsconfig.configs.experimental`](../presets/experimental.md)
-  - [💠](../presets/type-fest-types.md) — [`tsconfig.configs["type-fest/types"]`](../presets/type-fest-types.md)
-  - [✴️](../presets/ts-extras-type-guards.md) — [`tsconfig.configs["ts-extras/type-guards"]`](../presets/ts-extras-type-guards.md)
+  - [�](./recommended.md) — [`tsconfig.configs.recommended`](./recommended.md)
+  - [🔴](./strict.md) — [`tsconfig.configs.strict`](./strict.md)
+  - [💎](./strictest.md) — [`tsconfig.configs.strictest`](./strictest.md)
+  - [🟢](./jsconfig.md) — [`tsconfig.configs.jsconfig`](./jsconfig.md)
+  - [🟣](./all.md) — [`tsconfig.configs.all`](./all.md)
+  - [🔒](./strict-mode.md) — [`tsconfig.configs["strict-mode"]`](./strict-mode.md)
+  - [📤](./emit-config.md) — [`tsconfig.configs["emit-config"]`](./emit-config.md)
+  - [🧹](./include-hygiene.md) — [`tsconfig.configs["include-hygiene"]`](./include-hygiene.md)
+  - [🎯](./lib-target.md) — [`tsconfig.configs["lib-target"]`](./lib-target.md)
+  - [📦](./module-resolution.md) — [`tsconfig.configs["module-resolution"]`](./module-resolution.md)
+  - [🔗](./project-references.md) — [`tsconfig.configs["project-references"]`](./project-references.md)
 
 Each preset page in this section includes:
 

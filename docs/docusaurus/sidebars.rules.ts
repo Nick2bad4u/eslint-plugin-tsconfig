@@ -98,7 +98,7 @@ const sidebars = {
                 },
                 {
                     id: "guides/type-aware-linting-readiness",
-                    label: "🧪 Type-aware linting readiness",
+                    label: "🔌 Parser and scope readiness",
                     type: "doc",
                 },
             ],
