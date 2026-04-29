@@ -10,22 +10,22 @@ import consistentTargetAndLib from "../rules/consistent-target-and-lib.js";
 import noAllowjsWithoutCheckjs from "../rules/no-allowjs-without-checkjs.js";
 import noDeclarationOnlyWithoutDeclaration from "../rules/no-declaration-only-without-declaration.js";
 import noDeprecatedTarget from "../rules/no-deprecated-target.js";
-import noInlineSourceMap from "../rules/no-inline-source-map.js";
-import noLegacyModuleDetection from "../rules/no-legacy-module-detection.js";
 import noDisableStrictSubset from "../rules/no-disable-strict-subset.js";
 import noEmitInRootConfig from "../rules/no-emit-in-root-config.js";
 import noEsmoduleinteropWithVerbatim from "../rules/no-esmoduleinterop-with-verbatim.js";
 import noEsnextTargetInLibrary from "../rules/no-esnext-target-in-library.js";
 import noIncludeDist from "../rules/no-include-dist.js";
 import noIncludeNodeModules from "../rules/no-include-node-modules.js";
+import noInlineSourceMap from "../rules/no-inline-source-map.js";
+import noLegacyModuleDetection from "../rules/no-legacy-module-detection.js";
 import noLegacyModuleResolution from "../rules/no-legacy-module-resolution.js";
 import noRootdirIncludesOutdir from "../rules/no-rootdir-includes-outdir.js";
 import noSkipLibCheck from "../rules/no-skip-lib-check.js";
 import noSuppressImplicitAnyIndexErrors from "../rules/no-suppress-implicit-any-index-errors.js";
 import requireBundlerModuleResolution from "../rules/require-bundler-module-resolution.js";
 import requireCompositeForReferences from "../rules/require-composite-for-references.js";
-import requireDeclarationWithComposite from "../rules/require-declaration-with-composite.js";
 import requireDeclarationMap from "../rules/require-declaration-map.js";
+import requireDeclarationWithComposite from "../rules/require-declaration-with-composite.js";
 import requireDownlevelIterationWithIterators from "../rules/require-downlevel-iteration-with-iterators.js";
 import requireExactOptionalPropertyTypes from "../rules/require-exact-optional-property-types.js";
 import requireExcludeCommonArtifacts from "../rules/require-exclude-common-artifacts.js";
@@ -71,8 +71,8 @@ const tsconfigRuleRegistry: Readonly<Record<string, JsoncRuleModule>> = {
     "no-suppress-implicit-any-index-errors": noSuppressImplicitAnyIndexErrors,
     "require-bundler-module-resolution": requireBundlerModuleResolution,
     "require-composite-for-references": requireCompositeForReferences,
-    "require-declaration-with-composite": requireDeclarationWithComposite,
     "require-declaration-map": requireDeclarationMap,
+    "require-declaration-with-composite": requireDeclarationWithComposite,
     "require-downlevel-iteration-with-iterators":
         requireDownlevelIterationWithIterators,
     "require-exact-optional-property-types": requireExactOptionalPropertyTypes,
