@@ -10,7 +10,13 @@ import parser from "@typescript-eslint/parser";
 import { existsSync } from "node:fs";
 import { readFile } from "node:fs/promises";
 import * as path from "node:path";
-import { objectEntries, objectValues, safeCastTo, arrayJoin    } from "ts-extras";
+import {
+    arrayJoin,
+    objectEntries,
+    objectValues,
+    safeCastTo,
+    setHas,
+} from "ts-extras";
 import { describe, expect, it } from "vitest";
 
 import tsconfigPlugin from "../src/plugin";
@@ -46,7 +52,9 @@ const ruleRequiresParseSafetyCoverage = (
 
 const collectRuleIdsRequiringParseSafety = (): readonly string[] => {
     const requiringCoverageRuleIds: string[] = [];
-    const ruleEntries = safeCastTo<RuleEntry[]>(objectEntries(tsconfigPlugin.rules));
+    const ruleEntries = safeCastTo<RuleEntry[]>(
+        objectEntries(tsconfigPlugin.rules)
+    );
 
     for (const [ruleId, ruleModule] of ruleEntries) {
         if (ruleRequiresParseSafetyCoverage(ruleModule)) {
@@ -107,9 +115,7 @@ const getCallExpressionName = (callee: unknown): null | string => {
     return `${objectRecord["name"]}.${propertyRecord["name"]}`;
 };
 
-const isObjectRecord = (
-    value: unknown
-): value is Readonly<UnknownRecord> =>
+const isObjectRecord = (value: unknown): value is Readonly<UnknownRecord> =>
     typeof value === "object" && value !== null;
 
 const enqueueChildNodes = ({
@@ -317,7 +323,7 @@ const containsCallToKnownFunction = ({
                     isObjectRecord(callExpressionCallee) &&
                     callExpressionCallee["type"] === "Identifier" &&
                     typeof callExpressionCallee["name"] === "string" &&
-                    knownFunctionNames.has(callExpressionCallee["name"])
+                    setHas(knownFunctionNames, callExpressionCallee["name"])
                 ) {
                     return true;
                 }
@@ -345,8 +351,10 @@ const collectParseDriverFunctionNames = ({
         shouldContinue = false;
 
         for (const [functionName, functionBody] of namedFunctionBodies) {
-            const shouldTryMarkAsParseDriver =
-                !parseDriverFunctionNames.has(functionName);
+            const shouldTryMarkAsParseDriver = !setHas(
+                parseDriverFunctionNames,
+                functionName
+            );
 
             if (
                 shouldTryMarkAsParseDriver &&
@@ -444,7 +452,7 @@ const createCallExpressionCoverageMarker = ({
 }>): CoverageMarker => ({
     description,
     matcher: (inspection) =>
-        inspection.observedCallExpressions.has(callExpressionName),
+        setHas(inspection.observedCallExpressions, callExpressionName),
 });
 
 const coverageMarkers: readonly CoverageMarker[] = [
@@ -498,7 +506,10 @@ const expectNoMissingRuleCoverage = ({
 }>): void => {
     expect(
         missingRuleIds,
-        `Missing ${markerDescription} coverage for: ${arrayJoin(missingRuleIds.toSorted((left, right) => left.localeCompare(right)), ", ")}`
+        `Missing ${markerDescription} coverage for: ${arrayJoin(
+            missingRuleIds.toSorted((left, right) => left.localeCompare(right)),
+            ", "
+        )}`
     ).toStrictEqual([]);
 };
 

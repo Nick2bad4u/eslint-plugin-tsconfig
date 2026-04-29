@@ -2,6 +2,7 @@
  * @packageDocumentation
  * Shared fast-check run configuration for property-based test suites.
  */
+import { setHas } from "ts-extras";
 
 type FastCheckAssertConfiguration = Readonly<{
     numRuns: number;
@@ -70,7 +71,7 @@ const reservedEcmascriptIdentifierNames = new Set<string>([
  */
 export const isSafeGeneratedIdentifier = (candidate: string): boolean =>
     generatedIdentifierPattern.test(candidate) &&
-    !reservedEcmascriptIdentifierNames.has(candidate);
+    !setHas(reservedEcmascriptIdentifierNames, candidate);
 
 /**
  * Prebuilt `fc.assert(..., options)` objects.

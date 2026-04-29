@@ -3,6 +3,8 @@
  * Shared helper for retrieving source slices by ESTree-compatible node range.
  */
 
+import type { UnknownRecord } from "type-fest";
+
 /**
  * Return source text for a node when a valid `[start, end]` range exists.
  *
@@ -11,7 +13,10 @@
  * @returns Sliced source text for the node range, or an empty string when the
  *   node is malformed or range-less.
  */
-import { arrayFirst } from "ts-extras";
+import { arrayFirst, isDefined, keyIn, safeCastTo } from "ts-extras";
+
+const isUnknownRecord = (value: unknown): value is UnknownRecord =>
+    typeof value === "object" && value !== null;
 
 export const getSourceTextForNode = ({
     code,
@@ -20,17 +25,21 @@ export const getSourceTextForNode = ({
     code: string;
     node: unknown;
 }>): string => {
-    if (typeof node !== "object" || node === null || !("range" in node)) {
+    if (!isUnknownRecord(node)) {
         return "";
     }
 
-    const nodeRange = (
-        node as Readonly<{
+    if (!keyIn(node, "range")) {
+        return "";
+    }
+
+    const nodeRange = safeCastTo<
+        Readonly<{
             range?: readonly [number, number];
         }>
-    ).range;
+    >(node).range;
 
-    if (nodeRange === undefined) {
+    if (!isDefined(nodeRange)) {
         return "";
     }
 

@@ -8,7 +8,7 @@ import parser from "@typescript-eslint/parser";
  */
 import * as fs from "node:fs";
 import * as path from "node:path";
-import { objectValues, stringSplit } from "ts-extras";
+import { arrayIncludes, objectValues, stringSplit } from "ts-extras";
 import { describe, expect, it } from "vitest";
 
 const broadListenerNodeKinds = [
@@ -77,7 +77,8 @@ const getBroadListenerMatch = (
 
     if (
         typeof propertyKeyName !== "string" ||
-        !broadListenerNodeKinds.includes(
+        !arrayIncludes(
+            broadListenerNodeKinds,
             propertyKeyName as (typeof broadListenerNodeKinds)[number]
         ) ||
         (nodeRecord["method"] !== true &&
@@ -166,7 +167,7 @@ const getBroadListenerViolationsForFile = (
     filePath: string
 ): readonly string[] => {
     const sourceText = fs.readFileSync(filePath, "utf8");
-    const sourceLines = sourceText.split(/\r?\n/v);
+    const sourceLines = stringSplit(sourceText.replaceAll("\r\n", "\n"), "\n");
     const relativeFilePath = path
         .relative(process.cwd(), filePath)
         .replaceAll("\\\\", "/");

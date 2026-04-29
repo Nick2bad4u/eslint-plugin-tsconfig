@@ -2,10 +2,9 @@
  * @packageDocumentation
  * Snapshot coverage for normalized rule metadata contracts.
  */
-import type { UnknownRecord } from "type-fest";
-import type { UnknownArray } from "type-fest";
+import type { UnknownArray, UnknownRecord } from "type-fest";
 
-import { objectEntries, objectKeys  } from "ts-extras";
+import { isDefined, objectEntries, objectKeys } from "ts-extras";
 import { describe, expect, it } from "vitest";
 
 import tsconfigPlugin from "../src/plugin";
@@ -77,7 +76,7 @@ const getNestedArray = (
 const getMessageIds = (
     messages: Readonly<UnknownRecord> | undefined
 ): readonly string[] => {
-    if (messages === undefined) {
+    if (!isDefined(messages)) {
         return [];
     }
 

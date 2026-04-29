@@ -3,8 +3,10 @@
  * Shared Markdown heading extraction helpers for docs tests.
  */
 
+import { stringSplit } from "ts-extras";
+
 const CODE_FENCE_DELIMITER = "```" as const;
-const LINE_BREAK_PATTERN = /\r?\n/v;
+const NORMALIZED_LINE_BREAK = "\n";
 
 /**
  * Parse Markdown headings for an exact level while skipping fenced code.
@@ -23,7 +25,9 @@ export const parseMarkdownHeadingsAtLevel = (
     const headings: string[] = [];
     let isInsideFencedCodeBlock = false;
 
-    for (const line of markdown.split(LINE_BREAK_PATTERN)) {
+    const normalizedMarkdown = markdown.replaceAll("\r\n", "\n");
+
+    for (const line of stringSplit(normalizedMarkdown, NORMALIZED_LINE_BREAK)) {
         const trimmedStartLine = line.trimStart();
 
         if (trimmedStartLine.startsWith(CODE_FENCE_DELIMITER)) {

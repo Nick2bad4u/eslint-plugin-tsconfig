@@ -8,7 +8,7 @@ import { RuleTester } from "@typescript-eslint/rule-tester";
 import * as jsoncParser from "jsonc-eslint-parser";
 import * as path from "node:path";
 import pc from "picocolors";
-import { arrayJoin, safeCastTo } from "ts-extras";
+import { arrayJoin, objectHasOwn, safeCastTo } from "ts-extras";
 import { afterAll, describe, it } from "vitest";
 
 import tsconfigPlugin from "../../src/plugin";
@@ -325,7 +325,7 @@ const isRuleModule = (value: unknown): value is PluginRuleModule => {
 export const getPluginRule = (ruleId: string): PluginRuleModule => {
     const { rules } = tsconfigPlugin;
     const dynamicRules = safeCastTo<UnknownRecord>(rules);
-    if (!Object.hasOwn(dynamicRules, ruleId)) {
+    if (!objectHasOwn(dynamicRules, ruleId)) {
         throw new Error(`Rule '${ruleId}' is not registered in tsconfigPlugin`);
     }
 

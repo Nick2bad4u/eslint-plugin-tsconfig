@@ -4,7 +4,13 @@
  */
 import * as fs from "node:fs";
 import * as path from "node:path";
-import { arrayFirst, objectEntries, objectKeys, stringSplit } from "ts-extras";
+import {
+    arrayFirst,
+    objectEntries,
+    objectKeys,
+    setHas,
+    stringSplit,
+} from "ts-extras";
 import { describe, expect, expectTypeOf, it } from "vitest";
 
 import { createRuleDocsUrl } from "../src/_internal/rule-docs-url";
@@ -153,7 +159,7 @@ function assertOptionalDetailHeadingPlacement(markdown: string): void {
  */
 function assertRuleCatalogIdLine(markdown: string): void {
     const matches = markdown.match(ruleCatalogIdLinePattern) ?? [];
-    const lines = markdown.split(/\r?\n/v);
+    const lines = stringSplit(markdown.replaceAll("\r\n", "\n"), "\n");
     const ruleCatalogIdLineIndex = lines.findIndex((line) =>
         /^> \*\*Rule catalog ID:\*\* R\d{3}$/v.test(line)
     );
@@ -251,7 +257,7 @@ describe("tsconfig rule docs", () => {
             .filter(
                 (entry) =>
                     entry.endsWith(".md") &&
-                    registeredRuleNames.has(entry.replace(/\.md$/v, ""))
+                    setHas(registeredRuleNames, entry.replace(/\.md$/v, ""))
             )
             .toSorted((left, right) => left.localeCompare(right));
 

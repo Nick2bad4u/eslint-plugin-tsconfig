@@ -2,10 +2,9 @@
  * @packageDocumentation
  * Snapshot coverage for stable public plugin contracts.
  */
-import type { UnknownRecord } from "type-fest";
-import type { ValueOf } from "type-fest";
+import type { UnknownRecord, ValueOf } from "type-fest";
 
-import { objectEntries, objectKeys  } from "ts-extras";
+import { objectEntries, objectKeys } from "ts-extras";
 import { describe, expect, it } from "vitest";
 
 import tsconfigPlugin from "../src/plugin";
@@ -17,8 +16,7 @@ interface ParserOptionsSnapshot {
 }
 
 /** Plugin config type inferred from public plugin export. */
-type PluginConfig =
-    ValueOf<(typeof tsconfigPlugin)["configs"]>;
+type PluginConfig = ValueOf<(typeof tsconfigPlugin)["configs"]>;
 
 interface PresetContractSnapshot {
     configKey: string;

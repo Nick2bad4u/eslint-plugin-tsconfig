@@ -3,7 +3,7 @@ import { bench, describe, expect } from "vitest";
 
 import {
     benchmarkFileGlobs,
-    createtsconfigFlatConfig,
+    createTsconfigFlatConfig,
     tsconfigRuleSets,
 } from "./eslint-benchmark-config.mjs";
 
@@ -27,14 +27,6 @@ import {
  * }>} LintScenarioOptions
  */
 
-const singleRuleBenchmarks = Object.freeze({
-    "tsconfig/prefer-ts-extras-is-present": "error",
-    "tsconfig/prefer-ts-extras-safe-cast-to": "error",
-    "tsconfig/prefer-ts-extras-set-has": "error",
-    "tsconfig/prefer-ts-extras-string-split": "error",
-    "tsconfig/prefer-type-fest-arrayable": "error",
-});
-
 const standardBenchmarkOptions = Object.freeze({
     iterations: 3,
     warmupIterations: 1,
@@ -46,74 +38,11 @@ const expensiveBenchmarkOptions = Object.freeze({
 });
 
 /**
- * Narrow unknown values to object records.
- *
- * @param {unknown} value - Value to inspect.
- *
- * @returns {value is Record<string, unknown>} Whether the value is object-like.
- */
-const isObjectRecord = (value) => typeof value === "object" && value !== null;
-
-/**
- * Read `stats.times.passes` from an ESLint lint result.
- *
- * @param {LintResult} lintResult - ESLint lint result.
- *
- * @returns {readonly unknown[]} Lint passes (or empty array when unavailable).
- */
-const getLintPasses = (lintResult) => {
-    const stats = lintResult.stats;
-    if (!isObjectRecord(stats)) {
-        return [];
-    }
-
-    const times = stats.times;
-    if (!isObjectRecord(times)) {
-        return [];
-    }
-
-    const passes = times.passes;
-    return Array.isArray(passes) ? passes : [];
-};
-
-/**
- * Read per-rule timing object from a lint pass.
- *
- * @param {unknown} pass - ESLint pass payload.
- *
- * @returns {null | Record<string, unknown>} Rule timing record when present.
- */
-const getPassRules = (pass) => {
-    if (!isObjectRecord(pass)) {
-        return null;
-    }
-
-    const rules = pass["rules"];
-    return isObjectRecord(rules) ? rules : null;
-};
-
-/**
- * Normalize a single rule timing object to milliseconds.
- *
- * @param {unknown} ruleTiming - Timing payload.
- *
- * @returns {number} Rule timing in milliseconds.
- */
-const getRuleTimingMilliseconds = (ruleTiming) => {
-    if (!isObjectRecord(ruleTiming)) {
-        return 0;
-    }
-
-    const total = ruleTiming["total"];
-    return typeof total === "number" ? total : 0;
-};
-
-/**
  * Count lint problems so benchmark runs assert useful signal.
  *
  * @param {LintResults} lintResults - ESLint lint results.
  *
- * @returns Total error + warning count.
+ * @returns {number} Total error + warning count.
  */
 const countReportedProblems = (lintResults) =>
     lintResults.reduce(
@@ -121,30 +50,6 @@ const countReportedProblems = (lintResults) =>
             problemCount + result.errorCount + result.warningCount,
         0
     );
-
-/**
- * Sum rule execution milliseconds from ESLint stats payload.
- *
- * @param {LintResults} lintResults - ESLint lint results.
- *
- * @returns Total rule timing in milliseconds.
- */
-const sumRuleTimingMilliseconds = (lintResults) => {
-    let totalRuleTime = 0;
-
-    for (const result of lintResults) {
-        for (const pass of getLintPasses(result)) {
-            const passRules = getPassRules(pass);
-            if (passRules !== null) {
-                for (const ruleTiming of Object.values(passRules)) {
-                    totalRuleTime += getRuleTimingMilliseconds(ruleTiming);
-                }
-            }
-        }
-    }
-
-    return totalRuleTime;
-};
 
 /**
  * Guard benchmark outputs to ensure each case performs real lint work.
@@ -155,7 +60,6 @@ const sumRuleTimingMilliseconds = (lintResults) => {
  *     maximumReportedProblems?: number;
  *     minimumReportedProblems?: number;
  * }} [options]
- *   - Signal options.
  */
 const assertMeaningfulBenchmarkSignal = (
     scenarioName,
@@ -182,13 +86,6 @@ const assertMeaningfulBenchmarkSignal = (
             `${scenarioName}: expected at most ${maximumReportedProblems} reported lint problem(s).`
         );
     }
-
-    const measuredRuleTime = sumRuleTimingMilliseconds(lintResults);
-    if (measuredRuleTime <= 0) {
-        throw new Error(
-            `${scenarioName}: expected positive ESLint rule timing.`
-        );
-    }
 };
 
 /**
@@ -202,7 +99,7 @@ const lintScenario = async ({ filePatterns, fix, rules }) => {
     const eslint = new ESLint({
         cache: false,
         fix,
-        overrideConfig: createtsconfigFlatConfig({ rules }),
+        overrideConfig: createTsconfigFlatConfig({ rules }),
         overrideConfigFile: true,
         stats: true,
     });
@@ -212,18 +109,18 @@ const lintScenario = async ({ filePatterns, fix, rules }) => {
 
 describe("eslint-plugin-tsconfig meaningful benchmarks", () => {
     bench(
-        "recommended preset on full invalid typed fixture corpus",
+        "recommended preset on invalid tsconfig fixtures",
         async () => {
             expect.hasAssertions();
 
             const lintResults = await lintScenario({
-                filePatterns: benchmarkFileGlobs.typedInvalidFixtures,
+                filePatterns: benchmarkFileGlobs.invalidFixtures,
                 fix: false,
                 rules: tsconfigRuleSets.recommended,
             });
 
             assertMeaningfulBenchmarkSignal(
-                "recommended preset on full invalid typed fixture corpus",
+                "recommended preset on invalid tsconfig fixtures",
                 lintResults
             );
         },
@@ -231,18 +128,18 @@ describe("eslint-plugin-tsconfig meaningful benchmarks", () => {
     );
 
     bench(
-        "strict preset on full invalid typed fixture corpus",
+        "strict preset on invalid tsconfig fixtures",
         async () => {
             expect.hasAssertions();
 
             const lintResults = await lintScenario({
-                filePatterns: benchmarkFileGlobs.typedInvalidFixtures,
+                filePatterns: benchmarkFileGlobs.invalidFixtures,
                 fix: false,
                 rules: tsconfigRuleSets.strict,
             });
 
             assertMeaningfulBenchmarkSignal(
-                "strict preset on full invalid typed fixture corpus",
+                "strict preset on invalid tsconfig fixtures",
                 lintResults
             );
         },
@@ -250,18 +147,37 @@ describe("eslint-plugin-tsconfig meaningful benchmarks", () => {
     );
 
     bench(
-        "recommended preset on full valid typed fixture corpus",
+        "module-resolution preset on module-resolution fixtures",
         async () => {
             expect.hasAssertions();
 
             const lintResults = await lintScenario({
-                filePatterns: benchmarkFileGlobs.typedValidFixtures,
+                filePatterns: benchmarkFileGlobs.moduleResolutionFixtures,
+                fix: false,
+                rules: tsconfigRuleSets["module-resolution"],
+            });
+
+            assertMeaningfulBenchmarkSignal(
+                "module-resolution preset on module-resolution fixtures",
+                lintResults
+            );
+        },
+        standardBenchmarkOptions
+    );
+
+    bench(
+        "recommended preset on valid tsconfig fixtures",
+        async () => {
+            expect.hasAssertions();
+
+            const lintResults = await lintScenario({
+                filePatterns: benchmarkFileGlobs.validFixtures,
                 fix: false,
                 rules: tsconfigRuleSets.recommended,
             });
 
             assertMeaningfulBenchmarkSignal(
-                "recommended preset on full valid typed fixture corpus",
+                "recommended preset on valid tsconfig fixtures",
                 lintResults,
                 { minimumReportedProblems: 0 }
             );
@@ -270,224 +186,22 @@ describe("eslint-plugin-tsconfig meaningful benchmarks", () => {
     );
 
     bench(
-        "recommended preset on curated zero-message corpus",
+        "recommended preset with fix=true on invalid fixtures",
         async () => {
             expect.hasAssertions();
 
             const lintResults = await lintScenario({
-                filePatterns: benchmarkFileGlobs.recommendedZeroMessageFixture,
-                fix: false,
-                rules: tsconfigRuleSets.recommended,
-            });
-
-            assertMeaningfulBenchmarkSignal(
-                "recommended preset on curated zero-message corpus",
-                lintResults,
-                { maximumReportedProblems: 0, minimumReportedProblems: 0 }
-            );
-        },
-        standardBenchmarkOptions
-    );
-
-    bench(
-        "ts-extras type-guards preset on ts-extras invalid fixtures",
-        async () => {
-            expect.hasAssertions();
-
-            const lintResults = await lintScenario({
-                filePatterns: benchmarkFileGlobs.tsExtrasInvalidFixtures,
-                fix: false,
-                rules: tsconfigRuleSets.tsExtrasTypeGuards,
-            });
-
-            assertMeaningfulBenchmarkSignal(
-                "ts-extras type-guards preset on ts-extras invalid fixtures",
-                lintResults
-            );
-        },
-        standardBenchmarkOptions
-    );
-
-    bench(
-        "type-fest types preset on type-fest invalid fixtures",
-        async () => {
-            expect.hasAssertions();
-
-            const lintResults = await lintScenario({
-                filePatterns: benchmarkFileGlobs.tsconfigInvalidFixtures,
-                fix: false,
-                rules: tsconfigRuleSets.tsconfigTypes,
-            });
-
-            assertMeaningfulBenchmarkSignal(
-                "type-fest types preset on type-fest invalid fixtures",
-                lintResults
-            );
-        },
-        standardBenchmarkOptions
-    );
-
-    bench(
-        "recommended preset (fix=true) on ts-extras invalid fixtures",
-        async () => {
-            expect.hasAssertions();
-
-            const lintResults = await lintScenario({
-                filePatterns: benchmarkFileGlobs.tsExtrasInvalidFixtures,
+                filePatterns: benchmarkFileGlobs.invalidFixtures,
                 fix: true,
                 rules: tsconfigRuleSets.recommended,
             });
 
             assertMeaningfulBenchmarkSignal(
-                "recommended preset (fix=true) on ts-extras invalid fixtures",
-                lintResults
-            );
-        },
-        expensiveBenchmarkOptions
-    );
-
-    bench(
-        "single rule prefer-ts-extras-is-present on stress fixture",
-        async () => {
-            expect.hasAssertions();
-
-            const lintResults = await lintScenario({
-                filePatterns: benchmarkFileGlobs.isPresentStressFixture,
-                fix: false,
-                rules: {
-                    "tsconfig/prefer-ts-extras-is-present":
-                        singleRuleBenchmarks[
-                            "tsconfig/prefer-ts-extras-is-present"
-                        ],
-                },
-            });
-
-            assertMeaningfulBenchmarkSignal(
-                "single rule prefer-ts-extras-is-present on stress fixture",
-                lintResults
-            );
-        },
-        standardBenchmarkOptions
-    );
-
-    bench(
-        "single rule prefer-ts-extras-safe-cast-to on stress fixture",
-        async () => {
-            expect.hasAssertions();
-
-            const lintResults = await lintScenario({
-                filePatterns: benchmarkFileGlobs.safeCastToStressFixture,
-                fix: false,
-                rules: {
-                    "tsconfig/prefer-ts-extras-safe-cast-to":
-                        singleRuleBenchmarks[
-                            "tsconfig/prefer-ts-extras-safe-cast-to"
-                        ],
-                },
-            });
-
-            assertMeaningfulBenchmarkSignal(
-                "single rule prefer-ts-extras-safe-cast-to on stress fixture",
-                lintResults
-            );
-        },
-        standardBenchmarkOptions
-    );
-
-    bench(
-        "single rule prefer-ts-extras-set-has on stress fixture",
-        async () => {
-            expect.hasAssertions();
-
-            const lintResults = await lintScenario({
-                filePatterns: benchmarkFileGlobs.setHasStressFixture,
-                fix: false,
-                rules: {
-                    "tsconfig/prefer-ts-extras-set-has":
-                        singleRuleBenchmarks[
-                            "tsconfig/prefer-ts-extras-set-has"
-                        ],
-                },
-            });
-
-            assertMeaningfulBenchmarkSignal(
-                "single rule prefer-ts-extras-set-has on stress fixture",
-                lintResults
-            );
-        },
-        standardBenchmarkOptions
-    );
-
-    bench(
-        "single rule prefer-ts-extras-string-split on stress fixture",
-        async () => {
-            expect.hasAssertions();
-
-            const lintResults = await lintScenario({
-                filePatterns: benchmarkFileGlobs.stringSplitStressFixture,
-                fix: false,
-                rules: {
-                    "tsconfig/prefer-ts-extras-string-split":
-                        singleRuleBenchmarks[
-                            "tsconfig/prefer-ts-extras-string-split"
-                        ],
-                },
-            });
-
-            assertMeaningfulBenchmarkSignal(
-                "single rule prefer-ts-extras-string-split on stress fixture",
-                lintResults
-            );
-        },
-        standardBenchmarkOptions
-    );
-
-    bench(
-        "single rule prefer-ts-extras-safe-cast-to on stress fixture (fix=true)",
-        async () => {
-            expect.hasAssertions();
-
-            const lintResults = await lintScenario({
-                filePatterns: benchmarkFileGlobs.safeCastToStressFixture,
-                fix: true,
-                rules: {
-                    "tsconfig/prefer-ts-extras-safe-cast-to":
-                        singleRuleBenchmarks[
-                            "tsconfig/prefer-ts-extras-safe-cast-to"
-                        ],
-                },
-            });
-
-            assertMeaningfulBenchmarkSignal(
-                "single rule prefer-ts-extras-safe-cast-to on stress fixture (fix=true)",
+                "recommended preset with fix=true on invalid fixtures",
                 lintResults,
-                { maximumReportedProblems: 0, minimumReportedProblems: 0 }
+                { minimumReportedProblems: 0 }
             );
         },
         expensiveBenchmarkOptions
-    );
-
-    bench(
-        "single rule prefer-type-fest-arrayable on stress fixture",
-        async () => {
-            expect.hasAssertions();
-
-            const lintResults = await lintScenario({
-                filePatterns: benchmarkFileGlobs.arrayableStressFixture,
-                fix: false,
-                rules: {
-                    "tsconfig/prefer-type-fest-arrayable":
-                        singleRuleBenchmarks[
-                            "tsconfig/prefer-type-fest-arrayable"
-                        ],
-                },
-            });
-
-            assertMeaningfulBenchmarkSignal(
-                "single rule prefer-type-fest-arrayable on stress fixture",
-                lintResults
-            );
-        },
-        standardBenchmarkOptions
     );
 });

@@ -2,10 +2,9 @@
  * @packageDocumentation
  * Integration coverage for source-level plugin preset wiring.
  */
-import type { AsyncReturnType } from "type-fest";
-import type { ValueOf } from "type-fest";
+import type { AsyncReturnType, ValueOf } from "type-fest";
 
-import { objectEntries, objectKeys  } from "ts-extras";
+import { objectEntries, objectKeys } from "ts-extras";
 import { describe, expect, it, vi } from "vitest";
 
 import {

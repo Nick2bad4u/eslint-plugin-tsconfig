@@ -6,7 +6,14 @@ import type { UnknownRecord } from "type-fest";
  */
 import * as fs from "node:fs";
 import * as path from "node:path";
-import { arrayIncludes, isInteger, objectEntries, objectKeys } from "ts-extras";
+import {
+    arrayIncludes,
+    isDefined,
+    isInteger,
+    objectEntries,
+    objectKeys,
+    setHas,
+} from "ts-extras";
 import { describe, expect, it } from "vitest";
 
 import { getRuleCatalogEntryForRuleName } from "../src/_internal/rule-catalog";
@@ -240,7 +247,7 @@ const assertBaseRuleMetadataContract = ({
     const schema = metaRecord["schema"];
 
     expect(
-        isNonEmptyString(type) && expectedRuleTypes.has(type),
+        isNonEmptyString(type) && setHas(expectedRuleTypes, type),
         `Rule '${ruleName}' has unsupported meta.type '${String(type)}'`
     ).toBeTruthy();
     expect(
@@ -285,7 +292,7 @@ const assertMessageAndFixContract = ({
     }
 
     const fixable = metaRecord["fixable"];
-    if (fixable !== undefined) {
+    if (isDefined(fixable)) {
         expect(fixable).toBe("code");
     }
 };

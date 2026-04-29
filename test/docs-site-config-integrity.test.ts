@@ -45,8 +45,10 @@ describe("docusaurus site configuration integrity", () => {
             .slice(sectionStart + sectionHeader.length)
             .trim();
 
-        const bulletLines = sectionBody
-            .split(/\r?\n/v)
+        const bulletLines = stringSplit(
+            sectionBody.replaceAll("\r\n", "\n"),
+            "\n"
+        )
             .map((line) => line.trim())
             .filter((line) => line.startsWith("- "));
 

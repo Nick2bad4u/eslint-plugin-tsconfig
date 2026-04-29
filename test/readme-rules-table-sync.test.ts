@@ -4,7 +4,7 @@
  */
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
-import { arrayJoin, stringSplit  } from "ts-extras";
+import { arrayIncludes, arrayJoin, stringSplit } from "ts-extras";
 import { describe, expect, it } from "vitest";
 
 import {
@@ -20,8 +20,8 @@ const RULES_SECTION_SNAPSHOT_PATH = path.join(
 );
 const processEnvironment = globalThis.process.env;
 const SHOULD_SYNC_README_IN_UPDATE_MODE =
-    process.argv.includes("-u") ||
-    process.argv.includes("--update") ||
+    arrayIncludes(process.argv, "-u") ||
+    arrayIncludes(process.argv, "--update") ||
     processEnvironment["TSCONFIG_UPDATE_GENERATED_DOCS"] === "1";
 
 const syncReadmeRulesTableIfRequested = async (): Promise<void> => {
@@ -41,9 +41,8 @@ const syncReadmeRulesTableIfRequested = async (): Promise<void> => {
  * @returns Normalized markdown preserving table semantics.
  */
 const normalizeMarkdownTableSpacing = (markdown: string): string =>
-    arrayJoin(stringSplit(markdown
-        .replaceAll("\r\n", "\n"), "\n")
-        .map((line) => {
+    arrayJoin(
+        stringSplit(markdown.replaceAll("\r\n", "\n"), "\n").map((line) => {
             const trimmedLine = line.trimEnd();
 
             const cells = stringSplit(trimmedLine, "|")
@@ -74,8 +73,9 @@ const normalizeMarkdownTableSpacing = (markdown: string): string =>
             return /^\|.*\|$/v.test(trimmedLine)
                 ? `| ${arrayJoin(cells, " | ")} |`
                 : trimmedLine;
-        }), "\n")
-        .trimEnd();
+        }),
+        "\n"
+    ).trimEnd();
 
 /**
  * Extract the README rules section body beginning at `## Rules` without

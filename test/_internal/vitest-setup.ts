@@ -3,9 +3,9 @@
  * Vitest global setup helpers used by selector-aware unit-test doubles.
  */
 
-import type { UnknownArray, UnknownRecord  } from "type-fest";
+import type { UnknownArray, UnknownRecord } from "type-fest";
 
-import { objectEntries } from "ts-extras";
+import { isDefined, objectEntries, objectHasIn } from "ts-extras";
 
 type RuleCreateFunction = (...args: Readonly<UnknownArray>) => unknown;
 
@@ -56,14 +56,14 @@ const createSelectorAwareListenerMap = (listenerMap: unknown): unknown => {
         get(target, property, receiver): unknown {
             if (
                 typeof property === "string" &&
-                !Reflect.has(target, property)
+                !objectHasIn(target, property)
             ) {
                 const selectorListener = resolveSelectorListener(
                     target,
                     property
                 );
 
-                if (selectorListener !== undefined) {
+                if (isDefined(selectorListener)) {
                     return selectorListener;
                 }
             }
@@ -99,7 +99,7 @@ const createTypedRuleSelectorAwarePassThroughImpl = (
     };
 };
 
-if (!("createTypedRuleSelectorAwarePassThrough" in globalThis)) {
+if (!objectHasIn(globalThis, "createTypedRuleSelectorAwarePassThrough")) {
     Object.defineProperty(
         globalThis,
         "createTypedRuleSelectorAwarePassThrough",
