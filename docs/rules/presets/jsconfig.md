@@ -30,6 +30,7 @@ export default [tsconfig.configs.jsconfig];
 | Rule | Fix |
 | --- | :-: |
 | [`consistent-module-resolution`](https://nick2bad4u.github.io/eslint-plugin-tsconfig/docs/rules/consistent-module-resolution) | — |
+| [`no-allowjs-without-checkjs`](https://nick2bad4u.github.io/eslint-plugin-tsconfig/docs/rules/no-allowjs-without-checkjs) | — |
 | [`no-disable-strict-subset`](https://nick2bad4u.github.io/eslint-plugin-tsconfig/docs/rules/no-disable-strict-subset) | — |
 | [`no-include-dist`](https://nick2bad4u.github.io/eslint-plugin-tsconfig/docs/rules/no-include-dist) | — |
 | [`no-include-node-modules`](https://nick2bad4u.github.io/eslint-plugin-tsconfig/docs/rules/no-include-node-modules) | 🔧 |

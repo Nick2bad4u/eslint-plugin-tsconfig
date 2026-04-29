@@ -151,6 +151,7 @@ const rulePresetMembership = deriveRulePresetMembershipByRuleName(
 /** Rule-set override for the `jsconfig` preset. */
 const jsconfigPresetRuleNames = [
     "consistent-module-resolution",
+    "no-allowjs-without-checkjs",
     "no-disable-strict-subset",
     "no-include-dist",
     "no-include-node-modules",
@@ -169,10 +170,19 @@ const jsconfigPresetRuleNames = [
 const strictestPresetRuleNames = [
     "no-disable-strict-subset",
     "no-skip-lib-check",
+    "no-suppress-implicit-any-index-errors",
     "require-exact-optional-property-types",
+    "require-force-consistent-casing-in-file-names",
+    "require-isolated-declarations",
+    "require-no-fallthrough-cases-in-switch",
     "require-no-implicit-override",
+    "require-no-implicit-returns",
+    "require-no-property-access-from-index-signature",
     "require-no-unchecked-indexed-access",
+    "require-no-unused-locals",
+    "require-no-unused-parameters",
     "require-strict-mode",
+    "require-use-unknown-in-catch-variables",
 ] as const satisfies readonly TsconfigRuleName[];
 
 /** Explicit preset rule overrides not derived from docs metadata tags. */
