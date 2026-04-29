@@ -14,7 +14,7 @@ This section is for contributors and advanced users.
 - [🧭 Architecture Decisions (ADR)](./adr/index.md)
 - [📊 Architecture and operations charts](./charts/index.md)
 - [🧬 Typed service path inventory](./typed-paths.md)
-- [🧠 Type aliases reference](https://nick2bad4u.github.io/eslint-plugin-tsconfig/docs/developer/api/plugin/type-aliases/tsconfigPlugin)
+- [🧠 Type aliases reference](https://nick2bad4u.github.io/eslint-plugin-tsconfig/docs/developer/api/plugin/type-aliases/TsconfigPlugin)
 - [⚙️ Runtime exports reference](https://nick2bad4u.github.io/eslint-plugin-tsconfig/docs/developer/api/plugin/variables/tsconfigPlugin)
 
 ## Maintainer operations guides

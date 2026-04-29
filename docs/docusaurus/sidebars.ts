@@ -45,7 +45,7 @@ const sidebars = {
                 },
                 {
                     className: "sb-api-overview-item",
-                    id: "developer/api/plugin/type-aliases/tsconfigPlugin",
+                    id: "developer/api/plugin/type-aliases/TsconfigPlugin",
                     label: "🧠 Type aliases · tsconfigPlugin",
                     type: "doc",
                 },
