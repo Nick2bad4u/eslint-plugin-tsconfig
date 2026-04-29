@@ -30,26 +30,6 @@ const repositoryRootPath = path.resolve(scriptsDirectoryPath, "..");
 const expectedEslintMajorArgumentPrefix = "--expect-eslint-major=";
 
 /**
- * @param {string} filePath
- *
- * @returns {string}
- */
-const toPosixPath = (filePath) => filePath.replaceAll("\\", "/");
-
-/**
- * @param {unknown} value
- *
- * @returns {readonly string[]}
- */
-const collectStringEntries = (value) => {
-    if (!Array.isArray(value)) {
-        return [];
-    }
-
-    return value.filter((entry) => typeof entry === "string");
-};
-
-/**
  * @param {unknown} value
  *
  * @returns {value is UnknownRecord}
