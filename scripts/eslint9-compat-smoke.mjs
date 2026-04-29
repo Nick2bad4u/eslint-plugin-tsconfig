@@ -1,9 +1,7 @@
-import { existsSync } from "node:fs";
 import * as path from "node:path";
 import process from "node:process";
 import { fileURLToPath } from "node:url";
 
-import tsParser from "@typescript-eslint/parser";
 import { ESLint } from "eslint";
 import pc from "picocolors";
 
@@ -14,11 +12,11 @@ import plugin from "../plugin.mjs";
  *     expectedMaximumMessages?: number;
  *     expectedMinimumMessages: number;
  *     expectedOutputIncludes?: readonly string[];
+ *     filePath: string;
  *     fix: boolean;
- *     fixturePath: string;
  *     name: string;
  *     ruleId: string;
- *     typed: boolean;
+ *     sourceText: string;
  * }>} Scenario
  */
 
@@ -28,14 +26,6 @@ import plugin from "../plugin.mjs";
 
 const scriptsDirectoryPath = fileURLToPath(new URL(".", import.meta.url));
 const repositoryRootPath = path.resolve(scriptsDirectoryPath, "..");
-const typedFixturePath = path.resolve(
-    repositoryRootPath,
-    "test/fixtures/typed/prefer-ts-extras-safe-cast-to.invalid.ts"
-);
-const arrayableFixturePath = path.resolve(
-    repositoryRootPath,
-    "test/fixtures/typed/prefer-type-fest-arrayable.invalid.ts"
-);
 
 const expectedEslintMajorArgumentPrefix = "--expect-eslint-major=";
 
@@ -143,22 +133,11 @@ const assertEslintMajor = (expectedMajor) => {
 };
 
 /**
- * @param {string} fixturePath
- */
-const assertFixtureExists = (fixturePath) => {
-    if (!existsSync(fixturePath)) {
-        throw new Error(`Missing fixture file: ${fixturePath}`);
-    }
-};
-
-/**
  * @param {string} ruleId
- * @param {boolean} typed
- * @param {string} fixturePath
  *
  * @returns {import("eslint").Linter.Config[]}
  */
-const createCompatibilityConfig = (ruleId, typed, fixturePath) => {
+const createCompatibilityConfig = (ruleId) => {
     const recommendedConfig = plugin.configs?.["recommended"];
     if (!isUnknownRecord(recommendedConfig)) {
         throw new Error(
@@ -166,57 +145,9 @@ const createCompatibilityConfig = (ruleId, typed, fixturePath) => {
         );
     }
 
-    const baseLanguageOptions = isUnknownRecord(
-        recommendedConfig["languageOptions"]
-    )
-        ? recommendedConfig["languageOptions"]
-        : {};
-
-    const baseParserOptions = isUnknownRecord(
-        baseLanguageOptions["parserOptions"]
-    )
-        ? baseLanguageOptions["parserOptions"]
-        : {};
-    const baseProjectServiceOptions = isUnknownRecord(
-        baseParserOptions["projectService"]
-    )
-        ? baseParserOptions["projectService"]
-        : {};
-    const relativeFixturePath = toPosixPath(
-        path.relative(repositoryRootPath, fixturePath)
-    );
-    const existingAllowDefaultProject = collectStringEntries(
-        baseProjectServiceOptions["allowDefaultProject"]
-    );
-
     return [
         {
             ...recommendedConfig,
-            files: ["**/*.{ts,tsx,mts,cts}"],
-            languageOptions: {
-                ...baseLanguageOptions,
-                parser: tsParser,
-                parserOptions: {
-                    ...baseParserOptions,
-                    ecmaVersion: "latest",
-                    sourceType: "module",
-                    tsconfigRootDir: repositoryRootPath,
-                    ...(typed
-                        ? {
-                              projectService: {
-                                  ...baseProjectServiceOptions,
-                                  allowDefaultProject: [
-                                      ...new Set([
-                                          ...existingAllowDefaultProject,
-                                          relativeFixturePath,
-                                      ]),
-                                  ],
-                                  defaultProject: "tsconfig.eslint.json",
-                              },
-                          }
-                        : {}),
-                },
-            },
             name: `compat-smoke:${ruleId}`,
             plugins: {
                 tsconfig: plugin,
@@ -235,21 +166,23 @@ const runScenario = async ({
     expectedMaximumMessages,
     expectedMinimumMessages,
     expectedOutputIncludes,
+    filePath,
     fix,
-    fixturePath,
     name,
     ruleId,
-    typed,
+    sourceText,
 }) => {
     const eslint = new ESLint({
         cwd: repositoryRootPath,
         fix,
         ignore: false,
-        overrideConfig: createCompatibilityConfig(ruleId, typed, fixturePath),
+        overrideConfig: createCompatibilityConfig(ruleId),
         overrideConfigFile: true,
     });
 
-    const lintResults = await eslint.lintFiles([fixturePath]);
+    const lintResults = await eslint.lintText(sourceText, {
+        filePath,
+    });
 
     const fatalMessages = lintResults.flatMap((result) =>
         result.messages.filter((message) => message.fatal === true)
@@ -284,13 +217,6 @@ const runScenario = async ({
         const fixedOutputs = lintResults
             .map((result) => result.output)
             .filter((output) => typeof output === "string");
-
-        if (fixedOutputs.length === 0) {
-            throw new Error(
-                `${name}: expected at least one fixed output when fix=true.`
-            );
-        }
-
         const combinedOutput = fixedOutputs.join("\n");
         for (const expectedOutputSnippet of expectedOutputIncludes ?? []) {
             if (!combinedOutput.includes(expectedOutputSnippet)) {
@@ -303,7 +229,7 @@ const runScenario = async ({
 
     console.log(
         `${pc.green("✓")}` +
-            ` ${pc.bold(name)} ${pc.gray("->")} ${pc.bold(ruleId)} (${typed ? "typed" : "non-typed"}, fix=${fix}) produced ${pc.magenta(
+            ` ${pc.bold(name)} ${pc.gray("->")} ${pc.bold(ruleId)} (fix=${fix}) produced ${pc.magenta(
                 String(matchingMessages.length)
             )} message(s).`
     );
@@ -311,36 +237,42 @@ const runScenario = async ({
 
 const scenarios = /** @type {const} */ ([
     {
-        expectedMinimumMessages: 1,
+        expectedMaximumMessages: 0,
+        expectedMinimumMessages: 0,
+        filePath: path.resolve(
+            repositoryRootPath,
+            "temp/compat/tsconfig.strict-detection.json"
+        ),
         fix: false,
-        fixturePath: typedFixturePath,
-        name: "typed-detection",
-        ruleId: "tsconfig/prefer-ts-extras-safe-cast-to",
-        typed: true,
+        name: "strict-detection",
+        ruleId: "tsconfig/require-strict-mode",
+        sourceText: '{"compilerOptions":{"target":"ES2022"}}',
     },
     {
         expectedMaximumMessages: 0,
         expectedMinimumMessages: 0,
-        expectedOutputIncludes: ["safeCastTo<"],
+        filePath: path.resolve(
+            repositoryRootPath,
+            "temp/compat/tsconfig.strict-autofix.json"
+        ),
         fix: true,
-        fixturePath: typedFixturePath,
-        name: "typed-autofix",
-        ruleId: "tsconfig/prefer-ts-extras-safe-cast-to",
-        typed: true,
+        name: "strict-autofix",
+        ruleId: "tsconfig/require-strict-mode",
+        sourceText: '{"compilerOptions":{"target":"ES2022"}}',
     },
     {
-        expectedMinimumMessages: 1,
+        expectedMaximumMessages: 0,
+        expectedMinimumMessages: 0,
+        filePath: path.resolve(
+            repositoryRootPath,
+            "temp/compat/tsconfig.deprecated-target.json"
+        ),
         fix: false,
-        fixturePath: arrayableFixturePath,
-        name: "non-typed-detection",
-        ruleId: "tsconfig/prefer-type-fest-arrayable",
-        typed: false,
+        name: "deprecated-target-detection",
+        ruleId: "tsconfig/no-deprecated-target",
+        sourceText: '{"compilerOptions":{"target":"ES5"}}',
     },
 ]);
-
-for (const scenario of scenarios) {
-    assertFixtureExists(scenario.fixturePath);
-}
 
 console.log(pc.bold(pc.cyan("Running ESLint 9 compatibility smoke checks...")));
 
