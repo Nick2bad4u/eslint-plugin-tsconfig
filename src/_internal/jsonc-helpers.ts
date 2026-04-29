@@ -240,7 +240,7 @@ export function insertProperty(
 
     if (isEmpty(obj.properties)) {
         return fixer.replaceText(
-            obj as unknown as Parameters<Fixer["replaceText"]>[0],
+            obj as unknown as Parameters<Fixer["replaceText"]>[0], // NOSONAR typescript:S4325 -- JSONC parent types are incompatible with Rule.Node; double-cast is required
             `{ ${propertyText} }`
         );
     }
@@ -249,13 +249,13 @@ export function insertProperty(
 
     if (!isDefined(lastProp)) {
         return fixer.replaceText(
-            obj as unknown as Parameters<Fixer["replaceText"]>[0],
+            obj as unknown as Parameters<Fixer["replaceText"]>[0], // NOSONAR typescript:S4325 -- JSONC parent types are incompatible with Rule.Node; double-cast is required
             `{ ${propertyText} }`
         );
     }
 
     return fixer.insertTextAfter(
-        lastProp as unknown as Parameters<Fixer["insertTextAfter"]>[0],
+        lastProp as unknown as Parameters<Fixer["insertTextAfter"]>[0], // NOSONAR typescript:S4325 -- JSONC parent types are incompatible with Rule.Node; double-cast is required
         `,\n${indent}${propertyText}`
     );
 }
@@ -277,7 +277,7 @@ export function replacePropertyValue(
     value: JSONPrimitive
 ): ReturnType<Fixer["replaceText"]> {
     return fixer.replaceText(
-        prop.value as unknown as Parameters<Fixer["replaceText"]>[0],
+        prop.value as unknown as Parameters<Fixer["replaceText"]>[0], // NOSONAR typescript:S4325 -- JSONC node parent types are incompatible with Rule.Node; double-cast is required
         encodeValue(value)
     );
 }

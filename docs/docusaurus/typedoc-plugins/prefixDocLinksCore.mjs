@@ -166,6 +166,7 @@ function findInlineLinkClosingParen(input, startIndex) {
  * @returns {{ destination: string; remainder: string }}
  */
 function splitInlineLinkDestination(payload) {
+    // NOSONAR javascript:S3776 -- complexity from parsing angle-bracketed and raw link destinations with escape handling; inherent in robust markdown parsing
     const core = payload.trim();
     if (core.length === 0) {
         return { destination: "", remainder: "" };
@@ -279,6 +280,7 @@ function prefixInlineLinkPayload(payload) {
  * @param {string} line
  */
 function prefixInlineMarkdownLinksInLine(line) {
+    // NOSONAR javascript:S3776 -- complexity from state machine for inline code spans and link target extraction; necessary for correct markdown parsing
     let out = "";
     let i = 0;
 

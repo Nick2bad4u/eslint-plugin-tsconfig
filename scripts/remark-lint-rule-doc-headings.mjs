@@ -134,6 +134,7 @@ const packageMetadataCache = new Map();
  * @returns {PackageMetadata | undefined}
  */
 const getNearestPackageMetadata = (documentPath) => {
+    // NOSONAR javascript:S3776 -- complexity from nested package.json discovery with cache management; acceptable trade-off
     const traversedDirectories = [];
     let currentDirectory = dirname(documentPath);
 
@@ -377,9 +378,10 @@ const getHeadingsByDepth = (tree, depth) =>
  * @returns {(tree: Node, file: VFile) => void}
  */
 export default function remarkLintRuleDocHeadings(options = {}) {
+    // NOSONAR javascript:S3776 -- high complexity is inherent in a lint visitor that validates many heading types
     const headingToggles = {
         ...defaultHeadingToggles,
-        ...(options.headings ?? {}),
+        ...options.headings,
     };
     const helperDocPathPattern =
         options.helperDocPathPattern ?? defaultHelperDocPathPattern;
@@ -416,6 +418,7 @@ export default function remarkLintRuleDocHeadings(options = {}) {
     );
 
     return (tree, file) => {
+        // NOSONAR javascript:S3776 -- complexity arises from exhaustive heading-presence checks across many section types; refactoring would fragment the logic without improving readability
         if (typeof file.path !== "string") {
             return;
         }
@@ -466,9 +469,12 @@ export default function remarkLintRuleDocHeadings(options = {}) {
                 ruleNamespaceAliases
             );
 
+            const expectedTitlesFormatted = expectedH1Titles
+                .map((title) => `\`${title}\``)
+                .join(", ");
             if (!expectedH1Titles.includes(actualTitle)) {
                 file.message(
-                    `H1 heading must match one of: ${expectedH1Titles.map((title) => `\`${title}\``).join(", ")}.`,
+                    `H1 heading must match one of: ${expectedTitlesFormatted}.`,
                     h1Headings[0],
                     "remark-lint:rule-doc-headings:h1-title"
                 );
@@ -702,7 +708,7 @@ export default function remarkLintRuleDocHeadings(options = {}) {
                 nextH2Heading
             );
 
-            if (!/\[[^\]]+\]\([^\)]+\)/u.test(deprecatedSectionContent)) {
+            if (!/\[[^\]]+\]\([^)]+\)/u.test(deprecatedSectionContent)) {
                 file.message(
                     "`## Deprecated` should include a link to the recommended replacement rule or package.",
                     deprecatedSectionHeading,

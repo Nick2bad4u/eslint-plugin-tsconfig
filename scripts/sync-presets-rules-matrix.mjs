@@ -57,7 +57,7 @@ const detectLineEnding = (markdown) =>
  * @returns {string}
  */
 const normalizeMarkdownLineEndings = (markdown, lineEnding) =>
-    markdown.replace(/\r?\n/gv, lineEnding);
+    markdown.replaceAll(/\r?\n/gv, lineEnding);
 
 /** @type {Readonly<Record<PresetConfigName, string>>} */
 const presetDocSlugByConfigName = {
@@ -336,7 +336,7 @@ const replaceMarkdownSection = ({
  */
 const normalizeMarkdownTableSpacing = (markdown) =>
     markdown
-        .replace(/\r\n/gv, "\n")
+        .replaceAll("\r\n", "\n")
         .split("\n")
         .map((line) => {
             const trimmedLine = line.trimEnd();
@@ -387,7 +387,7 @@ const normalizeMarkdownTableSpacing = (markdown) =>
  */
 export const generatePresetsRulesMatrixSectionFromRules = (rules) => {
     const readmeRulesSection = generateReadmeRulesSectionFromRules(rules)
-        .replace(/\r\n/gv, "\n")
+        .replaceAll("\r\n", "\n")
         .split("\n");
 
     const rulesBodyWithoutHeading = readmeRulesSection.slice(2);

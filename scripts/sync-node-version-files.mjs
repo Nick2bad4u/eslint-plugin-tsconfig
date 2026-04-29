@@ -75,6 +75,7 @@ const isRecord = (value) => typeof value === "object" && value !== null;
  * }}
  */
 const parseArguments = (argumentList) => {
+    // NOSONAR javascript:S3776 -- argument parsing loop with multiple flag types; complexity is bounded and intentional
     /** @type {boolean} */
     let checkOnly = false;
     /** @type {boolean} */

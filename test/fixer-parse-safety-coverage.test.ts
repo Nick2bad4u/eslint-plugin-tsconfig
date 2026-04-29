@@ -100,8 +100,8 @@ const getCallExpressionName = (callee: unknown): null | string => {
         return null;
     }
 
-    const objectRecord = memberObject as Readonly<UnknownRecord>;
-    const propertyRecord = memberProperty as Readonly<UnknownRecord>;
+    const objectRecord = memberObject as Readonly<UnknownRecord>; // NOSONAR typescript:S4325 -- object is narrowed from unknown; index-signature cast required for property access
+    const propertyRecord = memberProperty as Readonly<UnknownRecord>; // NOSONAR typescript:S4325 -- object is narrowed from unknown; index-signature cast required for property access
 
     if (
         objectRecord["type"] !== "Identifier" ||

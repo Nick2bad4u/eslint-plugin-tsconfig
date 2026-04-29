@@ -54,7 +54,7 @@ const detectLineEnding = (markdown) =>
  * @returns {string}
  */
 const normalizeMarkdownLineEndings = (markdown, lineEnding) =>
-    markdown.replace(/\r?\n/gv, lineEnding);
+    markdown.replaceAll(/\r?\n/gv, lineEnding);
 
 /**
  * Locate the rules section bounds within README markdown.
@@ -105,7 +105,7 @@ export const extractReadmeRulesSection = (markdown) => {
  */
 export const normalizeRulesSectionMarkdown = (markdown) =>
     markdown
-        .replace(/\r\n/gv, "\n")
+        .replaceAll("\r\n", "\n")
         .split("\n")
         .map((line) => {
             const trimmedLine = line.trimEnd();

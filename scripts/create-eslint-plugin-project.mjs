@@ -461,7 +461,10 @@ function chunkArray(arr, chunkSize) {
  * @returns {string}
  */
 function prettyCmd(cmd, args) {
-    return `${cmd} ${args.map((a) => (a.includes(" ") ? `"${a}"` : a)).join(" ")}`;
+    const formattedArgs = args
+        .map((a) => (a.includes(" ") ? `"${a}"` : a))
+        .join(" ");
+    return `${cmd} ${formattedArgs}`;
 }
 
 /**
@@ -523,6 +526,7 @@ function runCommand(cmd, args, { timeoutMs = 0 } = {}) {
  * @returns {Promise<void>}
  */
 async function runWithRetry(cmd, args, retries, opts) {
+    // NOSONAR javascript:S3776 -- retry loop with attempt tracking is inherently complex
     let attempt = 0;
     /** @type {unknown} */
     let lastErr;
@@ -555,18 +559,19 @@ function ensureSafeToInit({ yes }) {
     const pkgPath = path.join(process.cwd(), "package.json");
     if (!fs.existsSync(pkgPath)) return;
 
-    if (!yes) {
-        throw new Error(
-            "package.json already exists. Refusing to run npm init -y automatically.\n" +
-                "Use --skip-init to keep existing package.json, or --yes to proceed intentionally."
-        );
-    }
+    if (yes) return; // User explicitly passed --yes; allow overwrite
+
+    throw new Error(
+        "package.json already exists. Refusing to run npm init -y automatically.\n" +
+            "Use --skip-init to keep existing package.json, or --yes to proceed intentionally."
+    );
 }
 
 /**
  * @returns {Promise<void>}
  */
 async function main() {
+    // NOSONAR javascript:S3776 -- orchestrates multi-step install workflow; complexity inherent in chunked install logic
     const t0 = Date.now();
     const options = parseArgs(process.argv.slice(2));
 
@@ -589,13 +594,13 @@ async function main() {
 
     const installForceArg = options.force ? ["--force"] : [];
 
-    if (!options.skipInit) {
+    if (options.skipInit) {
+        console.log("Skipping npm init (--skip-init).");
+    } else {
         ensureSafeToInit({ yes: options.yes });
         await runWithRetry(npmCmd, ["init", "-y"], options.retries, {
             timeoutMs: options.timeoutMs,
         });
-    } else {
-        console.log("Skipping npm init (--skip-init).");
     }
 
     if (prod.length > 0) {
@@ -647,11 +652,10 @@ async function main() {
     console.log(`\nDone in ${secs}s.`);
 }
 
-main()
-    .then(() => {
-        process.exit(0);
-    })
-    .catch((err) => {
-        console.error("\nERROR:", err instanceof Error ? err.message : err);
-        process.exit(1);
-    });
+try {
+    await main();
+    process.exit(0);
+} catch (err) {
+    console.error("\nERROR:", err instanceof Error ? err.message : err);
+    process.exit(1);
+}

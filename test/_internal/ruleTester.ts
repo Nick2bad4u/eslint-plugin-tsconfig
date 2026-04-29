@@ -245,8 +245,8 @@ const patchRuleTesterRunWithGeneratedCaseNames = (
             withGeneratedRuleCaseNames(ruleName, runCases)
         );
     };
-    writableTester.run = wrappedRun as unknown as RuleTester["run"];
-    return writableTester as unknown as PluginRuleTester;
+    writableTester.run = wrappedRun as unknown as RuleTester["run"]; // NOSONAR typescript:S4325 -- wrappedRun signature slightly differs; double-cast bridges the gap safely
+    return writableTester as unknown as PluginRuleTester; // NOSONAR typescript:S4325 -- RuleTester and PluginRuleTester share same shape; cast is a safe branded-type bridge
 };
 
 /**

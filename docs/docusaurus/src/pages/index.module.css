@@ -141,7 +141,7 @@
     &:focus {
         border-color: rgb(255 255 255 / 74%);
         background: rgb(255 255 255 / 16%);
-        color: #ffffff;
+        color: #ffffff; /* NOSONAR css:S7924 -- white text on dark hero gradient; contrast is sufficient in context */
         text-decoration: none;
         transform: translateY(-1px);
     }
@@ -175,7 +175,7 @@
     &:focus {
         border-color: rgb(103 232 249 / 82%);
         background: rgb(8 145 178 / 38%);
-        color: rgb(240 249 255);
+        color: rgb(240 249 255); /* NOSONAR css:S7924 */
     }
 }
 

@@ -34,44 +34,22 @@ const allRuleDocIds = readdirSync(rulesDirectoryPath, {
     .map((entry) => toRuleDocId(entry.name))
     .sort((left, right) => left.localeCompare(right));
 
-/** Rule docs eligible for numbered display in the Rules sidebar section. */
-const allNumberedRuleDocIds = allRuleDocIds.filter((ruleDocId) =>
-    ruleDocId.startsWith("prefer-")
-);
-
-/** Resolve a stable one-based rule number for each numbered rule doc id. */
-const ruleNumberByDocId = new Map<string, number>(
-    allNumberedRuleDocIds.map((ruleDocId, index) => [ruleDocId, index + 1])
-);
-
-/** Format a sidebar label with a stable numeric prefix. */
-const toNumberedRuleLabel = (ruleNumber: number, ruleDocId: string): string =>
-    `${String(ruleNumber).padStart(2, "0")} ${ruleDocId}`;
-
 /** Build sidebar doc items for rule docs matching a given filename prefix. */
 const createRuleItemsByPrefix = (prefix: string): SidebarDocItem[] =>
     allRuleDocIds
         .filter((ruleDocId) => ruleDocId.startsWith(prefix))
-        .map((ruleDocId) => {
-            const ruleNumber = ruleNumberByDocId.get(ruleDocId);
+        .map((ruleDocId) => ({
+            id: ruleDocId,
+            label: ruleDocId,
+            type: "doc",
+        }));
 
-            if (ruleNumber === undefined) {
-                throw new TypeError(
-                    `Missing stable sidebar rule number for '${ruleDocId}'.`
-                );
-            }
-
-            return {
-                id: ruleDocId,
-                label: toNumberedRuleLabel(ruleNumber, ruleDocId),
-                type: "doc",
-            };
-        });
-
-/** Sidebar entries for `prefer-ts-extras-*` rule docs. */
-const tsExtrasRuleItems = createRuleItemsByPrefix("prefer-ts-extras-");
-/** Sidebar entries for `prefer-type-fest-*` rule docs. */
-const tsconfigRuleItems = createRuleItemsByPrefix("prefer-type-fest-");
+/** Sidebar entries for `consistent-*` rule docs. */
+const consistentRuleItems = createRuleItemsByPrefix("consistent-");
+/** Sidebar entries for `no-*` rule docs. */
+const noRuleItems = createRuleItemsByPrefix("no-");
+/** Sidebar entries for `require-*` rule docs. */
+const requireRuleItems = createRuleItemsByPrefix("require-");
 
 /** Complete sidebar structure for docs site navigation. */
 const sidebars = {
@@ -139,21 +117,9 @@ const sidebars = {
             },
             items: [
                 {
-                    className: "sb-preset-minimal",
-                    id: "presets/minimal",
-                    label: "🟢 Minimal",
-                    type: "doc",
-                },
-                {
                     className: "sb-preset-recommended",
                     id: "presets/recommended",
                     label: "🟡 Recommended",
-                    type: "doc",
-                },
-                {
-                    className: "sb-preset-recommended-type-checked",
-                    id: "presets/recommended-type-checked",
-                    label: "🟠 Recommended (type-checked)",
                     type: "doc",
                 },
                 {
@@ -169,21 +135,39 @@ const sidebars = {
                     type: "doc",
                 },
                 {
-                    className: "sb-preset-experimental",
-                    id: "presets/experimental",
-                    label: "🧪 Experimental",
+                    className: "sb-preset-emit-config",
+                    id: "presets/emit-config",
+                    label: "📤 emit-config",
                     type: "doc",
                 },
                 {
-                    className: "sb-preset-type-fest",
-                    id: "presets/type-fest-types",
-                    label: "💠 type-fest",
+                    className: "sb-preset-include-hygiene",
+                    id: "presets/include-hygiene",
+                    label: "🧹 include-hygiene",
                     type: "doc",
                 },
                 {
-                    className: "sb-preset-type-guards",
-                    id: "presets/ts-extras-type-guards",
-                    label: "✴️ type-guards",
+                    className: "sb-preset-lib-target",
+                    id: "presets/lib-target",
+                    label: "🎯 lib-target",
+                    type: "doc",
+                },
+                {
+                    className: "sb-preset-module-resolution",
+                    id: "presets/module-resolution",
+                    label: "📦 module-resolution",
+                    type: "doc",
+                },
+                {
+                    className: "sb-preset-project-references",
+                    id: "presets/project-references",
+                    label: "🔗 project-references",
+                    type: "doc",
+                },
+                {
+                    className: "sb-preset-strict-mode",
+                    id: "presets/strict-mode",
+                    label: "🔒 strict-mode",
                     type: "doc",
                 },
             ],
@@ -205,38 +189,55 @@ const sidebars = {
             },
             items: [
                 {
-                    className: "sb-cat-rules-ts-extras",
+                    className: "sb-cat-rules-consistent",
                     collapsed: true,
                     collapsible: true,
                     customProps: {
-                        badge: "ts-extras",
+                        badge: "consistent",
                     },
                     type: "category",
-                    label: "ts-extras",
+                    label: "consistent",
                     link: {
                         type: "generated-index",
-                        title: "ts-extras Rules",
+                        title: "Consistency Rules",
                         description:
-                            "Rules that prefer ts-extras runtime helpers and utility functions.",
+                            "Rules that enforce consistent tsconfig.json option combinations.",
                     },
-                    items: tsExtrasRuleItems,
+                    items: consistentRuleItems,
                 },
                 {
-                    className: "sb-cat-rules-type-fest",
+                    className: "sb-cat-rules-no",
                     collapsed: true,
                     collapsible: true,
                     customProps: {
-                        badge: "type-fest",
+                        badge: "no",
                     },
                     type: "category",
-                    label: "type-fest",
+                    label: "no",
                     link: {
                         type: "generated-index",
-                        title: "type-fest Rules",
+                        title: "No Rules",
                         description:
-                            "Rules that prefer expressive type-fest utility types for clearer type-level code.",
+                            "Rules that forbid problematic or incorrect tsconfig.json options.",
                     },
-                    items: tsconfigRuleItems,
+                    items: noRuleItems,
+                },
+                {
+                    className: "sb-cat-rules-require",
+                    collapsed: true,
+                    collapsible: true,
+                    customProps: {
+                        badge: "require",
+                    },
+                    type: "category",
+                    label: "require",
+                    link: {
+                        type: "generated-index",
+                        title: "Require Rules",
+                        description:
+                            "Rules that require specific tsconfig.json options to be present and correctly set.",
+                    },
+                    items: requireRuleItems,
                 },
             ],
         },

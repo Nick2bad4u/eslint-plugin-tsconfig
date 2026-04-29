@@ -55,12 +55,12 @@ const heroBadges = [
  */
 const heroStats = [
     {
-        description: "Type-safe patterns from type-fest and ts-extras.",
-        headline: "\uf0ca 70+ Rules",
+        description: "25 focused rules for tsconfig.json correctness.",
+        headline: "\uf0ca 25 Rules",
     },
     {
-        description: "Start small, then scale to stricter coverage.",
-        headline: "\ue690 6 Presets",
+        description: "Start minimal, scale to stricter coverage.",
+        headline: "\ue690 9 Presets",
     },
     {
         description: "Safe rewrites where semantics are preserved.",
@@ -78,8 +78,8 @@ const comparePresetsButtonIcon = "\udb85\udc92";
 const heroKickerIcon = "\uf0ad";
 const heroKickerIcon2 = "\uf135";
 const packageName = "eslint-plugin-tsconfig";
-const homepageDescription = `Explore ${packageName} documentation, presets, and rule references for adopting type-fest and ts-extras patterns in modern TypeScript projects.`;
-const homepageKeywords = `${packageName}, type-fest, ts-extras, eslint rules, typescript linting, flat config`;
+const homepageDescription = `Explore ${packageName} documentation, presets, and rule references for consistent and correct tsconfig.json configurations in modern TypeScript projects.`;
+const homepageKeywords = `${packageName}, tsconfig, typescript, eslint rules, flat config, static analysis, jsonc`;
 const homepageStructuredData = {
     "@context": "https://schema.org",
     "@type": "SoftwareSourceCode",
@@ -107,21 +107,21 @@ const homeCards = [
         icon: "\uf135",
         title: "Get Started",
         description:
-            "Install the plugin, enable a preset, and start enforcing type-safe ts-extras and type-fest patterns.",
+            "Install the plugin, enable a preset, and start enforcing correct tsconfig.json configurations.",
         to: "/docs/rules/getting-started",
     },
     {
         icon: "\ue690",
         title: "Presets",
         description:
-            "Choose the right preset for your team, from minimal baseline to full strict coverage.",
+            "Choose the right preset for your team, from recommended baseline to full strict coverage.",
         to: "/docs/rules/presets",
     },
     {
         icon: "\uf02d",
         title: "Rule Reference",
         description:
-            "Browse every rule with concrete incorrect/correct examples and migration guidance.",
+            "Browse every rule with concrete incorrect/correct examples and autofix guidance.",
         to: "/docs/rules",
     },
 ] as const satisfies readonly HomeCard[];
@@ -134,7 +134,7 @@ export default function Home() {
 
     return (
         <Layout
-            title="Type-safe ESLint rules for type-fest and ts-extras"
+            title="ESLint rules for correct tsconfig.json configurations"
             description={homepageDescription}
         >
             <Head>
@@ -157,25 +157,19 @@ export default function Home() {
                                 {packageName}
                             </Heading>
                             <p className={styles.heroSubtitle}>
-                                ESLint rules that recommend safer, clearer
-                                TypeScript types, type guards, and other
-                                patterns by utilizing{" "}
+                                ESLint rules that enforce consistent and correct{" "}
                                 <Link
                                     className={`${styles.heroInlineLink} ${styles.heroInlineLinkTsconfig}`}
-                                    href="https://github.com/sindresorhus/type-fest"
-                                    target="_blank"
-                                    rel="noopener noreferrer"
+                                    to="/docs/rules/getting-started"
                                 >
-                                    type-fest
+                                    tsconfig.json
                                 </Link>{" "}
-                                and{" "}
+                                configurations in modern{" "}
                                 <Link
                                     className={`${styles.heroInlineLink} ${styles.heroInlineLinkTsExtras}`}
-                                    href="https://github.com/sindresorhus/ts-extras"
-                                    target="_blank"
-                                    rel="noopener noreferrer"
+                                    to="/docs/rules"
                                 >
-                                    ts-extras
+                                    TypeScript projects
                                 </Link>
                             </p>
 

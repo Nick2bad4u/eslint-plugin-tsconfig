@@ -140,7 +140,7 @@ describe("docusaurus client regressions", () => {
                 );
 
                 expect(sourceText).toContain(
-                    'window.addEventListener("load", handleWindowLoad, { once: true });'
+                    'globalThis.addEventListener("load", handleWindowLoad, { once: true });'
                 );
                 expect(sourceText).not.toContain(
                     'document.addEventListener("DOMContentLoaded", handleDOMContentLoaded);'

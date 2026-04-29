@@ -8,14 +8,14 @@ description: Preset reference and selection guide for eslint-plugin-tsconfig.
 Use one of these presets based on how aggressively you want to enforce plugin rules.
 
 - `Preset key` legend:
-  - [🟢](https://nick2bad4u.github.io/eslint-plugin-tsconfig/docs/rules/presets/minimal) — [`tsconfig.configs.minimal`](https://nick2bad4u.github.io/eslint-plugin-tsconfig/docs/rules/presets/minimal)
-  - [🟡](https://nick2bad4u.github.io/eslint-plugin-tsconfig/docs/rules/presets/recommended) — [`tsconfig.configs.recommended`](https://nick2bad4u.github.io/eslint-plugin-tsconfig/docs/rules/presets/recommended)
-  - [🟠](https://nick2bad4u.github.io/eslint-plugin-tsconfig/docs/rules/presets/recommended-type-checked) — [`tsconfig.configs["recommended-type-checked"]`](https://nick2bad4u.github.io/eslint-plugin-tsconfig/docs/rules/presets/recommended-type-checked)
-  - [🔴](https://nick2bad4u.github.io/eslint-plugin-tsconfig/docs/rules/presets/strict) — [`tsconfig.configs.strict`](https://nick2bad4u.github.io/eslint-plugin-tsconfig/docs/rules/presets/strict)
-  - [🟣](https://nick2bad4u.github.io/eslint-plugin-tsconfig/docs/rules/presets/all) — [`tsconfig.configs.all`](https://nick2bad4u.github.io/eslint-plugin-tsconfig/docs/rules/presets/all)
-  - [🧪](https://nick2bad4u.github.io/eslint-plugin-tsconfig/docs/rules/presets/experimental) — [`tsconfig.configs.experimental`](https://nick2bad4u.github.io/eslint-plugin-tsconfig/docs/rules/presets/experimental)
-  - [💠](https://nick2bad4u.github.io/eslint-plugin-tsconfig/docs/rules/presets/type-fest-types) — [`tsconfig.configs["type-fest/types"]`](https://nick2bad4u.github.io/eslint-plugin-tsconfig/docs/rules/presets/type-fest-types)
-  - [✴️](https://nick2bad4u.github.io/eslint-plugin-tsconfig/docs/rules/presets/ts-extras-type-guards) — [`tsconfig.configs["ts-extras/type-guards"]`](https://nick2bad4u.github.io/eslint-plugin-tsconfig/docs/rules/presets/ts-extras-type-guards)
+  - [🟢](../presets/minimal.md) — [`tsconfig.configs.minimal`](../presets/minimal.md)
+  - [🟡](../presets/recommended.md) — [`tsconfig.configs.recommended`](../presets/recommended.md)
+  - [🟠](../presets/recommended-type-checked.md) — [`tsconfig.configs["recommended-type-checked"]`](../presets/recommended-type-checked.md)
+  - [🔴](../presets/strict.md) — [`tsconfig.configs.strict`](../presets/strict.md)
+  - [🟣](../presets/all.md) — [`tsconfig.configs.all`](../presets/all.md)
+  - [🧪](../presets/experimental.md) — [`tsconfig.configs.experimental`](../presets/experimental.md)
+  - [💠](../presets/type-fest-types.md) — [`tsconfig.configs["type-fest/types"]`](../presets/type-fest-types.md)
+  - [✴️](../presets/ts-extras-type-guards.md) — [`tsconfig.configs["ts-extras/type-guards"]`](../presets/ts-extras-type-guards.md)
 
 Each preset page in this section includes:
 

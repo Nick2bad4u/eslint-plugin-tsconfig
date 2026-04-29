@@ -86,7 +86,7 @@ const parseExpectedEslintMajor = (argv) => {
     );
 
     if (majorString.length === 0) {
-        throw new Error(
+        throw new TypeError(
             `Missing ESLint major value in argument: ${matchingArgument}`
         );
     }
@@ -94,7 +94,7 @@ const parseExpectedEslintMajor = (argv) => {
     const majorValue = Number.parseInt(majorString, 10);
 
     if (Number.isNaN(majorValue)) {
-        throw new Error(
+        throw new TypeError(
             `Invalid ESLint major value in argument: ${matchingArgument}`
         );
     }
@@ -117,7 +117,7 @@ const assertEslintMajor = (expectedMajor) => {
     const [runtimeMajorText] = runtimeVersion.split(".", 1);
 
     if (runtimeMajorText === undefined || runtimeMajorText.length === 0) {
-        throw new Error(
+        throw new TypeError(
             `Unable to parse ESLint runtime version: ${runtimeVersion}`
         );
     }
@@ -125,13 +125,13 @@ const assertEslintMajor = (expectedMajor) => {
     const runtimeMajor = Number.parseInt(runtimeMajorText, 10);
 
     if (Number.isNaN(runtimeMajor)) {
-        throw new Error(
+        throw new TypeError(
             `Unable to parse ESLint runtime version: ${runtimeVersion}`
         );
     }
 
     if (expectedMajor !== undefined && runtimeMajor !== expectedMajor) {
-        throw new Error(
+        throw new RangeError(
             `Expected ESLint major ${expectedMajor}, but detected ${runtimeVersion}.`
         );
     }
@@ -295,7 +295,7 @@ const runScenario = async ({
         for (const expectedOutputSnippet of expectedOutputIncludes ?? []) {
             if (!combinedOutput.includes(expectedOutputSnippet)) {
                 throw new Error(
-                    `${name}: expected fixed output to include \"${expectedOutputSnippet}\".`
+                    `${name}: expected fixed output to include "${expectedOutputSnippet}".`
                 );
             }
         }

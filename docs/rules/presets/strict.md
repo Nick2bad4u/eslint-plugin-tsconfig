@@ -40,3 +40,15 @@ export default [tsconfig.configs.strict];
 | [`require-declaration-with-composite`](https://nick2bad4u.github.io/eslint-plugin-tsconfig/docs/rules/require-declaration-with-composite) | 🔧 |
 | [`require-outdir-when-emitting`](https://nick2bad4u.github.io/eslint-plugin-tsconfig/docs/rules/require-outdir-when-emitting) | — |
 | [`require-strict-mode`](https://nick2bad4u.github.io/eslint-plugin-tsconfig/docs/rules/require-strict-mode) | 🔧 |
+## Related presets
+
+| Preset | Description |
+| --- | --- |
+| [🟡 recommended](./recommended.md) | Default baseline for most TypeScript codebases |
+| [🟣 all](./all.md) | Every rule, including experimental coverage |
+| [📤 emit-config](./emit-config.md) | Best practices for TypeScript emit/output configuration |
+| [🧹 include-hygiene](./include-hygiene.md) | Clean include, exclude, and files patterns |
+| [🎯 lib-target](./lib-target.md) | Consistency between target, lib, and downlevelling |
+| [📦 module-resolution](./module-resolution.md) | Modern and consistent module resolution settings |
+| [🔗 project-references](./project-references.md) | Correct TypeScript project references setup |
+| [🔒 strict-mode](./strict-mode.md) | Strict mode options beyond the base strict flag |
