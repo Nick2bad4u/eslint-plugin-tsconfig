@@ -27,12 +27,11 @@ export default [tsconfig.configs["project-references"]];
   - `💡` = suggestions available
   - `—` = report only
 
-| Rule                                                                                                                                      | Fix |
-| ----------------------------------------------------------------------------------------------------------------------------------------- | :-: |
-| [`no-emit-in-root-config`](https://nick2bad4u.github.io/eslint-plugin-tsconfig/docs/rules/no-emit-in-root-config)                         |  🔧 |
-| [`require-composite-for-references`](https://nick2bad4u.github.io/eslint-plugin-tsconfig/docs/rules/require-composite-for-references)     |  🔧 |
-| [`require-declaration-with-composite`](https://nick2bad4u.github.io/eslint-plugin-tsconfig/docs/rules/require-declaration-with-composite) |  🔧 |
-
+| Rule | Fix |
+| --- | :-: |
+| [`no-emit-in-root-config`](https://nick2bad4u.github.io/eslint-plugin-tsconfig/docs/rules/no-emit-in-root-config) | 🔧 |
+| [`require-composite-for-references`](https://nick2bad4u.github.io/eslint-plugin-tsconfig/docs/rules/require-composite-for-references) | 🔧 |
+| [`require-declaration-with-composite`](https://nick2bad4u.github.io/eslint-plugin-tsconfig/docs/rules/require-declaration-with-composite) | 🔧 |
 ## Related presets
 
 | Preset                                         | Description                                             |

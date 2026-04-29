@@ -47,79 +47,83 @@
 }
 
 :root {
-    --ifm-color-primary: #4f46e5;
-    --ifm-color-primary-dark: #4338ca;
-    --ifm-color-primary-darker: #3730a3;
-    --ifm-color-primary-darkest: #312e81;
-    --ifm-color-primary-light: #6366f1;
-    --ifm-color-primary-lighter: #818cf8;
-    --ifm-color-primary-lightest: #a5b4fc;
+    --ifm-color-primary: #6f8b2e;
+    --ifm-color-primary-dark: #5e7727;
+    --ifm-color-primary-darker: #4f6421;
+    --ifm-color-primary-darkest: #40511a;
+    --ifm-color-primary-light: #7fa33a;
+    --ifm-color-primary-lighter: #96bb4a;
+    --ifm-color-primary-lightest: #b6d067;
     --ifm-code-font-size: 95%;
     --ifm-font-family-base:
         "Inter var", "Inter", "Segoe UI", "NerdFontSymbols Nerd Font Symbols",
         system-ui, -apple-system, sans-serif;
     --sb-accent-overview: #22c55e;
-    --sb-accent-started: #0ea5e9;
-    --sb-accent-developer: #8b5cf6;
-    --sb-accent-developer-ops: #ec4899;
-    --sb-accent-rules: #f97316;
-    --sb-accent-presets: #eab308;
-    --sb-accent-guides: #06b6d4;
-    --sb-accent-api-overview: #6366f1;
-    --sb-accent-api-types: #14b8a6;
-    --sb-accent-api-runtime: #f43f5e;
-    --sb-accent-dev-charts: #38bdf8;
+    --sb-accent-started: #84a438;
+    --sb-accent-developer: #6f8b2e;
+    --sb-accent-developer-ops: #b8a93d;
+    --sb-accent-rules: #96bb4a;
+    --sb-accent-presets: #d3bf45;
+    --sb-accent-guides: #8fb14a;
+    --sb-accent-api-overview: #8ea542;
+    --sb-accent-api-types: #7ca03a;
+    --sb-accent-api-runtime: #a6a83e;
+    --sb-accent-dev-charts: #9dbb5a;
     --sb-accent-dev-links: #10b981;
     --sb-accent-adr: #f59e0b;
     --sb-accent-rules-consistent: #22c55e;
-    --sb-accent-rules-no: #f97316;
-    --sb-accent-rules-require: #6366f1;
+    --sb-accent-rules-no: #d0b941;
+    --sb-accent-rules-require: #7fa33a;
     --sb-prefix-rule-number: #52525b;
     --sb-preset-recommended: #facc15;
-    --sb-preset-strict: #f43f5e;
-    --sb-preset-all: #a855f7;
+    --sb-preset-strict: #9dad3b;
+    --sb-preset-strictest: #d8ce64;
+    --sb-preset-jsconfig: #88b94a;
+    --sb-preset-all: #6f8b2e;
     --sb-preset-emit-config: #22c55e;
-    --sb-preset-include-hygiene: #0ea5e9;
-    --sb-preset-lib-target: #f97316;
-    --sb-preset-module-resolution: #06b6d4;
-    --sb-preset-project-references: #8b5cf6;
-    --sb-preset-strict-mode: #fb923c;
+    --sb-preset-include-hygiene: #8fb14a;
+    --sb-preset-lib-target: #d5c54e;
+    --sb-preset-module-resolution: #93b74f;
+    --sb-preset-project-references: #88a33c;
+    --sb-preset-strict-mode: #c0b13f;
 }
 
 [data-theme="dark"] {
-    --ifm-color-primary: #818cf8;
-    --ifm-color-primary-dark: #6366f1;
-    --ifm-color-primary-darker: #4f46e5;
-    --ifm-color-primary-darkest: #4338ca;
-    --ifm-color-primary-light: #a5b4fc;
-    --ifm-color-primary-lighter: #c7d2fe;
-    --ifm-color-primary-lightest: #e0e7ff;
-    --sb-accent-overview: #4ade80;
-    --sb-accent-started: #38bdf8;
-    --sb-accent-developer: #c084fc;
-    --sb-accent-developer-ops: #f472b6;
-    --sb-accent-rules: #fb923c;
-    --sb-accent-presets: #facc15;
-    --sb-accent-guides: #67e8f9;
-    --sb-accent-api-overview: #a5b4fc;
-    --sb-accent-api-types: #2dd4bf;
-    --sb-accent-api-runtime: #fb7185;
-    --sb-accent-dev-charts: #7dd3fc;
+    --ifm-color-primary: #a9c55b;
+    --ifm-color-primary-dark: #92ad4c;
+    --ifm-color-primary-darker: #7b9441;
+    --ifm-color-primary-darkest: #627734;
+    --ifm-color-primary-light: #bad671;
+    --ifm-color-primary-lighter: #c9e38b;
+    --ifm-color-primary-lightest: #ddeeb0;
+    --sb-accent-overview: #9dd36a;
+    --sb-accent-started: #b5cb63;
+    --sb-accent-developer: #a9c55b;
+    --sb-accent-developer-ops: #d6c867;
+    --sb-accent-rules: #c7d971;
+    --sb-accent-presets: #e3d675;
+    --sb-accent-guides: #b6cf67;
+    --sb-accent-api-overview: #b8ce66;
+    --sb-accent-api-types: #a4c259;
+    --sb-accent-api-runtime: #d2cb70;
+    --sb-accent-dev-charts: #c0d86d;
     --sb-accent-dev-links: #34d399;
     --sb-accent-adr: #fbbf24;
     --sb-accent-rules-consistent: #4ade80;
-    --sb-accent-rules-no: #fb923c;
-    --sb-accent-rules-require: #a5b4fc;
+    --sb-accent-rules-no: #e7cf6f;
+    --sb-accent-rules-require: #b9d46d;
     --sb-prefix-rule-number: #a1a1aa;
     --sb-preset-recommended: #fde047;
-    --sb-preset-strict: #fb7185;
-    --sb-preset-all: #c084fc;
+    --sb-preset-strict: #c0c665;
+    --sb-preset-strictest: #e4d97a;
+    --sb-preset-jsconfig: #a8d16c;
+    --sb-preset-all: #9fc15a;
     --sb-preset-emit-config: #4ade80;
-    --sb-preset-include-hygiene: #38bdf8;
-    --sb-preset-lib-target: #fdba74;
-    --sb-preset-module-resolution: #67e8f9;
-    --sb-preset-project-references: #c084fc;
-    --sb-preset-strict-mode: #fca5a5;
+    --sb-preset-include-hygiene: #b6d06d;
+    --sb-preset-lib-target: #e6d57a;
+    --sb-preset-module-resolution: #b8d473;
+    --sb-preset-project-references: #adca63;
+    --sb-preset-strict-mode: #d8cc70;
 }
 
 .navbar .dropdown__menu .navbar-dropdown-divider {
@@ -166,7 +170,7 @@
 
 [data-theme="dark"] .theme-doc-sidebar-menu .menu__link:hover,
 [data-theme="dark"] .theme-doc-sidebar-menu .menu__link:focus {
-    background-color: rgb(129 140 248 / 20%);
+    background-color: rgb(169 197 91 / 20%);
 }
 
 .sb-doc-overview > .menu__link,
@@ -951,6 +955,16 @@
     border-inline-start-color: var(--sb-preset-strict);
 }
 
+.sb-cat-presets .sb-preset-strictest > .menu__link,
+.sb-cat-presets .menu__link.sb-preset-strictest {
+    border-inline-start-color: var(--sb-preset-strictest);
+}
+
+.sb-cat-presets .sb-preset-jsconfig > .menu__link,
+.sb-cat-presets .menu__link.sb-preset-jsconfig {
+    border-inline-start-color: var(--sb-preset-jsconfig);
+}
+
 .sb-cat-presets .sb-preset-all > .menu__link,
 .sb-cat-presets .menu__link.sb-preset-all {
     border-inline-start-color: var(--sb-preset-all);
@@ -996,6 +1010,20 @@
 
 .nb-preset-strict {
     border-inline-start: 3px solid var(--sb-preset-strict) !important;
+    padding-inline-start: calc(
+        var(--ifm-dropdown-link-padding-horizontal) - 3px
+    ) !important;
+}
+
+.nb-preset-strictest {
+    border-inline-start: 3px solid var(--sb-preset-strictest) !important;
+    padding-inline-start: calc(
+        var(--ifm-dropdown-link-padding-horizontal) - 3px
+    ) !important;
+}
+
+.nb-preset-jsconfig {
+    border-inline-start: 3px solid var(--sb-preset-jsconfig) !important;
     padding-inline-start: calc(
         var(--ifm-dropdown-link-padding-horizontal) - 3px
     ) !important;

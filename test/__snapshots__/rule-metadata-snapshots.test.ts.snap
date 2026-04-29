@@ -75,6 +75,29 @@ exports[`rule metadata snapshots > keeps normalized rule metadata contract stabl
     "docs": {
       "recommended": false,
       "requiresTypeChecking": false,
+      "ruleId": "R026",
+      "ruleNumber": 26,
+      "tsconfigConfigs": [
+        "all",
+        "include-hygiene",
+        "jsconfig",
+      ],
+      "url": "https://nick2bad4u.github.io/eslint-plugin-tsconfig/docs/rules/no-allowjs-without-checkjs",
+    },
+    "fixable": null,
+    "hasSuggestions": false,
+    "messageIds": [
+      "allowJsWithoutCheckJs",
+    ],
+    "ruleId": "no-allowjs-without-checkjs",
+    "schemaLength": 0,
+    "type": "problem",
+  },
+  {
+    "defaultOptionsLength": 0,
+    "docs": {
+      "recommended": false,
+      "requiresTypeChecking": false,
       "ruleId": "R004",
       "ruleNumber": 4,
       "tsconfigConfigs": [
@@ -92,6 +115,28 @@ exports[`rule metadata snapshots > keeps normalized rule metadata contract stabl
     "ruleId": "no-declaration-only-without-declaration",
     "schemaLength": 0,
     "type": "problem",
+  },
+  {
+    "defaultOptionsLength": 0,
+    "docs": {
+      "recommended": false,
+      "requiresTypeChecking": false,
+      "ruleId": "R027",
+      "ruleNumber": 27,
+      "tsconfigConfigs": [
+        "all",
+        "lib-target",
+      ],
+      "url": "https://nick2bad4u.github.io/eslint-plugin-tsconfig/docs/rules/no-deprecated-target",
+    },
+    "fixable": null,
+    "hasSuggestions": false,
+    "messageIds": [
+      "deprecatedTarget",
+    ],
+    "ruleId": "no-deprecated-target",
+    "schemaLength": 0,
+    "type": "suggestion",
   },
   {
     "defaultOptionsLength": 0,
@@ -235,6 +280,50 @@ exports[`rule metadata snapshots > keeps normalized rule metadata contract stabl
     "docs": {
       "recommended": false,
       "requiresTypeChecking": false,
+      "ruleId": "R038",
+      "ruleNumber": 38,
+      "tsconfigConfigs": [
+        "all",
+        "emit-config",
+      ],
+      "url": "https://nick2bad4u.github.io/eslint-plugin-tsconfig/docs/rules/no-inline-source-map",
+    },
+    "fixable": null,
+    "hasSuggestions": false,
+    "messageIds": [
+      "inlineSourceMap",
+    ],
+    "ruleId": "no-inline-source-map",
+    "schemaLength": 0,
+    "type": "suggestion",
+  },
+  {
+    "defaultOptionsLength": 0,
+    "docs": {
+      "recommended": false,
+      "requiresTypeChecking": false,
+      "ruleId": "R031",
+      "ruleNumber": 31,
+      "tsconfigConfigs": [
+        "all",
+        "module-resolution",
+      ],
+      "url": "https://nick2bad4u.github.io/eslint-plugin-tsconfig/docs/rules/no-legacy-module-detection",
+    },
+    "fixable": null,
+    "hasSuggestions": false,
+    "messageIds": [
+      "legacyModuleDetection",
+    ],
+    "ruleId": "no-legacy-module-detection",
+    "schemaLength": 0,
+    "type": "suggestion",
+  },
+  {
+    "defaultOptionsLength": 0,
+    "docs": {
+      "recommended": false,
+      "requiresTypeChecking": false,
       "ruleId": "R011",
       "ruleNumber": 11,
       "tsconfigConfigs": [
@@ -302,6 +391,29 @@ exports[`rule metadata snapshots > keeps normalized rule metadata contract stabl
     "docs": {
       "recommended": false,
       "requiresTypeChecking": false,
+      "ruleId": "R036",
+      "ruleNumber": 36,
+      "tsconfigConfigs": [
+        "all",
+        "strict-mode",
+        "strictest",
+      ],
+      "url": "https://nick2bad4u.github.io/eslint-plugin-tsconfig/docs/rules/no-suppress-implicit-any-index-errors",
+    },
+    "fixable": null,
+    "hasSuggestions": false,
+    "messageIds": [
+      "suppressImplicitAnyIndexErrors",
+    ],
+    "ruleId": "no-suppress-implicit-any-index-errors",
+    "schemaLength": 0,
+    "type": "problem",
+  },
+  {
+    "defaultOptionsLength": 0,
+    "docs": {
+      "recommended": false,
+      "requiresTypeChecking": false,
       "ruleId": "R014",
       "ruleNumber": 14,
       "tsconfigConfigs": [
@@ -341,6 +453,28 @@ exports[`rule metadata snapshots > keeps normalized rule metadata contract stabl
     "ruleId": "require-composite-for-references",
     "schemaLength": 0,
     "type": "problem",
+  },
+  {
+    "defaultOptionsLength": 0,
+    "docs": {
+      "recommended": false,
+      "requiresTypeChecking": false,
+      "ruleId": "R037",
+      "ruleNumber": 37,
+      "tsconfigConfigs": [
+        "all",
+        "emit-config",
+      ],
+      "url": "https://nick2bad4u.github.io/eslint-plugin-tsconfig/docs/rules/require-declaration-map",
+    },
+    "fixable": "code",
+    "hasSuggestions": false,
+    "messageIds": [
+      "missingDeclarationMap",
+    ],
+    "ruleId": "require-declaration-map",
+    "schemaLength": 0,
+    "type": "suggestion",
   },
   {
     "defaultOptionsLength": 0,
@@ -434,6 +568,99 @@ exports[`rule metadata snapshots > keeps normalized rule metadata contract stabl
   {
     "defaultOptionsLength": 0,
     "docs": {
+      "recommended": true,
+      "requiresTypeChecking": false,
+      "ruleId": "R028",
+      "ruleNumber": 28,
+      "tsconfigConfigs": [
+        "all",
+        "include-hygiene",
+        "recommended",
+        "strict",
+        "strictest",
+      ],
+      "url": "https://nick2bad4u.github.io/eslint-plugin-tsconfig/docs/rules/require-force-consistent-casing-in-file-names",
+    },
+    "fixable": "code",
+    "hasSuggestions": false,
+    "messageIds": [
+      "missingForceConsistentCasingInFileNames",
+    ],
+    "ruleId": "require-force-consistent-casing-in-file-names",
+    "schemaLength": 0,
+    "type": "problem",
+  },
+  {
+    "defaultOptionsLength": 0,
+    "docs": {
+      "recommended": false,
+      "requiresTypeChecking": false,
+      "ruleId": "R034",
+      "ruleNumber": 34,
+      "tsconfigConfigs": [
+        "all",
+        "emit-config",
+        "strictest",
+      ],
+      "url": "https://nick2bad4u.github.io/eslint-plugin-tsconfig/docs/rules/require-isolated-declarations",
+    },
+    "fixable": "code",
+    "hasSuggestions": false,
+    "messageIds": [
+      "missingIsolatedDeclarations",
+    ],
+    "ruleId": "require-isolated-declarations",
+    "schemaLength": 0,
+    "type": "suggestion",
+  },
+  {
+    "defaultOptionsLength": 0,
+    "docs": {
+      "recommended": false,
+      "requiresTypeChecking": false,
+      "ruleId": "R029",
+      "ruleNumber": 29,
+      "tsconfigConfigs": [
+        "all",
+        "module-resolution",
+      ],
+      "url": "https://nick2bad4u.github.io/eslint-plugin-tsconfig/docs/rules/require-isolated-modules",
+    },
+    "fixable": "code",
+    "hasSuggestions": false,
+    "messageIds": [
+      "missingIsolatedModules",
+    ],
+    "ruleId": "require-isolated-modules",
+    "schemaLength": 0,
+    "type": "suggestion",
+  },
+  {
+    "defaultOptionsLength": 0,
+    "docs": {
+      "recommended": false,
+      "requiresTypeChecking": false,
+      "ruleId": "R032",
+      "ruleNumber": 32,
+      "tsconfigConfigs": [
+        "all",
+        "strict-mode",
+        "strictest",
+      ],
+      "url": "https://nick2bad4u.github.io/eslint-plugin-tsconfig/docs/rules/require-no-fallthrough-cases-in-switch",
+    },
+    "fixable": "code",
+    "hasSuggestions": false,
+    "messageIds": [
+      "missingNoFallthroughCasesInSwitch",
+    ],
+    "ruleId": "require-no-fallthrough-cases-in-switch",
+    "schemaLength": 0,
+    "type": "suggestion",
+  },
+  {
+    "defaultOptionsLength": 0,
+    "docs": {
       "recommended": false,
       "requiresTypeChecking": false,
       "ruleId": "R020",
@@ -458,6 +685,52 @@ exports[`rule metadata snapshots > keeps normalized rule metadata contract stabl
     "docs": {
       "recommended": false,
       "requiresTypeChecking": false,
+      "ruleId": "R033",
+      "ruleNumber": 33,
+      "tsconfigConfigs": [
+        "all",
+        "strict-mode",
+        "strictest",
+      ],
+      "url": "https://nick2bad4u.github.io/eslint-plugin-tsconfig/docs/rules/require-no-implicit-returns",
+    },
+    "fixable": "code",
+    "hasSuggestions": false,
+    "messageIds": [
+      "missingNoImplicitReturns",
+    ],
+    "ruleId": "require-no-implicit-returns",
+    "schemaLength": 0,
+    "type": "suggestion",
+  },
+  {
+    "defaultOptionsLength": 0,
+    "docs": {
+      "recommended": false,
+      "requiresTypeChecking": false,
+      "ruleId": "R035",
+      "ruleNumber": 35,
+      "tsconfigConfigs": [
+        "all",
+        "strict-mode",
+        "strictest",
+      ],
+      "url": "https://nick2bad4u.github.io/eslint-plugin-tsconfig/docs/rules/require-no-property-access-from-index-signature",
+    },
+    "fixable": "code",
+    "hasSuggestions": false,
+    "messageIds": [
+      "missingNoPropertyAccessFromIndexSignature",
+    ],
+    "ruleId": "require-no-property-access-from-index-signature",
+    "schemaLength": 0,
+    "type": "suggestion",
+  },
+  {
+    "defaultOptionsLength": 0,
+    "docs": {
+      "recommended": false,
+      "requiresTypeChecking": false,
       "ruleId": "R021",
       "ruleNumber": 21,
       "tsconfigConfigs": [
@@ -472,6 +745,52 @@ exports[`rule metadata snapshots > keeps normalized rule metadata contract stabl
       "missingNoUncheckedIndexedAccess",
     ],
     "ruleId": "require-no-unchecked-indexed-access",
+    "schemaLength": 0,
+    "type": "suggestion",
+  },
+  {
+    "defaultOptionsLength": 0,
+    "docs": {
+      "recommended": false,
+      "requiresTypeChecking": false,
+      "ruleId": "R039",
+      "ruleNumber": 39,
+      "tsconfigConfigs": [
+        "all",
+        "strict-mode",
+        "strictest",
+      ],
+      "url": "https://nick2bad4u.github.io/eslint-plugin-tsconfig/docs/rules/require-no-unused-locals",
+    },
+    "fixable": "code",
+    "hasSuggestions": false,
+    "messageIds": [
+      "missingNoUnusedLocals",
+    ],
+    "ruleId": "require-no-unused-locals",
+    "schemaLength": 0,
+    "type": "suggestion",
+  },
+  {
+    "defaultOptionsLength": 0,
+    "docs": {
+      "recommended": false,
+      "requiresTypeChecking": false,
+      "ruleId": "R040",
+      "ruleNumber": 40,
+      "tsconfigConfigs": [
+        "all",
+        "strict-mode",
+        "strictest",
+      ],
+      "url": "https://nick2bad4u.github.io/eslint-plugin-tsconfig/docs/rules/require-no-unused-parameters",
+    },
+    "fixable": "code",
+    "hasSuggestions": false,
+    "messageIds": [
+      "missingNoUnusedParameters",
+    ],
+    "ruleId": "require-no-unused-parameters",
     "schemaLength": 0,
     "type": "suggestion",
   },
@@ -541,6 +860,29 @@ exports[`rule metadata snapshots > keeps normalized rule metadata contract stabl
       "missingStrict",
     ],
     "ruleId": "require-strict-mode",
+    "schemaLength": 0,
+    "type": "suggestion",
+  },
+  {
+    "defaultOptionsLength": 0,
+    "docs": {
+      "recommended": false,
+      "requiresTypeChecking": false,
+      "ruleId": "R030",
+      "ruleNumber": 30,
+      "tsconfigConfigs": [
+        "all",
+        "strict-mode",
+        "strictest",
+      ],
+      "url": "https://nick2bad4u.github.io/eslint-plugin-tsconfig/docs/rules/require-use-unknown-in-catch-variables",
+    },
+    "fixable": "code",
+    "hasSuggestions": false,
+    "messageIds": [
+      "missingUseUnknownInCatchVariables",
+    ],
+    "ruleId": "require-use-unknown-in-catch-variables",
     "schemaLength": 0,
     "type": "suggestion",
   },

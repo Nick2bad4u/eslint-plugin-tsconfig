@@ -41,11 +41,11 @@ const modernEnhancementsClientModule = fileURLToPath(
 );
 
 /** PWA theme-color meta value for Chromium-based browsers. */
-const pwaThemeColor = "#2E2A33";
+const pwaThemeColor = "#3F4F2A";
 /** Windows tile color for pinned-site metadata. */
-const pwaTileColor = "#2E2A33";
+const pwaTileColor = "#3F4F2A";
 /** Safari pinned-tab mask icon color. */
-const pwaMaskIconColor = "#71B041";
+const pwaMaskIconColor = "#9AAE46";
 /** Footer copyright HTML used by the site theme config. */
 const footerCopyright =
     `© ${new Date().getFullYear()} ` +
@@ -551,17 +551,17 @@ const config = {
                         {
                             className: "nb-rule-consistent",
                             label: "⚖️ consistent rules",
-                            to: "/docs/rules/category/consistency-rules",
+                            to: "/docs/rules/category/consistent",
                         },
                         {
                             className: "nb-rule-no",
                             label: "🚫 no rules",
-                            to: "/docs/rules/category/no-rules",
+                            to: "/docs/rules/category/no",
                         },
                         {
                             className: "nb-rule-require",
                             label: "✅ require rules",
-                            to: "/docs/rules/category/require-rules",
+                            to: "/docs/rules/category/require",
                         },
                     ],
                 },
@@ -585,6 +585,16 @@ const config = {
                             className: "nb-preset-strict",
                             label: "🔴 Strict",
                             to: "/docs/rules/presets/strict",
+                        },
+                        {
+                            className: "nb-preset-strictest",
+                            label: "💎 strictest",
+                            to: "/docs/rules/presets/strictest",
+                        },
+                        {
+                            className: "nb-preset-jsconfig",
+                            label: "🟢 jsconfig",
+                            to: "/docs/rules/presets/jsconfig",
                         },
                         {
                             className: "nb-preset-all",

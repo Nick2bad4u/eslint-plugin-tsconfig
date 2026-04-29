@@ -50,6 +50,21 @@ const orderedRuleNames = [
     "require-source-map-in-dev",
     "require-strict-mode",
     "require-verbatim-module-syntax",
+    "no-allowjs-without-checkjs",
+    "no-deprecated-target",
+    "require-force-consistent-casing-in-file-names",
+    "require-isolated-modules",
+    "require-use-unknown-in-catch-variables",
+    "no-legacy-module-detection",
+    "require-no-fallthrough-cases-in-switch",
+    "require-no-implicit-returns",
+    "require-isolated-declarations",
+    "require-no-property-access-from-index-signature",
+    "no-suppress-implicit-any-index-errors",
+    "require-declaration-map",
+    "no-inline-source-map",
+    "require-no-unused-locals",
+    "require-no-unused-parameters",
 ] as const satisfies readonly string[];
 
 const toRuleCatalogId = (ruleNumber: number): TsconfigRuleCatalogId =>

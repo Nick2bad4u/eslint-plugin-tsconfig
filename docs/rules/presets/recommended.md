@@ -60,11 +60,11 @@ This option is useful when you want the recommended rule set, but only for speci
   - `💡` = suggestions available
   - `—` = report only
 
-| Rule                                                                                                                          | Fix |
-| ----------------------------------------------------------------------------------------------------------------------------- | :-: |
-| [`consistent-module-resolution`](https://nick2bad4u.github.io/eslint-plugin-tsconfig/docs/rules/consistent-module-resolution) |  —  |
-| [`require-strict-mode`](https://nick2bad4u.github.io/eslint-plugin-tsconfig/docs/rules/require-strict-mode)                   |  🔧 |
-
+| Rule | Fix |
+| --- | :-: |
+| [`consistent-module-resolution`](https://nick2bad4u.github.io/eslint-plugin-tsconfig/docs/rules/consistent-module-resolution) | — |
+| [`require-force-consistent-casing-in-file-names`](https://nick2bad4u.github.io/eslint-plugin-tsconfig/docs/rules/require-force-consistent-casing-in-file-names) | 🔧 |
+| [`require-strict-mode`](https://nick2bad4u.github.io/eslint-plugin-tsconfig/docs/rules/require-strict-mode) | 🔧 |
 ## Related presets
 
 | Preset                                           | Description                                             |

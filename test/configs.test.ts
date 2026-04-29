@@ -103,14 +103,18 @@ describe("tsconfig plugin configs", () => {
         }
     });
 
-    it("every exported config targets tsconfig file globs", () => {
+    it("every exported config targets expected tsconfig/jsconfig file globs", () => {
         expect.hasAssertions();
 
         for (const config of objectValues(configs ?? {}) as FlatConfigLike[]) {
+            const isJsconfigPreset = config.name === "tsconfig/jsconfig";
+
             expect(config).toStrictEqual(
                 expect.objectContaining({
                     files: expect.arrayContaining([
-                        expect.stringContaining("tsconfig"),
+                        expect.stringContaining(
+                            isJsconfigPreset ? "jsconfig" : "tsconfig"
+                        ),
                     ]),
                 })
             );

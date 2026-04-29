@@ -36,6 +36,13 @@ const TSCONFIG_FILES = [
     "**/tsconfig-*.json",
 ] as const;
 
+/** Default file globs targeted by the jsconfig-focused preset. */
+const JSCONFIG_FILES = [
+    "**/jsconfig.json",
+    "**/jsconfig.*.json",
+    "**/jsconfig-*.json",
+] as const;
+
 /**
  * Canonical flat-config preset keys exposed through `plugin.configs`.
  */
@@ -141,6 +148,41 @@ const rulePresetMembership = deriveRulePresetMembershipByRuleName(
     ruleDocsMetadataByRuleName
 );
 
+/** Rule-set override for the `jsconfig` preset. */
+const jsconfigPresetRuleNames = [
+    "consistent-module-resolution",
+    "no-disable-strict-subset",
+    "no-include-dist",
+    "no-include-node-modules",
+    "no-legacy-module-resolution",
+    "no-skip-lib-check",
+    "require-bundler-module-resolution",
+    "require-exact-optional-property-types",
+    "require-exclude-common-artifacts",
+    "require-no-implicit-override",
+    "require-no-unchecked-indexed-access",
+    "require-strict-mode",
+    "require-verbatim-module-syntax",
+] as const satisfies readonly TsconfigRuleName[];
+
+/** Rule-set override for the strictest compiler-settings preset. */
+const strictestPresetRuleNames = [
+    "no-disable-strict-subset",
+    "no-skip-lib-check",
+    "require-exact-optional-property-types",
+    "require-no-implicit-override",
+    "require-no-unchecked-indexed-access",
+    "require-strict-mode",
+] as const satisfies readonly TsconfigRuleName[];
+
+/** Explicit preset rule overrides not derived from docs metadata tags. */
+const presetRuleNameOverrides: Readonly<
+    Partial<Record<TsconfigConfigName, readonly TsconfigRuleName[]>>
+> = {
+    jsconfig: jsconfigPresetRuleNames,
+    strictest: strictestPresetRuleNames,
+};
+
 const createEmptyPresetRuleMap = (): Record<
     TsconfigConfigName,
     TsconfigRuleName[]
@@ -183,8 +225,10 @@ const derivePresetRuleNamesByConfig = (): Readonly<
     >;
 
     for (const configName of tsconfigConfigNames) {
+        const overrideRuleNames = presetRuleNameOverrides[configName];
+
         result[configName] = dedupeRuleNames(
-            presetRuleNamesByConfig[configName]
+            overrideRuleNames ?? presetRuleNamesByConfig[configName]
         );
     }
 
@@ -267,6 +311,7 @@ const createTsconfigConfigsDefinition = (): TsconfigConfigsContract => {
         // Category presets use the default severity from rule metadata.
         const isAllPreset = configName === "all";
         const isStrictPreset = configName === "strict";
+        const isStrictestPreset = configName === "strictest";
 
         let rules: RulesConfig = {};
 
@@ -279,7 +324,7 @@ const createTsconfigConfigsDefinition = (): TsconfigConfigsContract => {
                     ruleType === "problem" ? ERROR_SEVERITY : WARN_SEVERITY;
                 rules[`tsconfig/${ruleName}`] = severity;
             }
-        } else if (isStrictPreset) {
+        } else if (isStrictPreset || isStrictestPreset) {
             rules = severityRulesFor(ruleNames, ERROR_SEVERITY);
         } else {
             rules = severityRulesFor(ruleNames, WARN_SEVERITY);
@@ -287,6 +332,11 @@ const createTsconfigConfigsDefinition = (): TsconfigConfigsContract => {
 
         configs[configName] = withTsconfigPlugin(
             {
+                ...(configName === "jsconfig"
+                    ? {
+                          files: [...JSCONFIG_FILES],
+                      }
+                    : {}),
                 name: `tsconfig/${configName}`,
                 rules,
             },

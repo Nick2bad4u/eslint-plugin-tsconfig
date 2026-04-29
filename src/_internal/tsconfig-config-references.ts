@@ -7,8 +7,10 @@ import { objectHasOwn } from "ts-extras";
 /** Canonical flat-config preset keys exposed through `plugin.configs`. */
 export const tsconfigConfigNames = [
     "all",
+    "jsconfig",
     "recommended",
     "strict",
+    "strictest",
     "emit-config",
     "include-hygiene",
     "lib-target",
@@ -45,37 +47,43 @@ export const tsconfigConfigMetadataByName: Readonly<
     all: {
         icon: "🟣",
         presetName: "tsconfig:all",
-        readmeOrder: 3,
+        readmeOrder: 5,
         requiresTypeChecking: false,
     },
     "emit-config": {
         icon: "📤",
         presetName: "tsconfig:emit-config",
-        readmeOrder: 6,
+        readmeOrder: 8,
         requiresTypeChecking: false,
     },
     "include-hygiene": {
         icon: "🧹",
         presetName: "tsconfig:include-hygiene",
-        readmeOrder: 7,
+        readmeOrder: 9,
+        requiresTypeChecking: false,
+    },
+    jsconfig: {
+        icon: "🟢",
+        presetName: "tsconfig:jsconfig",
+        readmeOrder: 4,
         requiresTypeChecking: false,
     },
     "lib-target": {
         icon: "🎯",
         presetName: "tsconfig:lib-target",
-        readmeOrder: 8,
+        readmeOrder: 10,
         requiresTypeChecking: false,
     },
     "module-resolution": {
         icon: "📦",
         presetName: "tsconfig:module-resolution",
-        readmeOrder: 5,
+        readmeOrder: 7,
         requiresTypeChecking: false,
     },
     "project-references": {
         icon: "🔗",
         presetName: "tsconfig:project-references",
-        readmeOrder: 9,
+        readmeOrder: 11,
         requiresTypeChecking: false,
     },
     recommended: {
@@ -93,7 +101,13 @@ export const tsconfigConfigMetadataByName: Readonly<
     "strict-mode": {
         icon: "🔒",
         presetName: "tsconfig:strict-mode",
-        readmeOrder: 4,
+        readmeOrder: 6,
+        requiresTypeChecking: false,
+    },
+    strictest: {
+        icon: "💎",
+        presetName: "tsconfig:strictest",
+        readmeOrder: 3,
         requiresTypeChecking: false,
     },
 };
@@ -102,6 +116,8 @@ export const tsconfigConfigMetadataByName: Readonly<
 export const tsconfigConfigNamesByReadmeOrder: readonly TsconfigConfigName[] = [
     "recommended",
     "strict",
+    "strictest",
+    "jsconfig",
     "all",
     "strict-mode",
     "module-resolution",
@@ -116,34 +132,42 @@ export const tsconfigConfigReferenceToName: Readonly<{
     "tsconfig.configs.all": "all";
     "tsconfig.configs.emit-config": "emit-config";
     "tsconfig.configs.include-hygiene": "include-hygiene";
+    "tsconfig.configs.jsconfig": "jsconfig";
     "tsconfig.configs.lib-target": "lib-target";
     "tsconfig.configs.module-resolution": "module-resolution";
     "tsconfig.configs.project-references": "project-references";
     "tsconfig.configs.recommended": "recommended";
     "tsconfig.configs.strict": "strict";
     "tsconfig.configs.strict-mode": "strict-mode";
+    "tsconfig.configs.strictest": "strictest";
     'tsconfig.configs["emit-config"]': "emit-config";
     'tsconfig.configs["include-hygiene"]': "include-hygiene";
+    'tsconfig.configs["jsconfig"]': "jsconfig";
     'tsconfig.configs["lib-target"]': "lib-target";
     'tsconfig.configs["module-resolution"]': "module-resolution";
     'tsconfig.configs["project-references"]': "project-references";
     'tsconfig.configs["strict-mode"]': "strict-mode";
+    'tsconfig.configs["strictest"]': "strictest";
 }> = {
     "tsconfig.configs.all": "all",
     "tsconfig.configs.emit-config": "emit-config",
     "tsconfig.configs.include-hygiene": "include-hygiene",
+    "tsconfig.configs.jsconfig": "jsconfig",
     "tsconfig.configs.lib-target": "lib-target",
     "tsconfig.configs.module-resolution": "module-resolution",
     "tsconfig.configs.project-references": "project-references",
     "tsconfig.configs.recommended": "recommended",
     "tsconfig.configs.strict": "strict",
     "tsconfig.configs.strict-mode": "strict-mode",
+    "tsconfig.configs.strictest": "strictest",
     'tsconfig.configs["emit-config"]': "emit-config",
     'tsconfig.configs["include-hygiene"]': "include-hygiene",
+    'tsconfig.configs["jsconfig"]': "jsconfig",
     'tsconfig.configs["lib-target"]': "lib-target",
     'tsconfig.configs["module-resolution"]': "module-resolution",
     'tsconfig.configs["project-references"]': "project-references",
     'tsconfig.configs["strict-mode"]': "strict-mode",
+    'tsconfig.configs["strictest"]': "strictest",
 };
 
 /** Fully-qualified preset reference type accepted in docs metadata. */

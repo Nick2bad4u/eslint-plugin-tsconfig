@@ -129,6 +129,18 @@ const sidebars = {
                     type: "doc",
                 },
                 {
+                    className: "sb-preset-strictest",
+                    id: "presets/strictest",
+                    label: "💎 strictest",
+                    type: "doc",
+                },
+                {
+                    className: "sb-preset-jsconfig",
+                    id: "presets/jsconfig",
+                    label: "🟢 jsconfig",
+                    type: "doc",
+                },
+                {
                     className: "sb-preset-all",
                     id: "presets/all",
                     label: "🟣 All",

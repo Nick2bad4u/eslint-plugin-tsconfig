@@ -27,12 +27,12 @@ export default [tsconfig.configs["lib-target"]];
   - `💡` = suggestions available
   - `—` = report only
 
-| Rule                                                                                                                                                      | Fix |
-| --------------------------------------------------------------------------------------------------------------------------------------------------------- | :-: |
-| [`consistent-target-and-lib`](https://nick2bad4u.github.io/eslint-plugin-tsconfig/docs/rules/consistent-target-and-lib)                                   |  —  |
-| [`no-esnext-target-in-library`](https://nick2bad4u.github.io/eslint-plugin-tsconfig/docs/rules/no-esnext-target-in-library)                               |  —  |
-| [`require-downlevel-iteration-with-iterators`](https://nick2bad4u.github.io/eslint-plugin-tsconfig/docs/rules/require-downlevel-iteration-with-iterators) |  🔧 |
-
+| Rule | Fix |
+| --- | :-: |
+| [`consistent-target-and-lib`](https://nick2bad4u.github.io/eslint-plugin-tsconfig/docs/rules/consistent-target-and-lib) | — |
+| [`no-deprecated-target`](https://nick2bad4u.github.io/eslint-plugin-tsconfig/docs/rules/no-deprecated-target) | — |
+| [`no-esnext-target-in-library`](https://nick2bad4u.github.io/eslint-plugin-tsconfig/docs/rules/no-esnext-target-in-library) | — |
+| [`require-downlevel-iteration-with-iterators`](https://nick2bad4u.github.io/eslint-plugin-tsconfig/docs/rules/require-downlevel-iteration-with-iterators) | 🔧 |
 ## Related presets
 
 | Preset                                           | Description                                             |

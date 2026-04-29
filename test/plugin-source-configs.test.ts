@@ -91,7 +91,7 @@ describe("source plugin config wiring", () => {
         }
     });
 
-    it("builds category preset configs for all 9 config keys", async () => {
+    it("builds category preset configs for all config keys", async () => {
         expect.hasAssertions();
 
         const plugin = await loadSourcePlugin();

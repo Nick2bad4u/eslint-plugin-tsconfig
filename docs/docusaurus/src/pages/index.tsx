@@ -60,7 +60,7 @@ const heroStats = [
     },
     {
         description: "Start minimal, scale to stricter coverage.",
-        headline: "\ue690 9 Presets",
+        headline: "\ue690 11 Presets",
     },
     {
         description: "Safe rewrites where semantics are preserved.",

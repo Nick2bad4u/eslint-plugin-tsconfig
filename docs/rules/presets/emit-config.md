@@ -27,15 +27,17 @@ export default [tsconfig.configs["emit-config"]];
   - `💡` = suggestions available
   - `—` = report only
 
-| Rule                                                                                                                                                | Fix |
-| --------------------------------------------------------------------------------------------------------------------------------------------------- | :-: |
-| [`consistent-incremental-with-tsbuildinfo`](https://nick2bad4u.github.io/eslint-plugin-tsconfig/docs/rules/consistent-incremental-with-tsbuildinfo) |  🔧 |
-| [`no-declaration-only-without-declaration`](https://nick2bad4u.github.io/eslint-plugin-tsconfig/docs/rules/no-declaration-only-without-declaration) |  🔧 |
-| [`no-emit-in-root-config`](https://nick2bad4u.github.io/eslint-plugin-tsconfig/docs/rules/no-emit-in-root-config)                                   |  🔧 |
-| [`no-rootdir-includes-outdir`](https://nick2bad4u.github.io/eslint-plugin-tsconfig/docs/rules/no-rootdir-includes-outdir)                           |  —  |
-| [`require-outdir-when-emitting`](https://nick2bad4u.github.io/eslint-plugin-tsconfig/docs/rules/require-outdir-when-emitting)                       |  —  |
-| [`require-source-map-in-dev`](https://nick2bad4u.github.io/eslint-plugin-tsconfig/docs/rules/require-source-map-in-dev)                             |  🔧 |
-
+| Rule | Fix |
+| --- | :-: |
+| [`consistent-incremental-with-tsbuildinfo`](https://nick2bad4u.github.io/eslint-plugin-tsconfig/docs/rules/consistent-incremental-with-tsbuildinfo) | 🔧 |
+| [`no-declaration-only-without-declaration`](https://nick2bad4u.github.io/eslint-plugin-tsconfig/docs/rules/no-declaration-only-without-declaration) | 🔧 |
+| [`no-emit-in-root-config`](https://nick2bad4u.github.io/eslint-plugin-tsconfig/docs/rules/no-emit-in-root-config) | 🔧 |
+| [`no-inline-source-map`](https://nick2bad4u.github.io/eslint-plugin-tsconfig/docs/rules/no-inline-source-map) | — |
+| [`no-rootdir-includes-outdir`](https://nick2bad4u.github.io/eslint-plugin-tsconfig/docs/rules/no-rootdir-includes-outdir) | — |
+| [`require-declaration-map`](https://nick2bad4u.github.io/eslint-plugin-tsconfig/docs/rules/require-declaration-map) | 🔧 |
+| [`require-isolated-declarations`](https://nick2bad4u.github.io/eslint-plugin-tsconfig/docs/rules/require-isolated-declarations) | 🔧 |
+| [`require-outdir-when-emitting`](https://nick2bad4u.github.io/eslint-plugin-tsconfig/docs/rules/require-outdir-when-emitting) | — |
+| [`require-source-map-in-dev`](https://nick2bad4u.github.io/eslint-plugin-tsconfig/docs/rules/require-source-map-in-dev) | 🔧 |
 ## Related presets
 
 | Preset                                           | Description                                        |

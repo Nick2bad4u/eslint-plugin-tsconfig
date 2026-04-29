@@ -27,13 +27,14 @@ export default [tsconfig.configs["include-hygiene"]];
   - `💡` = suggestions available
   - `—` = report only
 
-| Rule                                                                                                                                  | Fix |
-| ------------------------------------------------------------------------------------------------------------------------------------- | :-: |
-| [`no-include-dist`](https://nick2bad4u.github.io/eslint-plugin-tsconfig/docs/rules/no-include-dist)                                   |  —  |
-| [`no-include-node-modules`](https://nick2bad4u.github.io/eslint-plugin-tsconfig/docs/rules/no-include-node-modules)                   |  🔧 |
-| [`no-skip-lib-check`](https://nick2bad4u.github.io/eslint-plugin-tsconfig/docs/rules/no-skip-lib-check)                               |  —  |
-| [`require-exclude-common-artifacts`](https://nick2bad4u.github.io/eslint-plugin-tsconfig/docs/rules/require-exclude-common-artifacts) |  🔧 |
-
+| Rule | Fix |
+| --- | :-: |
+| [`no-allowjs-without-checkjs`](https://nick2bad4u.github.io/eslint-plugin-tsconfig/docs/rules/no-allowjs-without-checkjs) | — |
+| [`no-include-dist`](https://nick2bad4u.github.io/eslint-plugin-tsconfig/docs/rules/no-include-dist) | — |
+| [`no-include-node-modules`](https://nick2bad4u.github.io/eslint-plugin-tsconfig/docs/rules/no-include-node-modules) | 🔧 |
+| [`no-skip-lib-check`](https://nick2bad4u.github.io/eslint-plugin-tsconfig/docs/rules/no-skip-lib-check) | — |
+| [`require-exclude-common-artifacts`](https://nick2bad4u.github.io/eslint-plugin-tsconfig/docs/rules/require-exclude-common-artifacts) | 🔧 |
+| [`require-force-consistent-casing-in-file-names`](https://nick2bad4u.github.io/eslint-plugin-tsconfig/docs/rules/require-force-consistent-casing-in-file-names) | 🔧 |
 ## Related presets
 
 | Preset                                           | Description                                             |

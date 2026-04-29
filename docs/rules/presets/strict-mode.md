@@ -27,14 +27,20 @@ export default [tsconfig.configs["strict-mode"]];
   - `💡` = suggestions available
   - `—` = report only
 
-| Rule                                                                                                                                            | Fix |
-| ----------------------------------------------------------------------------------------------------------------------------------------------- | :-: |
-| [`no-disable-strict-subset`](https://nick2bad4u.github.io/eslint-plugin-tsconfig/docs/rules/no-disable-strict-subset)                           |  —  |
-| [`require-exact-optional-property-types`](https://nick2bad4u.github.io/eslint-plugin-tsconfig/docs/rules/require-exact-optional-property-types) |  🔧 |
-| [`require-no-implicit-override`](https://nick2bad4u.github.io/eslint-plugin-tsconfig/docs/rules/require-no-implicit-override)                   |  🔧 |
-| [`require-no-unchecked-indexed-access`](https://nick2bad4u.github.io/eslint-plugin-tsconfig/docs/rules/require-no-unchecked-indexed-access)     |  🔧 |
-| [`require-strict-mode`](https://nick2bad4u.github.io/eslint-plugin-tsconfig/docs/rules/require-strict-mode)                                     |  🔧 |
-
+| Rule | Fix |
+| --- | :-: |
+| [`no-disable-strict-subset`](https://nick2bad4u.github.io/eslint-plugin-tsconfig/docs/rules/no-disable-strict-subset) | — |
+| [`no-suppress-implicit-any-index-errors`](https://nick2bad4u.github.io/eslint-plugin-tsconfig/docs/rules/no-suppress-implicit-any-index-errors) | — |
+| [`require-exact-optional-property-types`](https://nick2bad4u.github.io/eslint-plugin-tsconfig/docs/rules/require-exact-optional-property-types) | 🔧 |
+| [`require-no-fallthrough-cases-in-switch`](https://nick2bad4u.github.io/eslint-plugin-tsconfig/docs/rules/require-no-fallthrough-cases-in-switch) | 🔧 |
+| [`require-no-implicit-override`](https://nick2bad4u.github.io/eslint-plugin-tsconfig/docs/rules/require-no-implicit-override) | 🔧 |
+| [`require-no-implicit-returns`](https://nick2bad4u.github.io/eslint-plugin-tsconfig/docs/rules/require-no-implicit-returns) | 🔧 |
+| [`require-no-property-access-from-index-signature`](https://nick2bad4u.github.io/eslint-plugin-tsconfig/docs/rules/require-no-property-access-from-index-signature) | 🔧 |
+| [`require-no-unchecked-indexed-access`](https://nick2bad4u.github.io/eslint-plugin-tsconfig/docs/rules/require-no-unchecked-indexed-access) | 🔧 |
+| [`require-no-unused-locals`](https://nick2bad4u.github.io/eslint-plugin-tsconfig/docs/rules/require-no-unused-locals) | 🔧 |
+| [`require-no-unused-parameters`](https://nick2bad4u.github.io/eslint-plugin-tsconfig/docs/rules/require-no-unused-parameters) | 🔧 |
+| [`require-strict-mode`](https://nick2bad4u.github.io/eslint-plugin-tsconfig/docs/rules/require-strict-mode) | 🔧 |
+| [`require-use-unknown-in-catch-variables`](https://nick2bad4u.github.io/eslint-plugin-tsconfig/docs/rules/require-use-unknown-in-catch-variables) | 🔧 |
 ## Related presets
 
 | Preset                                           | Description                                             |

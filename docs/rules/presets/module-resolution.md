@@ -27,14 +27,15 @@ export default [tsconfig.configs["module-resolution"]];
   - `💡` = suggestions available
   - `—` = report only
 
-| Rule                                                                                                                                    | Fix |
-| --------------------------------------------------------------------------------------------------------------------------------------- | :-: |
-| [`consistent-module-resolution`](https://nick2bad4u.github.io/eslint-plugin-tsconfig/docs/rules/consistent-module-resolution)           |  —  |
-| [`no-esmoduleinterop-with-verbatim`](https://nick2bad4u.github.io/eslint-plugin-tsconfig/docs/rules/no-esmoduleinterop-with-verbatim)   |  🔧 |
-| [`no-legacy-module-resolution`](https://nick2bad4u.github.io/eslint-plugin-tsconfig/docs/rules/no-legacy-module-resolution)             |  —  |
-| [`require-bundler-module-resolution`](https://nick2bad4u.github.io/eslint-plugin-tsconfig/docs/rules/require-bundler-module-resolution) |  🔧 |
-| [`require-verbatim-module-syntax`](https://nick2bad4u.github.io/eslint-plugin-tsconfig/docs/rules/require-verbatim-module-syntax)       |  🔧 |
-
+| Rule | Fix |
+| --- | :-: |
+| [`consistent-module-resolution`](https://nick2bad4u.github.io/eslint-plugin-tsconfig/docs/rules/consistent-module-resolution) | — |
+| [`no-esmoduleinterop-with-verbatim`](https://nick2bad4u.github.io/eslint-plugin-tsconfig/docs/rules/no-esmoduleinterop-with-verbatim) | 🔧 |
+| [`no-legacy-module-detection`](https://nick2bad4u.github.io/eslint-plugin-tsconfig/docs/rules/no-legacy-module-detection) | — |
+| [`no-legacy-module-resolution`](https://nick2bad4u.github.io/eslint-plugin-tsconfig/docs/rules/no-legacy-module-resolution) | — |
+| [`require-bundler-module-resolution`](https://nick2bad4u.github.io/eslint-plugin-tsconfig/docs/rules/require-bundler-module-resolution) | 🔧 |
+| [`require-isolated-modules`](https://nick2bad4u.github.io/eslint-plugin-tsconfig/docs/rules/require-isolated-modules) | 🔧 |
+| [`require-verbatim-module-syntax`](https://nick2bad4u.github.io/eslint-plugin-tsconfig/docs/rules/require-verbatim-module-syntax) | 🔧 |
 ## Related presets
 
 | Preset                                           | Description                                             |

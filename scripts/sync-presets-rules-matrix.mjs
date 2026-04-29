@@ -28,6 +28,7 @@ import { generateReadmeRulesSectionFromRules } from "./sync-readme-rules-table.m
 
 /**
  * @typedef {"all"
+ *     | "jsconfig"
  *     | "emit-config"
  *     | "include-hygiene"
  *     | "lib-target"
@@ -35,6 +36,7 @@ import { generateReadmeRulesSectionFromRules } from "./sync-readme-rules-table.m
  *     | "project-references"
  *     | "recommended"
  *     | "strict"
+ *     | "strictest"
  *     | "strict-mode"} PresetConfigName
  */
 
@@ -62,6 +64,7 @@ const normalizeMarkdownLineEndings = (markdown, lineEnding) =>
 /** @type {Readonly<Record<PresetConfigName, string>>} */
 const presetDocSlugByConfigName = {
     all: "all",
+    jsconfig: "jsconfig",
     "emit-config": "emit-config",
     "include-hygiene": "include-hygiene",
     "lib-target": "lib-target",
@@ -69,12 +72,14 @@ const presetDocSlugByConfigName = {
     "project-references": "project-references",
     recommended: "recommended",
     strict: "strict",
+    strictest: "strictest",
     "strict-mode": "strict-mode",
 };
 
 /** @type {readonly PresetConfigName[]} */
 const standardPresetConfigNames = [
     "all",
+    "jsconfig",
     "emit-config",
     "include-hygiene",
     "lib-target",
@@ -82,6 +87,7 @@ const standardPresetConfigNames = [
     "project-references",
     "recommended",
     "strict",
+    "strictest",
     "strict-mode",
 ];
 

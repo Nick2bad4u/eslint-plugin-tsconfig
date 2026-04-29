@@ -150,6 +150,7 @@ export const normalizeRulesSectionMarkdown = (markdown) =>
 /** @type {Readonly<Record<PresetName, string>>} */
 const presetDocsSlugByName = {
     all: "all",
+    jsconfig: "jsconfig",
     "emit-config": "emit-config",
     "include-hygiene": "include-hygiene",
     "lib-target": "lib-target",
@@ -157,12 +158,14 @@ const presetDocsSlugByName = {
     "project-references": "project-references",
     recommended: "recommended",
     strict: "strict",
+    strictest: "strictest",
     "strict-mode": "strict-mode",
 };
 
 /** @type {Readonly<Record<PresetName, string>>} */
 const presetConfigReferenceByName = {
     all: "tsconfig.configs.all",
+    jsconfig: "tsconfig.configs.jsconfig",
     "emit-config": 'tsconfig.configs["emit-config"]',
     "include-hygiene": 'tsconfig.configs["include-hygiene"]',
     "lib-target": 'tsconfig.configs["lib-target"]',
@@ -170,6 +173,7 @@ const presetConfigReferenceByName = {
     "project-references": 'tsconfig.configs["project-references"]',
     recommended: "tsconfig.configs.recommended",
     strict: "tsconfig.configs.strict",
+    strictest: "tsconfig.configs.strictest",
     "strict-mode": 'tsconfig.configs["strict-mode"]',
 };
 
