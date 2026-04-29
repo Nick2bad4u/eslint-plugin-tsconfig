@@ -111,7 +111,7 @@ export type PluginRuleModule = Parameters<RuleTester["run"]>[1];
  * forwards through an `UnknownArray` cast at runtime.
  */
 interface PluginRuleTester {
-    run: (name: string, rule: unknown, cases: RuleRunCases) => void;
+    run: (name: string, rule: unknown, cases: Readonly<RuleRunCases>) => void;
 }
 /** Full argument tuple for `RuleTester#run`. */
 type RuleRunArguments = Parameters<RuleTester["run"]>;
@@ -238,12 +238,13 @@ const patchRuleTesterRunWithGeneratedCaseNames = (
         ruleName,
         ruleModule,
         runCases
-    ) =>
+    ) => {
         originalRun(
             ruleName,
             ruleModule as Parameters<RuleTester["run"]>[1],
             withGeneratedRuleCaseNames(ruleName, runCases)
-        ) as unknown;
+        );
+    };
     writableTester.run = wrappedRun as unknown as RuleTester["run"];
     return writableTester as unknown as PluginRuleTester;
 };

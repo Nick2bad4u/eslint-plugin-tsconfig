@@ -6,25 +6,28 @@ import type { JsoncRuleModule } from "../_internal/jsonc-rule.js";
 
 import { createJsoncRule } from "../_internal/jsonc-rule.js";
 
+/** Rule implementation for this tsconfig lint rule. */
 const rule: JsoncRuleModule = createJsoncRule({
     create() {
         return {
-            JSONObjectExpression(_node) {            },
+            JSONObjectExpression() {},
         };
     },
     meta: {
         docs: {
-            description: "Require common build-artifact directories in `exclude`.",
+            description:
+                "require common build-artifact directories in `exclude`.",
             recommended: false,
             requiresTypeChecking: false,
             tsconfigConfigs: ["all", "include-hygiene"],
         },
         fixable: "code",
         messages: {
-        missingExcludeEntry: "The `exclude` array should contain \"{{entry}}\" to prevent TypeScript from processing build artifacts and installed packages.",
+            missingExcludeEntry:
+                'The `exclude` array should contain "{{entry}}" to prevent TypeScript from processing build artifacts and installed packages.',
         },
         schema: [],
-            type: "suggestion",
+        type: "suggestion",
     },
     name: "require-exclude-common-artifacts",
 });

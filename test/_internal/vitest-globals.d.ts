@@ -1,6 +1,6 @@
-import type { UnknownArray, UnknownRecord  } from "type-fest";
+import type { UnknownArray, UnknownRecord } from "type-fest";
 
-import type { createTypedRule as createTypedRuleType } from "../../src/_internal/typed-rule.js";
+import type { createTypedRule as createTypedRuleType } from "../../src/_internal/typed-rule";
 
 export type CreateTypedRuleSelectorAwarePassThrough =
     typeof createTypedRuleType;

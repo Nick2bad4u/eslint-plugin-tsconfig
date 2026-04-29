@@ -6,25 +6,28 @@ import type { JsoncRuleModule } from "../_internal/jsonc-rule.js";
 
 import { createJsoncRule } from "../_internal/jsonc-rule.js";
 
+/** Rule implementation for this tsconfig lint rule. */
 const rule: JsoncRuleModule = createJsoncRule({
     create() {
         return {
-            JSONObjectExpression(_node) {            },
+            JSONObjectExpression() {},
         };
     },
     meta: {
         docs: {
-            description: "Require `verbatimModuleSyntax: true` in library configurations.",
+            description:
+                "require `verbatimModuleSyntax: true` in library configurations.",
             recommended: false,
             requiresTypeChecking: false,
             tsconfigConfigs: ["all", "module-resolution"],
         },
         fixable: "code",
         messages: {
-        missingVerbatimModuleSyntax: "`verbatimModuleSyntax: true` ensures TypeScript emits `import`/`export` statements verbatim, making output predictable for bundlers and module systems. Add it to `compilerOptions`.",
+            missingVerbatimModuleSyntax:
+                "`verbatimModuleSyntax: true` ensures TypeScript emits `import`/`export` statements verbatim, making output predictable for bundlers and module systems. Add it to `compilerOptions`.",
         },
         schema: [],
-            type: "suggestion",
+        type: "suggestion",
     },
     name: "require-verbatim-module-syntax",
 });

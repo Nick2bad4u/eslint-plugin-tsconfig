@@ -209,7 +209,7 @@ function parseH2Headings(markdown: string): string[] {
 
 describe("tsconfig rule docs", () => {
     it("every rule has a docs url and a matching docs/rules/<id>.md file", () => {
-        expect(true).toBeTruthy();
+        expect.hasAssertions();
 
         const { rules } = tsconfigPlugin;
 
@@ -242,7 +242,7 @@ describe("tsconfig rule docs", () => {
     });
 
     it("rule docs keep a canonical heading schema and package documentation placement", async () => {
-        expect(true).toBeTruthy();
+        expect.hasAssertions();
 
         const docsDir = path.join(process.cwd(), "docs", "rules");
 

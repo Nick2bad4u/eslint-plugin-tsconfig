@@ -3,7 +3,7 @@ import type { UnknownRecord } from "type-fest";
 import * as fs from "node:fs";
 import { createRequire } from "node:module";
 import * as path from "node:path";
-import { arrayJoin, safeCastTo  } from "ts-extras";
+import { arrayJoin, safeCastTo } from "ts-extras";
 import { describe, expect, it, vi } from "vitest";
 
 type PrismLanguageGrammar = UnknownRecord;
@@ -22,10 +22,47 @@ type PrismLike = Readonly<{
 }>;
 
 const requireFromDocsWorkspace = createRequire(import.meta.url);
-const prismIncludeLanguages = safeCastTo<(prismObject: PrismLike) => PrismLike>(requireFromDocsWorkspace(
+const prismIncludeLanguagesModule = requireFromDocsWorkspace(
     "../docs/docusaurus/src/theme/prism-include-languages.js"
-));
-const Prism = safeCastTo<PrismLike>(requireFromDocsWorkspace("prismjs"));
+) as unknown;
+
+const isPrismIncludeLanguages = (
+    value: unknown
+): value is (prismObject: PrismLike) => PrismLike =>
+    typeof value === "function";
+
+if (!isPrismIncludeLanguages(prismIncludeLanguagesModule)) {
+    throw new TypeError(
+        "Expected prism-include-languages to export a function."
+    );
+}
+
+const prismIncludeLanguages = prismIncludeLanguagesModule;
+
+const prismModule = requireFromDocsWorkspace("prismjs") as unknown;
+
+const isPrismLike = (value: unknown): value is PrismLike => {
+    if (typeof value !== "object" || value === null) {
+        return false;
+    }
+
+    const candidate = safeCastTo<{
+        highlight?: unknown;
+        languages?: unknown;
+    }>(value);
+
+    return (
+        typeof candidate.highlight === "function" &&
+        typeof candidate.languages === "object" &&
+        candidate.languages !== null
+    );
+};
+
+if (!isPrismLike(prismModule)) {
+    throw new TypeError("Expected prismjs module to export an object.");
+}
+
+const Prism = prismModule;
 
 requireFromDocsWorkspace("prismjs/components/prism-javascript");
 requireFromDocsWorkspace("prismjs/components/prism-jsx");
@@ -60,7 +97,7 @@ const restoreGlobalTestEnvironment = (): void => {
 describe("docusaurus client regressions", () => {
     describe("prism customization", () => {
         it("highlights JSDoc tags inside TypeScript doc-comment blocks", () => {
-            expect(true).toBeTruthy();
+            expect.hasAssertions();
 
             try {
                 prismIncludeLanguages(Prism);
@@ -70,12 +107,15 @@ describe("docusaurus client regressions", () => {
                 expect(typescriptGrammar).toBeDefined();
 
                 const highlighted = Prism.highlight(
-                    arrayJoin([
-                        "/**",
-                        " * @example",
-                        " * @category Type guard",
-                        " */",
-                    ], "\n"),
+                    arrayJoin(
+                        [
+                            "/**",
+                            " * @example",
+                            " * @category Type guard",
+                            " */",
+                        ],
+                        "\n"
+                    ),
                     typescriptGrammar ?? fallbackGrammar,
                     "typescript"
                 );
@@ -91,7 +131,7 @@ describe("docusaurus client regressions", () => {
 
     describe("client enhancement bootstrap", () => {
         it("uses the window load event instead of DOMContentLoaded for initial setup", () => {
-            expect(true).toBeTruthy();
+            expect.hasAssertions();
 
             try {
                 const sourceText = fs.readFileSync(

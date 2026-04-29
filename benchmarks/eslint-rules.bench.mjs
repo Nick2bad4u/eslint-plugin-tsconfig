@@ -60,6 +60,7 @@ const countReportedProblems = (lintResults) =>
  *     maximumReportedProblems?: number;
  *     minimumReportedProblems?: number;
  * }} [options]
+ *   - Optional expected problem-count bounds.
  */
 const assertMeaningfulBenchmarkSignal = (
     scenarioName,

@@ -67,23 +67,39 @@ export function encodeValue(value: JSONPrimitive): string {
  * @returns The matching `JSONProperty` when present; otherwise `undefined`.
  */
 export function findProperty(
-    obj: JSONObjectExpression,
+    obj: Readonly<JSONObjectExpression>,
     key: string
 ): JSONProperty | undefined {
-    return obj.properties.find(
-        (prop) => prop.type === "JSONProperty" && getKeyText(prop) === key
-    );
+    return obj.properties.find((prop) => {
+        if (prop.type !== "JSONProperty") {
+            return false;
+        }
+
+        let keyText = "";
+        if (prop.key.type === "JSONIdentifier") {
+            keyText = prop.key.name;
+        } else if (
+            prop.key.type === "JSONLiteral" &&
+            typeof prop.key.value === "string"
+        ) {
+            keyText = prop.key.value;
+        }
+
+        return keyText === key;
+    });
 }
 
 /**
- * Extract a boolean literal value from a `JSONProperty`.
+ * Resolve a boolean literal value from a JSON property.
  *
  * @param prop - JSON property to inspect.
  *
  * @returns The boolean value when the property holds a boolean literal;
  *   otherwise `undefined`.
  */
-export function getBooleanValue(prop: JSONProperty): boolean | undefined {
+export function getBooleanValue(
+    prop: Readonly<JSONProperty>
+): boolean | undefined {
     if (
         prop.value.type === "JSONLiteral" &&
         typeof prop.value.value === "boolean"
@@ -103,7 +119,7 @@ export function getBooleanValue(prop: JSONProperty): boolean | undefined {
  *   `undefined`.
  */
 export function getCompilerOptions(
-    root: JSONObjectExpression
+    root: Readonly<JSONObjectExpression>
 ): JSONObjectExpression | undefined {
     const prop = findProperty(root, "compilerOptions");
 
@@ -117,32 +133,15 @@ export function getCompilerOptions(
 // ─── Value extraction ─────────────────────────────────────────────────────────
 
 /**
- * Extract the string key from a `JSONProperty`.
- *
- * @param prop - JSON property whose key to extract.
- *
- * @returns The resolved key string.
- */
-export function getKeyText(prop: JSONProperty): string {
-    if (prop.key.type === "JSONIdentifier") {
-        return prop.key.name;
-    }
-
-    if (prop.key.type === "JSONLiteral" && typeof prop.key.value === "string") {
-        return prop.key.value;
-    }
-
-    return "";
-}
-
-/**
  * Collect the string elements from a `JSONArrayExpression`.
  *
  * @param arr - Array node to iterate.
  *
  * @returns Array of string values found among the array elements.
  */
-export function getStringArrayElements(arr: JSONArrayExpression): string[] {
+export function getStringArrayElements(
+    arr: Readonly<JSONArrayExpression>
+): string[] {
     const result: string[] = [];
 
     for (const element of arr.elements) {
@@ -167,7 +166,7 @@ export function getStringArrayElements(arr: JSONArrayExpression): string[] {
  *   `undefined`.
  */
 export function getStringFromExpression(
-    expr: JSONExpression
+    expr: Readonly<JSONExpression>
 ): string | undefined {
     if (expr.type === "JSONLiteral" && typeof expr.value === "string") {
         return expr.value;
@@ -186,7 +185,9 @@ export function getStringFromExpression(
  * @returns The string value when the property holds a string literal; otherwise
  *   `undefined`.
  */
-export function getStringValue(prop: JSONProperty): string | undefined {
+export function getStringValue(
+    prop: Readonly<JSONProperty>
+): string | undefined {
     if (
         prop.value.type === "JSONLiteral" &&
         typeof prop.value.value === "string"
@@ -205,7 +206,10 @@ export function getStringValue(prop: JSONProperty): string | undefined {
  *
  * @returns `true` when the property is present.
  */
-export function hasProperty(obj: JSONObjectExpression, key: string): boolean {
+export function hasProperty(
+    obj: Readonly<JSONObjectExpression>,
+    key: string
+): boolean {
     return isDefined(findProperty(obj, key));
 }
 
@@ -226,7 +230,7 @@ export function hasProperty(obj: JSONObjectExpression, key: string): boolean {
  */
 export function insertProperty(
     fixer: Fixer,
-    obj: JSONObjectExpression,
+    obj: Readonly<JSONObjectExpression>,
     key: string,
     value: JSONPrimitive,
     indent = "    "
@@ -269,7 +273,7 @@ export function insertProperty(
  */
 export function replacePropertyValue(
     fixer: Fixer,
-    prop: JSONProperty,
+    prop: Readonly<JSONProperty>,
     value: JSONPrimitive
 ): ReturnType<Fixer["replaceText"]> {
     return fixer.replaceText(

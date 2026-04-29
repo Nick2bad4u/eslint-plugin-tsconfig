@@ -6,16 +6,17 @@ import type { JsoncRuleModule } from "../_internal/jsonc-rule.js";
 
 import { createJsoncRule } from "../_internal/jsonc-rule.js";
 
+/** Rule implementation for this tsconfig lint rule. */
 const rule: JsoncRuleModule = createJsoncRule({
     create() {
         return {
-            JSONObjectExpression(_node) {            },
+            JSONObjectExpression() {},
         };
     },
     meta: {
         docs: {
             description:
-                "Disallow `include` patterns that match `node_modules`.",
+                "disallow `include` patterns that match `node_modules`.",
             recommended: false,
             requiresTypeChecking: false,
             tsconfigConfigs: [

@@ -6,25 +6,28 @@ import type { JsoncRuleModule } from "../_internal/jsonc-rule.js";
 
 import { createJsoncRule } from "../_internal/jsonc-rule.js";
 
+/** Rule implementation for this tsconfig lint rule. */
 const rule: JsoncRuleModule = createJsoncRule({
     create() {
         return {
-            JSONObjectExpression(_node) {            },
+            JSONObjectExpression() {},
         };
     },
     meta: {
         docs: {
-            description: "Suggest `moduleResolution: \"bundler\"` for projects using a bundler.",
+            description:
+                'require `moduleResolution: "bundler"` for projects using a bundler.',
             recommended: false,
             requiresTypeChecking: false,
             tsconfigConfigs: ["all", "module-resolution"],
         },
         fixable: "code",
         messages: {
-        missingBundlerResolution: "Projects using a bundler (Vite, esbuild, webpack, etc.) should set `\"moduleResolution\": \"bundler\"` to correctly resolve package `exports` and `imports` fields.",
+            missingBundlerResolution:
+                'Projects using a bundler (Vite, esbuild, webpack, etc.) should set `"moduleResolution": "bundler"` to correctly resolve package `exports` and `imports` fields.',
         },
         schema: [],
-            type: "suggestion",
+        type: "suggestion",
     },
     name: "require-bundler-module-resolution",
 });

@@ -11,7 +11,7 @@ const readWorkspaceFile = (relativePath: string): string =>
 
 describe("docusaurus site configuration integrity", () => {
     it("uses canonical blob editUrl bases for rules/docs/blog/pages", () => {
-        expect(true).toBeTruthy();
+        expect.hasAssertions();
 
         const docusaurusConfigSource = readWorkspaceFile(
             "docs/docusaurus/docusaurus.config.ts"
@@ -30,7 +30,7 @@ describe("docusaurus site configuration integrity", () => {
     });
 
     it("charts index uses linked chart entries with existing local files", () => {
-        expect(true).toBeTruthy();
+        expect.hasAssertions();
 
         const chartsIndexRelativePath =
             "docs/docusaurus/site-docs/developer/charts/index.md";

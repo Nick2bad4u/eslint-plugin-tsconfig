@@ -2,17 +2,37 @@
  * @packageDocumentation
  * Vitest coverage for `plugin-entry.test` behavior.
  */
+import type { UnknownRecord } from "type-fest";
+
 import { createRequire } from "node:module";
-import { objectFromEntries, safeCastTo  } from "ts-extras";
+import { keyIn, objectFromEntries, safeCastTo } from "ts-extras";
 import { describe, expect, it } from "vitest";
 
 import { tsconfigConfigNames } from "../src/_internal/tsconfig-config-references";
 import tsconfigPlugin from "../src/plugin";
 
 const requireFromTestModule = createRequire(import.meta.url);
-const packageJson = safeCastTo<{
+const packageJsonModule = requireFromTestModule("../package.json") as unknown;
+
+const isUnknownRecord = (value: unknown): value is UnknownRecord =>
+    typeof value === "object" && value !== null;
+
+const isPackageJson = (
+    value: unknown
+): value is {
     version: string;
-}>(requireFromTestModule("../package.json"));
+} => {
+    if (!isUnknownRecord(value)) {
+        return false;
+    }
+
+    return keyIn(value, "version") && typeof value["version"] === "string";
+};
+
+if (!isPackageJson(packageJsonModule)) {
+    throw new TypeError("Expected package.json module to export an object.");
+}
+const packageJson = packageJsonModule;
 const expectedPluginVersion = packageJson.version;
 
 const expectedConfigRegistryShape = expect.objectContaining(
@@ -54,7 +74,7 @@ const expectedRuleRegistryShape = expect.objectContaining({
 
 describe("plugin entry module", () => {
     it("exports default plugin object with rule and config registries", () => {
-        expect(true).toBeTruthy();
+        expect.hasAssertions();
         expect(tsconfigPlugin).toStrictEqual(
             expect.objectContaining({
                 configs: expect.any(Object),
@@ -74,7 +94,7 @@ describe("plugin entry module", () => {
     });
 
     it("exposes critical presets and latest rule registrations", () => {
-        expect(true).toBeTruthy();
+        expect.hasAssertions();
         expect(tsconfigPlugin.configs).toStrictEqual(
             expectedConfigRegistryShape
         );
@@ -82,10 +102,10 @@ describe("plugin entry module", () => {
     });
 
     it("exports matching runtime plugin shape from plugin.mjs", async () => {
-        expect(true).toBeTruthy();
+        expect.hasAssertions();
 
         const runtimePluginModule = safeCastTo<{
-            default: unknown;
+            readonly default: unknown;
         }>(await import("../plugin.mjs"));
 
         expect(runtimePluginModule.default).toStrictEqual(

@@ -1,10 +1,10 @@
 {
     "compilerOptions": {
+        "exactOptionalPropertyTypes": true,
         "module": "ESNext",
         "moduleResolution": "node",
-        "strict": true,
-        "exactOptionalPropertyTypes": true,
+        "noImplicitOverride": true,
         "noUncheckedIndexedAccess": true,
-        "noImplicitOverride": true
+        "strict": true
     }
 }

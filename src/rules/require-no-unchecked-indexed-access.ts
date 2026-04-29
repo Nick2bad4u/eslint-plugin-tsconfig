@@ -6,25 +6,28 @@ import type { JsoncRuleModule } from "../_internal/jsonc-rule.js";
 
 import { createJsoncRule } from "../_internal/jsonc-rule.js";
 
+/** Rule implementation for this tsconfig lint rule. */
 const rule: JsoncRuleModule = createJsoncRule({
     create() {
         return {
-            JSONObjectExpression(_node) {            },
+            JSONObjectExpression() {},
         };
     },
     meta: {
         docs: {
-            description: "Require `noUncheckedIndexedAccess: true` in strict configs.",
+            description:
+                "require `noUncheckedIndexedAccess: true` in strict configs.",
             recommended: false,
             requiresTypeChecking: false,
             tsconfigConfigs: ["all", "strict-mode"],
         },
         fixable: "code",
         messages: {
-        missingNoUncheckedIndexedAccess: "`noUncheckedIndexedAccess: true` adds `undefined` to array index signatures and index-signature types, preventing runtime errors from out-of-bounds access. Add it to `compilerOptions`.",
+            missingNoUncheckedIndexedAccess:
+                "`noUncheckedIndexedAccess: true` adds `undefined` to array index signatures and index-signature types, preventing runtime errors from out-of-bounds access. Add it to `compilerOptions`.",
         },
         schema: [],
-            type: "suggestion",
+        type: "suggestion",
     },
     name: "require-no-unchecked-indexed-access",
 });

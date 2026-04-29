@@ -1,4 +1,4 @@
-import type { UnknownArray, UnknownRecord  } from "type-fest";
+import type { UnknownArray, UnknownRecord } from "type-fest";
 
 type EslintPluginModule = Readonly<UnknownRecord>;
 type RemarkPluginModule = (...arguments_: Readonly<UnknownArray>) => unknown;

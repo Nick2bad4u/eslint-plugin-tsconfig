@@ -18,9 +18,6 @@ export type TsconfigRuleCatalogEntry = Readonly<{
  */
 export type TsconfigRuleCatalogId = `R${string}`;
 
-/** Pattern for unqualified rule names supported by eslint-plugin-tsconfig. */
-export type TsconfigRuleNamePattern = `${string}`;
-
 /**
  * Stable global ordering used for rule catalog IDs.
  *

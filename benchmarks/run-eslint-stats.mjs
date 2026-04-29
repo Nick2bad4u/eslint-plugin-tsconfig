@@ -14,6 +14,12 @@ import {
 const defaultIterations = 3;
 const defaultWarmupIterations = 1;
 
+const mathWithSumPrecise = /**
+ * @type {typeof Math & {
+ *     sumPrecise: (values: readonly number[]) => number;
+ * }}
+ */ (Math);
+
 const benchmarkScenarios = Object.freeze([
     {
         filePatterns: benchmarkFileGlobs.invalidFixtures,
@@ -42,10 +48,12 @@ const benchmarkScenarios = Object.freeze([
 ]);
 
 /**
- * @param {string} key
- * @param {number} fallbackValue
+ * Parse a non-negative integer CLI argument by key.
  *
- * @returns {number}
+ * @param {string} key - CLI key without leading dashes.
+ * @param {number} fallbackValue - Default value when argument is absent.
+ *
+ * @returns {number} Parsed non-negative integer value.
  */
 const parseIntegerArgument = (key, fallbackValue) => {
     const matchingArgument = process.argv.find((argument) =>
@@ -67,9 +75,12 @@ const parseIntegerArgument = (key, fallbackValue) => {
 };
 
 /**
- * @param {{ fix: boolean; rules: import("eslint").Linter.RulesRecord }} options
+ * Create an `ESLint` instance configured for benchmark execution.
  *
- * @returns {ESLint}
+ * @param {{ fix: boolean; rules: import("eslint").Linter.RulesRecord }} options
+ *   - Benchmark runtime options.
+ *
+ * @returns {ESLint} Configured ESLint instance.
  */
 const createBenchmarkEslint = ({ fix, rules }) =>
     new ESLint({
@@ -82,6 +93,8 @@ const createBenchmarkEslint = ({ fix, rules }) =>
     });
 
 /**
+ * Execute one benchmark scenario and compute aggregate metrics.
+ *
  * @param {Readonly<{
  *     filePatterns: readonly string[];
  *     fix: boolean;
@@ -90,13 +103,25 @@ const createBenchmarkEslint = ({ fix, rules }) =>
  *     rules: import("eslint").Linter.RulesRecord;
  *     warmupIterations: number;
  * }>} options
+ *   - Scenario parameters and run counts.
+ *
+ * @returns {Promise<
+ *     Readonly<{
+ *         iterations: number;
+ *         meanMilliseconds: number;
+ *         messageCount: number;
+ *         name: string;
+ *         warmupIterations: number;
+ *     }>
+ * >}
+ *   Aggregated scenario metrics.
  */
 const runScenario = async ({
     filePatterns,
     fix,
+    iterations,
     name,
     rules,
-    iterations,
     warmupIterations,
 }) => {
     const eslint = createBenchmarkEslint({ fix, rules });
@@ -131,8 +156,7 @@ const runScenario = async ({
     return {
         iterations,
         meanMilliseconds:
-            durations.reduce((total, value) => total + value, 0) /
-            durations.length,
+            mathWithSumPrecise.sumPrecise(durations) / durations.length,
         messageCount,
         name,
         warmupIterations,

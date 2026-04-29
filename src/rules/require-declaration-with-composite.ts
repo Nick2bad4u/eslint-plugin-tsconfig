@@ -6,16 +6,17 @@ import type { JsoncRuleModule } from "../_internal/jsonc-rule.js";
 
 import { createJsoncRule } from "../_internal/jsonc-rule.js";
 
+/** Rule implementation for this tsconfig lint rule. */
 const rule: JsoncRuleModule = createJsoncRule({
     create() {
         return {
-            JSONObjectExpression(_node) {            },
+            JSONObjectExpression() {},
         };
     },
     meta: {
         docs: {
             description:
-                "Require `declaration: true` when `composite: true` is set.",
+                "require `declaration: true` when `composite: true` is set.",
             recommended: false,
             requiresTypeChecking: false,
             tsconfigConfigs: [

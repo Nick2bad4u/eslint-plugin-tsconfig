@@ -4,7 +4,7 @@
  */
 import type { UnknownRecord } from "type-fest";
 
-import { objectKeys, objectValues  } from "ts-extras";
+import { objectKeys, objectValues } from "ts-extras";
 import { describe, expect, it } from "vitest";
 
 import {
@@ -81,7 +81,7 @@ describe("tsconfig plugin configs", () => {
     const rules = getPluginRules(tsconfigPlugin);
 
     it("exports exactly the supported config keys", () => {
-        expect(true).toBeTruthy();
+        expect.hasAssertions();
 
         const keys = objectKeys(configs ?? {});
 
@@ -90,7 +90,7 @@ describe("tsconfig plugin configs", () => {
     });
 
     it("every exported config registers the tsconfig plugin", () => {
-        expect(true).toBeTruthy();
+        expect.hasAssertions();
 
         for (const config of objectValues(configs ?? {}) as FlatConfigLike[]) {
             expect(config).toStrictEqual(
@@ -104,7 +104,7 @@ describe("tsconfig plugin configs", () => {
     });
 
     it("every exported config targets tsconfig file globs", () => {
-        expect(true).toBeTruthy();
+        expect.hasAssertions();
 
         for (const config of objectValues(configs ?? {}) as FlatConfigLike[]) {
             expect(config).toStrictEqual(
@@ -118,7 +118,7 @@ describe("tsconfig plugin configs", () => {
     });
 
     it("every exported config uses jsonc-eslint-parser", () => {
-        expect(true).toBeTruthy();
+        expect.hasAssertions();
 
         for (const config of objectValues(configs ?? {}) as FlatConfigLike[]) {
             expect(config.languageOptions?.parser).toBeDefined();
@@ -126,7 +126,7 @@ describe("tsconfig plugin configs", () => {
     });
 
     it("enables every rule in the all preset", () => {
-        expect(true).toBeTruthy();
+        expect.hasAssertions();
 
         const allRules = getConfigRules(configs, "all");
 
@@ -140,7 +140,7 @@ describe("tsconfig plugin configs", () => {
     });
 
     it("recommended preset uses warn severity", () => {
-        expect(true).toBeTruthy();
+        expect.hasAssertions();
 
         const recommendedRules = getConfigRules(configs, "recommended");
 
@@ -152,7 +152,7 @@ describe("tsconfig plugin configs", () => {
     });
 
     it("strict preset uses error severity", () => {
-        expect(true).toBeTruthy();
+        expect.hasAssertions();
 
         const strictRules = getConfigRules(configs, "strict");
 
@@ -164,11 +164,9 @@ describe("tsconfig plugin configs", () => {
     });
 
     it("strict preset is a subset of all preset", () => {
-        expect(true).toBeTruthy();
+        expect.hasAssertions();
 
-        const strictRules = objectKeys(
-            getConfigRules(configs, "strict") ?? {}
-        );
+        const strictRules = objectKeys(getConfigRules(configs, "strict") ?? {});
         const allRules = getConfigRules(configs, "all");
         for (const ruleName of strictRules) {
             expect(allRules).toHaveProperty(ruleName);
@@ -176,7 +174,7 @@ describe("tsconfig plugin configs", () => {
     });
 
     it("recommended preset is a subset of strict preset", () => {
-        expect(true).toBeTruthy();
+        expect.hasAssertions();
 
         const recommendedRules = objectKeys(
             getConfigRules(configs, "recommended") ?? {}
@@ -188,7 +186,7 @@ describe("tsconfig plugin configs", () => {
     });
 
     it("no preset requires type checking since all rules are JSONC-based", () => {
-        expect(true).toBeTruthy();
+        expect.hasAssertions();
 
         for (const configName of tsconfigConfigNames) {
             expect(
@@ -198,7 +196,7 @@ describe("tsconfig plugin configs", () => {
     });
 
     it("keeps languageOptions objects isolated per preset", () => {
-        expect(true).toBeTruthy();
+        expect.hasAssertions();
 
         const recommendedConfig = getConfig(configs, "recommended");
         const strictConfig = getConfig(configs, "strict");

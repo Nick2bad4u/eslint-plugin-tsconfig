@@ -42,7 +42,7 @@ const getRuleDocsHeadingSnapshots = (): readonly RuleDocsHeadingSnapshot[] => {
 
 describe("rule docs heading snapshots", () => {
     it("keeps canonical rule docs heading matrix stable", () => {
-        expect(true).toBeTruthy();
+        expect.hasAssertions();
         expect(getRuleDocsHeadingSnapshots()).toMatchSnapshot();
     });
 });

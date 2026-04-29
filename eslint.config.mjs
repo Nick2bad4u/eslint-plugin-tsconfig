@@ -74,6 +74,17 @@ import eslintPluginToml from "eslint-plugin-toml";
 import pluginTsdoc from "eslint-plugin-tsdoc";
 import tsdocRequire from "eslint-plugin-tsdoc-require-2";
 import typedocPlugin from "eslint-plugin-typedoc";
+/**
+ * @remarks
+ * This ESLint config self-lints the eslint-plugin-tsconfig repository.
+ *
+ * - `eslint-plugin-typefest` is used on repository source files (`src/`, `test/`)
+ *   as a normal third-party dependency.
+ * - The local `eslint-plugin-tsconfig` is imported from `./plugin.mjs` and is
+ *   only applied to `tsconfig*.json` files so the repo dogfoods its own JSONC
+ *   rules where they actually make sense.
+ */
+import typefest from "eslint-plugin-typefest";
 import pluginUndefinedCss from "eslint-plugin-undefined-css-classes";
 import eslintPluginUnicorn from "eslint-plugin-unicorn";
 import pluginUnusedImports from "eslint-plugin-unused-imports";
@@ -87,17 +98,6 @@ import { fileURLToPath } from "node:url";
 import * as tomlEslintParser from "toml-eslint-parser";
 import * as yamlEslintParser from "yaml-eslint-parser";
 
-/**
- * @remarks
- * This ESLint config self-lints the eslint-plugin-tsconfig repository.
- *
- * - `eslint-plugin-typefest` is used on repository source files (`src/`, `test/`)
- *   as a normal third-party dependency.
- * - The local `eslint-plugin-tsconfig` is imported from `./plugin.mjs` and is
- *   only applied to `tsconfig*.json` files so the repo dogfoods its own JSONC
- *   rules where they actually make sense.
- */
-import typefest from "eslint-plugin-typefest";
 import tsconfigPlugin from "./plugin.mjs";
 
 // NOTE: eslint-plugin-json-schema-validator may attempt to fetch remote schemas
@@ -1717,7 +1717,7 @@ export default defineConfig([
     },
     {
         files: ["src/rules/**/*.ts"],
-        name: "Tsconfig Rule Metadata URL Injection",
+        name: "TSConfig Rule Metadata URL Injection",
         rules: {
             "@typescript-eslint/no-empty-function": "off",
             "eslint-plugin/require-meta-docs-url": "off",
@@ -1768,8 +1768,8 @@ export default defineConfig([
         name: "ESLint Plugin Tests - internal helper filename",
         rules: {
             "@typescript-eslint/no-unnecessary-type-assertion": "off",
-            "unused-imports/no-unused-vars": "off",
             "unicorn/filename-case": "off",
+            "unused-imports/no-unused-vars": "off",
         },
     },
     // #endregion

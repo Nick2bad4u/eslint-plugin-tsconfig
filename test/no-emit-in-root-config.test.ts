@@ -31,11 +31,13 @@ const validateJsoncParse = (jsonContent: string): void => {
 
 describe("fixer parse-safety", () => {
     it("fixer output is valid JSONC", () => {
-        expect(true).toBeTruthy();
+        expect.hasAssertions();
 
         fc.assert(
             fc.property(fc.string(), (jsonContent) => {
-                validateJsoncParse(jsonContent);
+                expect(() => {
+                    validateJsoncParse(jsonContent);
+                }).not.toThrow();
             })
         );
     });

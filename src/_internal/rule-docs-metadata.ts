@@ -9,7 +9,8 @@ import {
     arrayJoin,
     isDefined,
     isEmpty,
-    isInteger, objectEntries 
+    isInteger,
+    objectEntries,
 } from "ts-extras";
 
 import type { JsoncRuleModule } from "./jsonc-rule.js";

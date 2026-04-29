@@ -6,10 +6,12 @@ export default defineConfig({
         {
             cases: [
                 {
-                    testPath: "./cases/consistent-module-resolution/baseline.json",
+                    testPath:
+                        "./cases/consistent-module-resolution/baseline.json",
                 },
                 {
-                    testPath: "./cases/consistent-module-resolution/complex.json",
+                    testPath:
+                        "./cases/consistent-module-resolution/complex.json",
                 },
             ],
             name: "Rule: consistent-module-resolution",

@@ -1,6 +1,5 @@
-import * as path from "node:path";
-
 import * as jsoncParser from "jsonc-eslint-parser";
+import * as path from "node:path";
 
 import plugin from "../plugin.mjs";
 
@@ -39,17 +38,21 @@ import plugin from "../plugin.mjs";
  */
 
 /**
- * @param {unknown} value
+ * Check whether a runtime value is a plain non-null object.
  *
- * @returns {value is UnknownRecord}
+ * @param {unknown} value - Runtime value to narrow.
+ *
+ * @returns {value is UnknownRecord} `true` when `value` is object-like.
  */
 const isUnknownRecord = (value) => typeof value === "object" && value !== null;
 
 /**
- * @param {unknown} value
- * @param {string} label
+ * Assert that a runtime value is a record-like object.
  *
- * @returns {UnknownRecord}
+ * @param {unknown} value - Value to validate.
+ * @param {string} label - Label used in thrown error messages.
+ *
+ * @returns {UnknownRecord} Validated object record.
  */
 const ensureRecord = (value, label) => {
     if (!isUnknownRecord(value)) {
@@ -60,9 +63,11 @@ const ensureRecord = (value, label) => {
 };
 
 /**
- * @param {unknown} value
+ * Validate that a value is assignable as an ESLint rule entry.
  *
- * @returns {value is import("eslint").Linter.RuleEntry}
+ * @param {unknown} value - Candidate rule entry value.
+ *
+ * @returns {value is import("eslint").Linter.RuleEntry} `true` when valid.
  */
 const isRuleEntry = (value) =>
     typeof value === "number" ||
@@ -70,10 +75,12 @@ const isRuleEntry = (value) =>
     Array.isArray(value);
 
 /**
- * @param {unknown} value
- * @param {string} label
+ * Validate and normalize an object into an ESLint rules record.
  *
- * @returns {BenchmarkRules}
+ * @param {unknown} value - Candidate object containing rules.
+ * @param {string} label - Context label used for validation errors.
+ *
+ * @returns {BenchmarkRules} Rules record with validated entries.
  */
 const ensureRulesRecord = (value, label) => {
     const record = ensureRecord(value, label);
@@ -109,9 +116,11 @@ export const benchmarkFileGlobs = Object.freeze({
 });
 
 /**
- * @param {string} presetName
+ * Resolve a benchmark rule set from an exported plugin preset.
  *
- * @returns {Readonly<BenchmarkRules>}
+ * @param {string} presetName - Preset key under `plugin.configs`.
+ *
+ * @returns {Readonly<BenchmarkRules>} Frozen rules map for the preset.
  */
 const resolveRuleSet = (presetName) => {
     const configs = ensureRecord(plugin.configs, "plugin.configs");
@@ -130,13 +139,13 @@ const resolveRuleSet = (presetName) => {
 /** @type {Readonly<TsconfigRuleSets>} */
 export const tsconfigRuleSets = Object.freeze({
     all: resolveRuleSet("all"),
-    recommended: resolveRuleSet("recommended"),
-    strict: resolveRuleSet("strict"),
     "emit-config": resolveRuleSet("emit-config"),
     "include-hygiene": resolveRuleSet("include-hygiene"),
     "lib-target": resolveRuleSet("lib-target"),
     "module-resolution": resolveRuleSet("module-resolution"),
     "project-references": resolveRuleSet("project-references"),
+    recommended: resolveRuleSet("recommended"),
+    strict: resolveRuleSet("strict"),
     "strict-mode": resolveRuleSet("strict-mode"),
 });
 
@@ -145,9 +154,9 @@ export const tsconfigRuleSets = Object.freeze({
  *
  * @param {CreateTsconfigFlatConfigOptions} options - Config creation options.
  *
- * @returns {import("eslint").Linter.Config[]} Flat config array for ESLint Node
- *   API / CLI usage.
+ * @returns {import("eslint").Linter.Config[]} Flat config array.
  */
+// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types -- .mjs modules cannot express TS parameter/return annotations; JSDoc carries the boundary contract.
 export function createTsconfigFlatConfig(options) {
     const { rules } = options;
 

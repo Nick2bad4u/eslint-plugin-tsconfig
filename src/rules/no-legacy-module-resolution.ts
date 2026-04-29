@@ -6,21 +6,24 @@ import type { JsoncRuleModule } from "../_internal/jsonc-rule.js";
 
 import { createJsoncRule } from "../_internal/jsonc-rule.js";
 
+/** Rule implementation for this tsconfig lint rule. */
 const rule: JsoncRuleModule = createJsoncRule({
     create() {
         return {
-            JSONObjectExpression(_node) {            },
+            JSONObjectExpression() {},
         };
     },
     meta: {
         docs: {
-            description: "Warn when the legacy `\"node\"` `moduleResolution` is used.",
+            description:
+                'disallow the legacy `"node"` `moduleResolution` is used.',
             recommended: false,
             requiresTypeChecking: false,
             tsconfigConfigs: ["all", "module-resolution"],
         },
         messages: {
-        legacyModuleResolution: "`moduleResolution: \"node\"` is the legacy Node.js resolution algorithm and does not support modern package.json `exports`. Use `\"node16\"`, `\"nodenext\"`, or `\"bundler\"` instead.",
+            legacyModuleResolution:
+                '`moduleResolution: "node"` is the legacy Node.js resolution algorithm and does not support modern package.json `exports`. Use `"node16"`, `"nodenext"`, or `"bundler"` instead.',
         },
         schema: [],
         type: "suggestion",

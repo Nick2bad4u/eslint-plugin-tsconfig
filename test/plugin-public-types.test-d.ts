@@ -11,6 +11,7 @@ import type {
     TsconfigRuleId,
     TsconfigRuleName,
 } from "../src/plugin";
+import type tsconfigPlugin from "../src/plugin";
 
 const validConfigName = "recommended" satisfies TsconfigConfigName;
 
@@ -35,7 +36,7 @@ assertType<TsconfigRuleName>(
 /**
  * Validate that the default plugin export satisfies the ESLint.Plugin contract.
  */
-declare const pluginExport: typeof import("../src/plugin").default;
+declare const pluginExport: typeof tsconfigPlugin;
 
 assertType<ESLint.Plugin>(pluginExport);
 assertType<string | undefined>(pluginExport.meta?.name);

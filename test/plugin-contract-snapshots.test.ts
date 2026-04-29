@@ -95,7 +95,7 @@ const getPresetContractSnapshot = (): readonly PresetContractSnapshot[] =>
 
 describe("plugin contract snapshots", () => {
     it("keeps stable exported rule names", () => {
-        expect(true).toBeTruthy();
+        expect.hasAssertions();
         expect({
             ruleCount: objectKeys(tsconfigPlugin.rules).length,
             ruleNames: objectKeys(tsconfigPlugin.rules).toSorted(
@@ -105,12 +105,12 @@ describe("plugin contract snapshots", () => {
     });
 
     it("keeps stable preset contract matrix", () => {
-        expect(true).toBeTruthy();
+        expect.hasAssertions();
         expect(getPresetContractSnapshot()).toMatchSnapshot();
     });
 
     it("keeps stable plugin identity metadata", () => {
-        expect(true).toBeTruthy();
+        expect.hasAssertions();
         expect({
             name: tsconfigPlugin.meta.name,
             namespace: tsconfigPlugin.meta.namespace,

@@ -7,7 +7,7 @@ import { ESLint } from "eslint";
 import * as jsoncParser from "jsonc-eslint-parser";
 import * as fs from "node:fs";
 import * as path from "node:path";
-import { arrayJoin, isEmpty, setHas   } from "ts-extras";
+import { arrayJoin, isEmpty, setHas } from "ts-extras";
 import { describe, expect, it } from "vitest";
 
 import tsconfigPlugin from "../src/plugin";
@@ -64,10 +64,13 @@ const getFixtureDirectoryPath = (): string => {
 
     if (!isInsideFixturesRoot) {
         throw new TypeError(
-            arrayJoin([
-                "TSCONFIG_AUTOFIX_FIXTURE_DIR must resolve under test/fixtures.",
-                `Received: ${resolvedFixtureDirectoryPath}`,
-            ], " ")
+            arrayJoin(
+                [
+                    "TSCONFIG_AUTOFIX_FIXTURE_DIR must resolve under test/fixtures.",
+                    `Received: ${resolvedFixtureDirectoryPath}`,
+                ],
+                " "
+            )
         );
     }
 
@@ -130,11 +133,14 @@ const ensureFixtureFilesExist = (
 ): void => {
     if (isEmpty(fixtureFilePaths)) {
         throw new Error(
-            arrayJoin([
-                "No lintable fixtures were found.",
-                `Add *.json files under: ${fixtureDirectoryPath}`,
-                "Then rerun with TSCONFIG_AUTOFIX_SMOKE=1.",
-            ], " ")
+            arrayJoin(
+                [
+                    "No lintable fixtures were found.",
+                    `Add *.json files under: ${fixtureDirectoryPath}`,
+                    "Then rerun with TSCONFIG_AUTOFIX_SMOKE=1.",
+                ],
+                " "
+            )
         );
     }
 };
@@ -227,7 +233,7 @@ describe.runIf(shouldRunFixtureAutofixSmoke)(
     "all-rules fixture autofix smoke",
     () => {
         it("runs tsconfig.configs.all against fixture files and executes in-memory autofix", async () => {
-            expect(true).toBeTruthy();
+            expect.hasAssertions();
 
             const fixtureDirectoryPath = getFixtureDirectoryPath();
             const fixtureFilePaths =

@@ -268,11 +268,10 @@ const createTsconfigConfigsDefinition = (): TsconfigConfigsContract => {
         const isAllPreset = configName === "all";
         const isStrictPreset = configName === "strict";
 
-        let rules: RulesConfig;
+        let rules: RulesConfig = {};
 
         if (isAllPreset) {
             // All: each rule at its own default severity
-            rules = {};
             for (const ruleName of ruleNames) {
                 const ruleMeta = tsconfigRules[ruleName]?.meta;
                 const ruleType = ruleMeta?.type;

@@ -200,7 +200,7 @@ const getBroadListenerViolationsForFile = (
 
 describe("rule listener selector conventions", () => {
     it("avoids broad listeners for trivially selector-safe node kinds", () => {
-        expect(true).toBeTruthy();
+        expect.hasAssertions();
 
         const violations = getRuleSourceFilePaths().flatMap((filePath) =>
             getBroadListenerViolationsForFile(filePath)

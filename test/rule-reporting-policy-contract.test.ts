@@ -27,7 +27,7 @@ const getRuleSourceFiles = (): readonly (readonly [string, string])[] => {
 
 describe("rule reporting policy contract", () => {
     it("prevents direct context.report calls inside rule modules", () => {
-        expect(true).toBeTruthy();
+        expect.hasAssertions();
 
         for (const [fileName, sourceText] of getRuleSourceFiles()) {
             expect(

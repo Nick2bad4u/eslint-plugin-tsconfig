@@ -41,14 +41,13 @@ const withMutatedCatalogEntry = (
 describe("rule-catalog", () => {
     it("contains every runtime rule", () => {
         expect.hasAssertions();
+        expect.hasAssertions();
 
         const catalogRuleNames = tsconfigRuleCatalogEntries
             .map((entry) => entry.ruleName)
-            .toSorted((left, right) =>
-                String(left).localeCompare(String(right))
-            );
+            .toSorted((left, right) => left.localeCompare(right));
         const registryRuleNames = objectKeys(tsconfigRules).toSorted(
-            (left, right) => String(left).localeCompare(String(right))
+            (left, right) => left.localeCompare(right)
         );
 
         expect(catalogRuleNames).toStrictEqual(
@@ -60,6 +59,7 @@ describe("rule-catalog", () => {
     });
 
     it("resolves known entries by rule name and id", () => {
+        expect.hasAssertions();
         expect.hasAssertions();
 
         const byName = getRuleCatalogEntryForRuleName(
@@ -75,10 +75,12 @@ describe("rule-catalog", () => {
 
     it("returns null for non-catalog rule names", () => {
         expect.hasAssertions();
+        expect.hasAssertions();
         expect(getRuleCatalogEntryForRuleNameOrNull("unknown-rule")).toBeNull();
     });
 
     it("throws for unknown rule names in strict lookup", () => {
+        expect.hasAssertions();
         expect.hasAssertions();
         expect(() => getRuleCatalogEntryForRuleName("unknown-rule")).toThrow(
             /missing from the stable rule catalog/v
@@ -87,15 +89,18 @@ describe("rule-catalog", () => {
 
     it("returns undefined for unknown rule ids", () => {
         expect.hasAssertions();
+        expect.hasAssertions();
         expect(getRuleCatalogEntryForRuleId("R999")).toBeUndefined();
     });
 
     it("reports valid baseline catalog integrity", () => {
         expect.hasAssertions();
+        expect.hasAssertions();
         expect(validateRuleCatalogIntegrity()).toBeTruthy();
     });
 
     it("detects duplicate rule ids", () => {
+        expect.hasAssertions();
         expect.hasAssertions();
 
         const firstEntry = arrayAt(tsconfigRuleCatalogEntries, 0);
@@ -114,6 +119,7 @@ describe("rule-catalog", () => {
 
     it("detects out-of-sequence rule numbers", () => {
         expect.hasAssertions();
+        expect.hasAssertions();
 
         withMutatedCatalogEntry(
             0,
@@ -127,6 +133,7 @@ describe("rule-catalog", () => {
     });
 
     it("detects mismatched rule ids for a valid index", () => {
+        expect.hasAssertions();
         expect.hasAssertions();
 
         withMutatedCatalogEntry(

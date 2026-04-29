@@ -31,7 +31,7 @@ const getRuleEntries = (
 
 describe("source plugin config wiring", () => {
     it("builds non-empty rule presets for all config keys", async () => {
-        expect(true).toBeTruthy();
+        expect.hasAssertions();
 
         const plugin = await loadSourcePlugin();
         const all = plugin.configs.all;
@@ -71,7 +71,7 @@ describe("source plugin config wiring", () => {
     });
 
     it("registers parser defaults, files, and plugin namespace", async () => {
-        expect(true).toBeTruthy();
+        expect.hasAssertions();
 
         const plugin = await loadSourcePlugin();
         const recommendedConfig = plugin.configs.recommended;
@@ -92,7 +92,7 @@ describe("source plugin config wiring", () => {
     });
 
     it("builds category preset configs for all 9 config keys", async () => {
-        expect(true).toBeTruthy();
+        expect.hasAssertions();
 
         const plugin = await loadSourcePlugin();
 

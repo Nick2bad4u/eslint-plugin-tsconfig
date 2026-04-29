@@ -299,13 +299,13 @@ const assertMessageAndFixContract = ({
 
 describe("rule metadata integrity", () => {
     it("exports processors for plugin shape parity", () => {
-        expect(true).toBeTruthy();
+        expect.hasAssertions();
         expect(tsconfigPlugin).toHaveProperty("processors");
         expect(tsconfigPlugin.processors).toStrictEqual({});
     });
 
     it("keeps src/rules file names in sync with registered rule names", () => {
-        expect(true).toBeTruthy();
+        expect.hasAssertions();
 
         const registeredRuleNames = objectKeys(tsconfigPlugin.rules).toSorted(
             (left, right) => left.localeCompare(right)
@@ -315,7 +315,7 @@ describe("rule metadata integrity", () => {
     });
 
     it("enforces required metadata invariants for every rule", () => {
-        expect(true).toBeTruthy();
+        expect.hasAssertions();
 
         const ruleEntries = objectEntries(tsconfigPlugin.rules);
         const seenRuleIds = new Set<string>();

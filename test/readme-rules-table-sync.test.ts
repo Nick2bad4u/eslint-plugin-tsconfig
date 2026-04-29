@@ -105,7 +105,7 @@ const extractRulesSection = (markdown: string): string => {
 
 describe("readme rules table synchronization", () => {
     it("matches the canonical rules matrix generated from plugin metadata", async () => {
-        expect(true).toBeTruthy();
+        expect.hasAssertions();
 
         await syncReadmeRulesTableIfRequested();
 
@@ -123,7 +123,7 @@ describe("readme rules table synchronization", () => {
     });
 
     it("keeps generated rules markdown snapshot-stable", async () => {
-        expect(true).toBeTruthy();
+        expect.hasAssertions();
 
         const generatedRulesSection = generateReadmeRulesSectionFromRules(
             tsconfigPlugin.rules

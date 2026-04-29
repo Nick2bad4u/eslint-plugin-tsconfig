@@ -141,7 +141,7 @@ const getRuleMetadataSnapshots = (): readonly RuleMetadataSnapshot[] =>
 
 describe("rule metadata snapshots", () => {
     it("keeps normalized rule metadata contract stable", () => {
-        expect(true).toBeTruthy();
+        expect.hasAssertions();
         expect(getRuleMetadataSnapshots()).toMatchSnapshot();
     });
 });

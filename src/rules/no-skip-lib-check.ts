@@ -6,21 +6,23 @@ import type { JsoncRuleModule } from "../_internal/jsonc-rule.js";
 
 import { createJsoncRule } from "../_internal/jsonc-rule.js";
 
+/** Rule implementation for this tsconfig lint rule. */
 const rule: JsoncRuleModule = createJsoncRule({
     create() {
         return {
-            JSONObjectExpression(_node) {            },
+            JSONObjectExpression() {},
         };
     },
     meta: {
         docs: {
-            description: "Warn when `skipLibCheck: true` is used.",
+            description: "disallow `skipLibCheck: true` is used.",
             recommended: false,
             requiresTypeChecking: false,
             tsconfigConfigs: ["all", "include-hygiene"],
         },
         messages: {
-        skipLibCheck: "`skipLibCheck: true` silences type errors in `.d.ts` files, masking real problems in dependencies. Remove this option or accept the type errors it was hiding.",
+            skipLibCheck:
+                "`skipLibCheck: true` silences type errors in `.d.ts` files, masking real problems in dependencies. Remove this option or accept the type errors it was hiding.",
         },
         schema: [],
         type: "suggestion",
