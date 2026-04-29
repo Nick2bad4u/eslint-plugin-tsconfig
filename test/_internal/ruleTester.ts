@@ -232,7 +232,7 @@ const withGeneratedRuleCaseNames = (
 const patchRuleTesterRunWithGeneratedCaseNames = (
     tester: Readonly<RuleTester>
 ): PluginRuleTester => {
-    const writableTester = tester as RuleTester;
+    const writableTester = tester as RuleTester; // NOSONAR typescript:S4325 -- Readonly<RuleTester> cast to RuleTester removes the wrapper; structural types are identical and the cast is intentional
     const originalRun = writableTester.run.bind(writableTester);
     const wrappedRun: PluginRuleTester["run"] = (
         ruleName,
@@ -241,7 +241,7 @@ const patchRuleTesterRunWithGeneratedCaseNames = (
     ) => {
         originalRun(
             ruleName,
-            ruleModule as Parameters<RuleTester["run"]>[1],
+            ruleModule as Parameters<RuleTester["run"]>[1], // NOSONAR typescript:S4325 -- cast narrows to exact overload parameter type expected by RuleTester.run
             withGeneratedRuleCaseNames(ruleName, runCases)
         );
     };
