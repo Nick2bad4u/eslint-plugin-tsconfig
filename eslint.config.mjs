@@ -12,7 +12,7 @@ const config = [
         files: ["src/**/*.{js,mjs,cjs,ts,mts,cts,tsx,jsx}"],
         name: "Local TSConfig",
         plugins: {
-            "tsconfig": tsconfig,
+            tsconfig: tsconfig,
         },
         rules: {
             // @ts-expect-error -- plugin.mjs is typed as generic ESLint.Plugin.

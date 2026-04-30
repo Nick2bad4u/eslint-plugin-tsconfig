@@ -23,7 +23,9 @@ const rule: JsoncRuleModule = createJsoncRule({
                 "strict-mode",
                 "strictest",
             ],
-            url: createRuleDocsUrl("require-no-property-access-from-index-signature"),
+            url: createRuleDocsUrl(
+                "require-no-property-access-from-index-signature"
+            ),
         },
         fixable: "code",
         messages: {

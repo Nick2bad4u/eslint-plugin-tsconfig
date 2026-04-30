@@ -19,7 +19,9 @@ const rule: JsoncRuleModule = createJsoncRule({
             recommended: false,
             requiresTypeChecking: false,
             tsconfigConfigs: ["all", "lib-target"],
-            url: createRuleDocsUrl("require-downlevel-iteration-with-iterators"),
+            url: createRuleDocsUrl(
+                "require-downlevel-iteration-with-iterators"
+            ),
         },
         fixable: "code",
         messages: {

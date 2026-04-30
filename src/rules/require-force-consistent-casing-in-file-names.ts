@@ -25,7 +25,9 @@ const rule: JsoncRuleModule = createJsoncRule({
                 "strict",
                 "strictest",
             ],
-            url: createRuleDocsUrl("require-force-consistent-casing-in-file-names"),
+            url: createRuleDocsUrl(
+                "require-force-consistent-casing-in-file-names"
+            ),
         },
         fixable: "code",
         messages: {
