@@ -5,13 +5,12 @@
 import type { JsoncRuleModule } from "../_internal/jsonc-rule.js";
 
 import { createJsoncRule } from "../_internal/jsonc-rule.js";
+import { createRuleDocsUrl } from "../_internal/rule-docs-url.js";
 
 /** Rule implementation for this tsconfig lint rule. */
 const rule: JsoncRuleModule = createJsoncRule({
     create() {
-        return {
-            JSONObjectExpression() {},
-        };
+        return {};
     },
     meta: {
         docs: {
@@ -20,6 +19,7 @@ const rule: JsoncRuleModule = createJsoncRule({
             recommended: false,
             requiresTypeChecking: false,
             tsconfigConfigs: ["all", "module-resolution"],
+            url: createRuleDocsUrl("require-verbatim-module-syntax"),
         },
         fixable: "code",
         messages: {

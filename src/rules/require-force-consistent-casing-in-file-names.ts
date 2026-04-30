@@ -5,13 +5,12 @@
 import type { JsoncRuleModule } from "../_internal/jsonc-rule.js";
 
 import { createJsoncRule } from "../_internal/jsonc-rule.js";
+import { createRuleDocsUrl } from "../_internal/rule-docs-url.js";
 
 /** Rule implementation for this tsconfig lint rule. */
 const rule: JsoncRuleModule = createJsoncRule({
     create() {
-        return {
-            JSONObjectExpression() {},
-        };
+        return {};
     },
     meta: {
         docs: {
@@ -26,6 +25,7 @@ const rule: JsoncRuleModule = createJsoncRule({
                 "strict",
                 "strictest",
             ],
+            url: createRuleDocsUrl("require-force-consistent-casing-in-file-names"),
         },
         fixable: "code",
         messages: {
