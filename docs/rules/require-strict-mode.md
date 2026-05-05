@@ -14,7 +14,7 @@ The `compilerOptions.strict` field in any `tsconfig*.json` file.
 
 ## What this rule reports
 
-This rule reports when `compilerOptions.strict` is absent or set to `false`.
+This rule reports when `compilerOptions` is present and `compilerOptions.strict` is absent or set to `false`. The rule does not report if `compilerOptions` is not defined at all, since there is no compiler configuration to check.
 
 ## Why this rule exists
 

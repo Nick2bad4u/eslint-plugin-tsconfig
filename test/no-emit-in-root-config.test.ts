@@ -33,6 +33,23 @@ ruleTester.run("no-emit-in-root-config", rule, {
         },
         { code: '{ "compilerOptions": {} }', filename: "tsconfig.build.json" },
         { code: '{ "compilerOptions": {} }' },
+        // Monorepo workspace configs should not trigger the rule
+        {
+            code: '{ "compilerOptions": {} }',
+            filename: "/workspace/packages/lib/tsconfig.json",
+        },
+        {
+            code: '{ "compilerOptions": {} }',
+            filename: "/workspace/apps/cli/tsconfig.json",
+        },
+        {
+            code: '{ "compilerOptions": {} }',
+            filename: "/workspace/src/tsconfig.json",
+        },
+        {
+            code: '{ "compilerOptions": { "noEmit": false } }',
+            filename: "/workspace/libs/shared/tsconfig.json",
+        },
     ],
 });
 

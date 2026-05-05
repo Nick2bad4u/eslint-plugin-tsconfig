@@ -15,7 +15,7 @@ The `compilerOptions.noImplicitOverride` field in any `tsconfig*.json` file.
 
 ## What this rule reports
 
-This rule reports when `noImplicitOverride` is absent or set to `false`.
+This rule reports when `compilerOptions` is present and `noImplicitOverride` is absent or set to `false`. The rule does not report if `compilerOptions` is not defined at all.
 
 ## Why this rule exists
 

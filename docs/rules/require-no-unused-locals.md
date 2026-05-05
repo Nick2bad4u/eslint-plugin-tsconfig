@@ -14,8 +14,7 @@ The `compilerOptions.noUnusedLocals` field in any `tsconfig*.json` file.
 
 ## What this rule reports
 
-This rule reports when `compilerOptions.noUnusedLocals` is absent or explicitly
-set to `false`.
+This rule reports when `compilerOptions` is present and `compilerOptions.noUnusedLocals` is absent or explicitly set to `false`. The rule does not report if `compilerOptions` is not defined at all.
 
 ## Why this rule exists
 

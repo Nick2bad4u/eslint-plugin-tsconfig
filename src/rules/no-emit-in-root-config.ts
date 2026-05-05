@@ -23,14 +23,28 @@ import {
 import { createJsoncRule } from "../_internal/jsonc-rule.js";
 import { createRuleDocsUrl } from "../_internal/rule-docs-url.js";
 
+/**
+ * Check if a file path is likely the root tsconfig.json, not a nested workspace
+ * config. Conservative heuristic: exclude paths containing common monorepo
+ * workspace markers.
+ */
+function isRootTsconfigPath(filename: string): boolean {
+    if (basename(filename) !== "tsconfig.json") return false;
+
+    // Monorepo workspace directory patterns to exclude (case-insensitive)
+    const workspacePatterns =
+        /[/\\](?:apps|build|dist|libs|modules|out|packages|projects|src|test|tests|workspace|workspaces)[/\\]/iu;
+    return !workspacePatterns.test(filename);
+}
+
 /** Rule implementation for this tsconfig lint rule. */
 const rule: JsoncRuleModule = createJsoncRule({
     create(context) {
         return {
             JSONObjectExpression(node: Readonly<JSONObjectExpression>) {
                 if (node.parent?.type !== "JSONExpressionStatement") return;
-                // Only applies to root tsconfig.json (not tsconfig.build.json etc.)
-                if (basename(context.filename) !== "tsconfig.json") return;
+                // Only applies to root tsconfig.json (not workspace or non-root tsconfig files)
+                if (!isRootTsconfigPath(context.filename)) return;
 
                 const co = getCompilerOptions(node);
                 if (!co) return;
