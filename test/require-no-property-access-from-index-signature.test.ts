@@ -12,12 +12,27 @@ import { createRuleTester } from "./_internal/ruleTester";
 const ruleTester = createRuleTester();
 
 ruleTester.run("require-no-property-access-from-index-signature", rule, {
-    invalid: [],
+    invalid: [
+        {
+            code: '{ "compilerOptions": {} }',
+            errors: [
+                { messageId: "missingNoPropertyAccessFromIndexSignature" },
+            ],
+            output: '{ "compilerOptions": { "noPropertyAccessFromIndexSignature": true } }',
+        },
+        {
+            code: '{ "compilerOptions": { "noPropertyAccessFromIndexSignature": false } }',
+            errors: [
+                { messageId: "missingNoPropertyAccessFromIndexSignature" },
+            ],
+            output: '{ "compilerOptions": { "noPropertyAccessFromIndexSignature": true } }',
+        },
+    ],
     valid: [
         {
             code: '{ "compilerOptions": { "noPropertyAccessFromIndexSignature": true } }',
         },
-        { code: '{ "compilerOptions": {} }' },
+        { code: "{}" },
     ],
 });
 

@@ -12,7 +12,12 @@ import { createRuleTester } from "./_internal/ruleTester";
 const ruleTester = createRuleTester();
 
 ruleTester.run("no-skip-lib-check", rule, {
-    invalid: [],
+    invalid: [
+        {
+            code: '{ "compilerOptions": { "skipLibCheck": true } }',
+            errors: [{ messageId: "skipLibCheck" }],
+        },
+    ],
     valid: [
         { code: '{ "compilerOptions": { "skipLibCheck": false } }' },
         { code: '{ "compilerOptions": {} }' },

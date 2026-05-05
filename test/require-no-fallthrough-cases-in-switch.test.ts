@@ -12,12 +12,23 @@ import { createRuleTester } from "./_internal/ruleTester";
 const ruleTester = createRuleTester();
 
 ruleTester.run("require-no-fallthrough-cases-in-switch", rule, {
-    invalid: [],
+    invalid: [
+        {
+            code: '{ "compilerOptions": {} }',
+            errors: [{ messageId: "missingNoFallthroughCasesInSwitch" }],
+            output: '{ "compilerOptions": { "noFallthroughCasesInSwitch": true } }',
+        },
+        {
+            code: '{ "compilerOptions": { "noFallthroughCasesInSwitch": false } }',
+            errors: [{ messageId: "missingNoFallthroughCasesInSwitch" }],
+            output: '{ "compilerOptions": { "noFallthroughCasesInSwitch": true } }',
+        },
+    ],
     valid: [
         {
             code: '{ "compilerOptions": { "noFallthroughCasesInSwitch": true } }',
         },
-        { code: '{ "compilerOptions": {} }' },
+        { code: "{}" },
     ],
 });
 

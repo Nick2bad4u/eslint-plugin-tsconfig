@@ -12,13 +12,24 @@ import { createRuleTester } from "./_internal/ruleTester";
 const ruleTester = createRuleTester();
 
 ruleTester.run("require-use-unknown-in-catch-variables", rule, {
-    invalid: [],
+    invalid: [
+        {
+            code: '{ "compilerOptions": {} }',
+            errors: [{ messageId: "missingUseUnknownInCatchVariables" }],
+            output: '{ "compilerOptions": { "useUnknownInCatchVariables": true } }',
+        },
+        {
+            code: '{ "compilerOptions": { "useUnknownInCatchVariables": false } }',
+            errors: [{ messageId: "missingUseUnknownInCatchVariables" }],
+            output: '{ "compilerOptions": { "useUnknownInCatchVariables": true } }',
+        },
+    ],
     valid: [
         {
             code: '{ "compilerOptions": { "useUnknownInCatchVariables": true } }',
         },
         { code: '{ "compilerOptions": { "strict": true } }' },
-        { code: '{ "compilerOptions": {} }' },
+        { code: "{}" },
     ],
 });
 

@@ -1,13 +1,12 @@
 ---
 title: consistent-target-and-lib
-description: Require lib to be compatible with the configured target.
+description: Disallow lib entries that target a newer ES version than the configured target.
 ---
 
 # consistent-target-and-lib
 
-Require `lib` entries to include the standard library corresponding to the
-`target` ECMAScript version, avoiding a mismatch between what TypeScript
-compiles and what it type-checks against.
+Disallow ES-versioned `lib` entries that are newer than the configured
+`target`.
 
 ## Targeted pattern scope
 
@@ -16,38 +15,40 @@ The `compilerOptions.target` and `compilerOptions.lib` fields in any
 
 ## What this rule reports
 
-This rule reports when an explicit `lib` array is configured but does not
-include at least the default lib entry for the configured `target`. For example:
+This rule reports when an explicit `lib` array contains an ES-versioned entry
+that is newer than the configured `target`.
 
-- `target: "ES2022"` but `lib` contains only `"ES2015"` — code compiled to
-  ES2022 syntax has access to `Array.prototype.at()` and similar APIs, but the
-  type checker will report them as missing.
-- `lib` includes newer entries (e.g., `"ESNext"`) but `target` is set to an
-  older version — the type checker accepts code that the downlevel output cannot
-  execute.
+Examples of configurations this rule reports:
+
+- `target: "ES2020"` with `lib: ["ES2022", "DOM"]`
+- `target: "ES2018"` with `lib: ["ESNext"]`
+
+If `lib` is omitted entirely, or if `lib` is more conservative than `target`,
+this rule does not report.
 
 ## Why this rule exists
 
-The `target` option tells TypeScript what syntax to emit. The `lib` option
-tells TypeScript what global APIs exist at runtime. When these two diverge the
-type checker may accept code that fails at runtime (target too old for the lib)
-or reject code that would actually run fine (lib too conservative for the
-target). Keeping them aligned produces a truthful model of what is available.
+The `target` option controls the syntax level TypeScript emits. The `lib`
+option controls which built-in APIs the type checker assumes are available at
+runtime. When `lib` is configured to a newer ES version than `target`, the type
+checker can accept APIs that are not a safe match for the configured output
+baseline.
+
+This rule prevents that one-way mismatch.
 
 ## ❌ Incorrect
 
 ```json
 {
     "compilerOptions": {
-        "target": "ES2022",
-        "lib": ["ES2015", "DOM"]
+        "target": "ES2020",
+        "lib": ["ES2022", "DOM"]
     }
 }
 ```
 
-`ES2022` APIs like `Array.prototype.at` and `Object.hasOwn` are available
-at runtime but TypeScript will report them as missing because they are not in
-the `ES2015` lib.
+The type checker accepts `ES2022` APIs even though the configured target is only
+`ES2020`.
 
 ## ✅ Correct
 
@@ -60,21 +61,22 @@ the `ES2015` lib.
 }
 ```
 
-Or omit `lib` entirely and let TypeScript derive it from `target`:
+Or use a more conservative `lib`:
 
 ```json
 {
     "compilerOptions": {
-        "target": "ES2022"
+        "target": "ES2022",
+        "lib": ["ES2020", "DOM"]
     }
 }
 ```
 
 ## When not to use it
 
-Disable this rule in projects that deliberately use a conservative `lib` set
-to constrain available APIs (for example, a library supporting legacy
-browsers that polyfills specific APIs).
+Disable this rule if you intentionally model newer runtime APIs than the
+configured `target` because the environment guarantees polyfills, or if you do
+not want to enforce this one-way compatibility check.
 
 ## Package documentation
 

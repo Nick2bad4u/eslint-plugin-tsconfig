@@ -12,12 +12,23 @@ import { createRuleTester } from "./_internal/ruleTester";
 const ruleTester = createRuleTester();
 
 ruleTester.run("require-exact-optional-property-types", rule, {
-    invalid: [],
+    invalid: [
+        {
+            code: '{ "compilerOptions": {} }',
+            errors: [{ messageId: "missingExactOptionalPropertyTypes" }],
+            output: '{ "compilerOptions": { "exactOptionalPropertyTypes": true } }',
+        },
+        {
+            code: '{ "compilerOptions": { "exactOptionalPropertyTypes": false } }',
+            errors: [{ messageId: "missingExactOptionalPropertyTypes" }],
+            output: '{ "compilerOptions": { "exactOptionalPropertyTypes": true } }',
+        },
+    ],
     valid: [
         {
             code: '{ "compilerOptions": { "exactOptionalPropertyTypes": true } }',
         },
-        { code: '{ "compilerOptions": {} }' },
+        { code: "{}" },
     ],
 });
 

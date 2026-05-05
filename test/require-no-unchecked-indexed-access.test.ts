@@ -12,10 +12,21 @@ import { createRuleTester } from "./_internal/ruleTester";
 const ruleTester = createRuleTester();
 
 ruleTester.run("require-no-unchecked-indexed-access", rule, {
-    invalid: [],
+    invalid: [
+        {
+            code: '{ "compilerOptions": {} }',
+            errors: [{ messageId: "missingNoUncheckedIndexedAccess" }],
+            output: '{ "compilerOptions": { "noUncheckedIndexedAccess": true } }',
+        },
+        {
+            code: '{ "compilerOptions": { "noUncheckedIndexedAccess": false } }',
+            errors: [{ messageId: "missingNoUncheckedIndexedAccess" }],
+            output: '{ "compilerOptions": { "noUncheckedIndexedAccess": true } }',
+        },
+    ],
     valid: [
         { code: '{ "compilerOptions": { "noUncheckedIndexedAccess": true } }' },
-        { code: '{ "compilerOptions": {} }' },
+        { code: "{}" },
     ],
 });
 

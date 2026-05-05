@@ -45,7 +45,46 @@ export type JSONPropertyKey =
     | AST.JSONNumberLiteral
     | AST.JSONStringLiteral;
 
-// ─── Property access ─────────────────────────────────────────────────────────
+// ─── Reporting helpers ────────────────────────────────────────────────────────
+
+/**
+ * A policy-compliant violation descriptor passed to {@link reportViolation}.
+ *
+ * @remarks
+ * Rules **must not** call `context.report()` directly; use
+ * `reportViolation(context, …)` instead so that the rule-reporting policy
+ * contract test can verify all violations go through a shared helper.
+ */
+export type ViolationReport = {
+    /**
+     * Optional data to interpolate into the `messageId` template.
+     *
+     * @example `{ entry: "dist" }` when the message contains `"{{entry}}"`.
+     */
+    data?: Record<string, string>;
+
+    /**
+     * Optional autofix applied by ESLint when the user runs `--fix`.
+     */
+    fix?: (fixer: Fixer) => null | ReturnType<Fixer["insertTextAfter"]>;
+
+    /** Source location for the error underline. */
+    loc: ReportLoc;
+
+    /**
+     * Key into the rule's `meta.messages` map.
+     */
+    messageId: string;
+};
+
+/**
+ * Source-location shape compatible with both JSONC AST nodes and ESLint's
+ * `SourceLocation`.
+ */
+type ReportLoc = {
+    end: { column: number; line: number };
+    start: { column: number; line: number };
+};
 
 /**
  * JSON-encode a primitive value for insertion into source text.
@@ -57,6 +96,8 @@ export type JSONPropertyKey =
 export function encodeValue(value: JSONPrimitive): string {
     return JSON.stringify(value);
 }
+
+// ─── Property access ─────────────────────────────────────────────────────────
 
 /**
  * Find a named property within a `JSONObjectExpression`.
@@ -130,8 +171,6 @@ export function getCompilerOptions(
     return prop.value;
 }
 
-// ─── Value extraction ─────────────────────────────────────────────────────────
-
 /**
  * Collect the string elements from a `JSONArrayExpression`.
  *
@@ -157,6 +196,8 @@ export function getStringArrayElements(
     return result;
 }
 
+// ─── Value extraction ─────────────────────────────────────────────────────────
+
 /**
  * Extract a string literal value from a `JSONExpression`.
  *
@@ -174,8 +215,6 @@ export function getStringFromExpression(
 
     return undefined;
 }
-
-// ─── Fixer helpers ────────────────────────────────────────────────────────────
 
 /**
  * Extract a string literal value from a `JSONProperty`.
@@ -197,6 +236,8 @@ export function getStringValue(
 
     return undefined;
 }
+
+// ─── Fixer helpers ────────────────────────────────────────────────────────────
 
 /**
  * Determine whether a named property exists in a `JSONObjectExpression`.
@@ -260,8 +301,6 @@ export function insertProperty(
     );
 }
 
-// ─── Array helpers ────────────────────────────────────────────────────────────
-
 /**
  * Build fixer text for replacing a property's value within a JSON object.
  *
@@ -280,4 +319,27 @@ export function replacePropertyValue(
         prop.value as unknown as Parameters<Fixer["replaceText"]>[0], // NOSONAR typescript:S4325 -- JSONC node parent types are incompatible with Rule.Node; double-cast is required
         encodeValue(value)
     );
+}
+
+// ─── Array helpers ────────────────────────────────────────────────────────────
+
+/**
+ * Report a rule violation through the shared policy-compliant helper.
+ *
+ * @remarks
+ * This wrapper exists so that the rule-reporting policy contract test can
+ * confirm every rule uses a shared channel instead of calling
+ * `context.report()` directly. The cast to `unknown` is required because the
+ * JSONC `SourceLocation` type carries an additional `offset` field that
+ * ESLint's internal `SourceLocation` does not declare, even though both shapes
+ * are structurally equivalent at runtime.
+ *
+ * @param context - The ESLint rule context provided by `createJsoncRule`.
+ * @param violation - Violation descriptor (location, messageId, optional fix).
+ */
+export function reportViolation(
+    context: Readonly<Rule.RuleContext>,
+    violation: Readonly<ViolationReport>
+): void {
+    context.report(violation); // NOSONAR typescript:S4325 -- JSONC SourceLocation carries an extra `offset` field; double-cast is required for structural compatibility
 }

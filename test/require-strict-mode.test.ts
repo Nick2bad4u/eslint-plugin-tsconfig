@@ -12,10 +12,21 @@ import { createRuleTester } from "./_internal/ruleTester";
 const ruleTester = createRuleTester();
 
 ruleTester.run("require-strict-mode", rule, {
-    invalid: [],
+    invalid: [
+        {
+            code: '{ "compilerOptions": {} }',
+            errors: [{ messageId: "missingStrict" }],
+            output: '{ "compilerOptions": { "strict": true } }',
+        },
+        {
+            code: '{ "compilerOptions": { "strict": false } }',
+            errors: [{ messageId: "missingStrict" }],
+            output: '{ "compilerOptions": { "strict": true } }',
+        },
+    ],
     valid: [
         { code: '{ "compilerOptions": { "strict": true } }' },
-        { code: '{ "compilerOptions": {} }' },
+        { code: "{}" },
     ],
 });
 

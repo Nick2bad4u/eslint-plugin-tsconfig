@@ -12,11 +12,19 @@ import { createRuleTester } from "./_internal/ruleTester";
 const ruleTester = createRuleTester();
 
 ruleTester.run("no-legacy-module-resolution", rule, {
-    invalid: [],
-    valid: [
+    invalid: [
         {
-            code: '{ "compilerOptions": { "moduleResolution": "nodenext" } }',
+            code: '{ "compilerOptions": { "moduleResolution": "node" } }',
+            errors: [{ messageId: "legacyModuleResolution" }],
         },
+        {
+            code: '{ "compilerOptions": { "moduleResolution": "classic" } }',
+            errors: [{ messageId: "legacyModuleResolution" }],
+        },
+    ],
+    valid: [
+        { code: '{ "compilerOptions": { "moduleResolution": "bundler" } }' },
+        { code: '{ "compilerOptions": { "moduleResolution": "nodenext" } }' },
         { code: '{ "compilerOptions": {} }' },
     ],
 });

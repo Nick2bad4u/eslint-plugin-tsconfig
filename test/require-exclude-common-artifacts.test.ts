@@ -12,9 +12,16 @@ import { createRuleTester } from "./_internal/ruleTester";
 const ruleTester = createRuleTester();
 
 ruleTester.run("require-exclude-common-artifacts", rule, {
-    invalid: [],
+    invalid: [
+        {
+            // Missing node_modules in exclude — fixer appends it
+            code: '{ "exclude": ["dist"] }',
+            errors: [{ messageId: "missingExcludeEntry" }],
+            output: '{ "exclude": ["dist", "node_modules"] }',
+        },
+    ],
     valid: [
-        { code: '{ "exclude": ["node_modules", "dist"] }' },
+        { code: '{ "exclude": ["node_modules", "dist", ".tsbuildinfo"] }' },
         { code: '{ "compilerOptions": {} }' },
     ],
 });

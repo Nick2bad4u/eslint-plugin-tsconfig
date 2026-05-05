@@ -1,25 +1,30 @@
 ---
 title: require-source-map-in-dev
-description: Require source maps to be enabled in non-production tsconfig files.
+description: Require source maps to be enabled in tsconfig files that emit JavaScript.
 ---
 
 # require-source-map-in-dev
 
-Require `"sourceMap": true` (or `"inlineSourceMap": true`) in development-
-oriented tsconfig files so that stack traces and debugger sessions map back to
-original TypeScript source.
+Require `"sourceMap": true` (or `"inlineSourceMap": true`) in tsconfig files
+that emit JavaScript so stack traces and debugger sessions map back to original
+TypeScript source.
 
 ## Targeted pattern scope
 
-The `compilerOptions.sourceMap`, `compilerOptions.inlineSourceMap`, and
-`compilerOptions.noEmit` fields in `tsconfig*.json` files that are not
-identified as production-only build configs.
+The `compilerOptions.sourceMap`, `compilerOptions.inlineSourceMap`,
+`compilerOptions.noEmit`, and `compilerOptions.emitDeclarationOnly` fields in
+`tsconfig*.json` files.
 
 ## What this rule reports
 
 This rule reports when a tsconfig that emits JavaScript does not set either
-`"sourceMap": true` or `"inlineSourceMap": true`. The rule does not fire
-when `"noEmit": true` is set, since no output is produced.
+`"sourceMap": true` or `"inlineSourceMap": true`.
+
+The rule does not report when:
+
+- `"noEmit": true` is set, because no JavaScript output is produced.
+- `"emitDeclarationOnly": true` is set, because only `.d.ts` output is
+  produced.
 
 ## Why this rule exists
 
@@ -28,9 +33,9 @@ compiled JavaScript locations. Developers must manually translate line numbers
 back to TypeScript source, which slows down debugging.
 
 Source maps are small and have no runtime cost — they are only loaded when
-developer tools are open. The only reason to omit them in development is an
-explicit performance optimization for production bundles, which should be
-handled in a separate production-only tsconfig.
+developer tools are open. If a config emits runnable JavaScript, enabling
+either source maps or inline source maps usually makes debugging materially
+easier.
 
 The auto-fixer adds `"sourceMap": true` to `compilerOptions`.
 
@@ -74,8 +79,9 @@ Or using inline source maps:
 
 ## When not to use it
 
-Disable this rule for production build tsconfig files where source maps are
-intentionally omitted to reduce bundle size or prevent source exposure.
+Disable this rule for configs where emitted source maps are intentionally
+forbidden, or where the project has a separate debugging workflow that does not
+depend on TypeScript source maps.
 
 ## Package documentation
 

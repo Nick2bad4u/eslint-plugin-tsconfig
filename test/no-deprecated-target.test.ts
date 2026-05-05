@@ -12,17 +12,19 @@ import { createRuleTester } from "./_internal/ruleTester";
 const ruleTester = createRuleTester();
 
 ruleTester.run("no-deprecated-target", rule, {
-    invalid: [],
+    invalid: [
+        {
+            code: '{ "compilerOptions": { "target": "es3" } }',
+            errors: [{ messageId: "deprecatedTarget" }],
+        },
+        {
+            code: '{ "compilerOptions": { "target": "es5" } }',
+            errors: [{ messageId: "deprecatedTarget" }],
+        },
+    ],
     valid: [
-        {
-            code: '{ "compilerOptions": { "target": "ES2022" } }',
-        },
-        {
-            code: '{ "compilerOptions": { "target": "ESNext" } }',
-        },
-        {
-            code: '{ "compilerOptions": { "target": "ES2015" } }',
-        },
+        { code: '{ "compilerOptions": { "target": "es2020" } }' },
+        { code: '{ "compilerOptions": { "target": "esnext" } }' },
         { code: '{ "compilerOptions": {} }' },
     ],
 });

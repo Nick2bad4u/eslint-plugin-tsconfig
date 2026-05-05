@@ -12,12 +12,19 @@ import { createRuleTester } from "./_internal/ruleTester";
 const ruleTester = createRuleTester();
 
 ruleTester.run("no-declaration-only-without-declaration", rule, {
-    invalid: [],
+    invalid: [
+        {
+            code: '{ "compilerOptions": { "emitDeclarationOnly": true } }',
+            errors: [{ messageId: "missingDeclaration" }],
+            output: '{ "compilerOptions": { "emitDeclarationOnly": true,\n    "declaration": true } }',
+        },
+    ],
     valid: [
         {
-            code: '{ "compilerOptions": { "declaration": true, "emitDeclarationOnly": true } }',
+            code: '{ "compilerOptions": { "emitDeclarationOnly": true, "declaration": true } }',
         },
         { code: '{ "compilerOptions": {} }' },
+        { code: '{ "compilerOptions": { "emitDeclarationOnly": false } }' },
     ],
 });
 

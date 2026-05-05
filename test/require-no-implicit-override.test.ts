@@ -12,10 +12,21 @@ import { createRuleTester } from "./_internal/ruleTester";
 const ruleTester = createRuleTester();
 
 ruleTester.run("require-no-implicit-override", rule, {
-    invalid: [],
+    invalid: [
+        {
+            code: '{ "compilerOptions": {} }',
+            errors: [{ messageId: "missingNoImplicitOverride" }],
+            output: '{ "compilerOptions": { "noImplicitOverride": true } }',
+        },
+        {
+            code: '{ "compilerOptions": { "noImplicitOverride": false } }',
+            errors: [{ messageId: "missingNoImplicitOverride" }],
+            output: '{ "compilerOptions": { "noImplicitOverride": true } }',
+        },
+    ],
     valid: [
         { code: '{ "compilerOptions": { "noImplicitOverride": true } }' },
-        { code: '{ "compilerOptions": {} }' },
+        { code: "{}" },
     ],
 });
 

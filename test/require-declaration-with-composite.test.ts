@@ -12,7 +12,13 @@ import { createRuleTester } from "./_internal/ruleTester";
 const ruleTester = createRuleTester();
 
 ruleTester.run("require-declaration-with-composite", rule, {
-    invalid: [],
+    invalid: [
+        {
+            code: '{ "compilerOptions": { "composite": true } }',
+            errors: [{ messageId: "missingDeclaration" }],
+            output: '{ "compilerOptions": { "composite": true,\n    "declaration": true } }',
+        },
+    ],
     valid: [
         {
             code: '{ "compilerOptions": { "composite": true, "declaration": true } }',

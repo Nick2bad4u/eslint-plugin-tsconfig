@@ -12,9 +12,21 @@ import { createRuleTester } from "./_internal/ruleTester";
 const ruleTester = createRuleTester();
 
 ruleTester.run("no-include-node-modules", rule, {
-    invalid: [],
+    invalid: [
+        {
+            code: '{ "include": ["node_modules/**/*"] }',
+            errors: [{ messageId: "nodeModulesInInclude" }],
+            output: '{ "include": [] }',
+        },
+        {
+            code: '{ "include": ["src", "node_modules"] }',
+            errors: [{ messageId: "nodeModulesInInclude" }],
+            output: '{ "include": ["src"] }',
+        },
+    ],
     valid: [
-        { code: '{ "include": ["src"] }' },
+        { code: '{ "include": ["src/**/*"] }' },
+        { code: '{ "include": [] }' },
         { code: '{ "compilerOptions": {} }' },
     ],
 });

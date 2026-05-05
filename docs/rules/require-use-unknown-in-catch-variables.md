@@ -16,7 +16,8 @@ file.
 ## What this rule reports
 
 This rule reports when `compilerOptions.useUnknownInCatchVariables` is absent
-or explicitly set to `false`.
+or explicitly set to `false`, unless `compilerOptions.strict` is already set to
+`true`.
 
 ## Why this rule exists
 

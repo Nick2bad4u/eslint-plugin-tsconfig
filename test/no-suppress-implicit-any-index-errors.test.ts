@@ -12,17 +12,17 @@ import { createRuleTester } from "./_internal/ruleTester";
 const ruleTester = createRuleTester();
 
 ruleTester.run("no-suppress-implicit-any-index-errors", rule, {
-    invalid: [],
+    invalid: [
+        {
+            code: '{ "compilerOptions": { "suppressImplicitAnyIndexErrors": true } }',
+            errors: [{ messageId: "suppressImplicitAnyIndexErrors" }],
+        },
+    ],
     valid: [
-        {
-            code: '{ "compilerOptions": { "strict": true } }',
-        },
-        {
-            code: '{ "compilerOptions": {} }',
-        },
         {
             code: '{ "compilerOptions": { "suppressImplicitAnyIndexErrors": false } }',
         },
+        { code: '{ "compilerOptions": {} }' },
     ],
 });
 

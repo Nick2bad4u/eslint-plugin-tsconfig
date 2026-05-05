@@ -12,9 +12,17 @@ import { createRuleTester } from "./_internal/ruleTester";
 const ruleTester = createRuleTester();
 
 ruleTester.run("require-downlevel-iteration-with-iterators", rule, {
-    invalid: [],
+    invalid: [
+        {
+            code: '{ "compilerOptions": { "target": "es5", "lib": ["es2015", "ES2015.Iterable"] } }',
+            errors: [{ messageId: "missingDownlevelIteration" }],
+            output: '{ "compilerOptions": { "target": "es5", "lib": ["es2015", "ES2015.Iterable"],\n    "downlevelIteration": true } }',
+        },
+    ],
     valid: [
-        { code: '{ "compilerOptions": { "downlevelIteration": true } }' },
+        {
+            code: '{ "compilerOptions": { "lib": ["es2015", "ES2015.Iterable"], "downlevelIteration": true } }',
+        },
         { code: '{ "compilerOptions": {} }' },
     ],
 });

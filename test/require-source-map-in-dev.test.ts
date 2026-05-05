@@ -12,10 +12,24 @@ import { createRuleTester } from "./_internal/ruleTester";
 const ruleTester = createRuleTester();
 
 ruleTester.run("require-source-map-in-dev", rule, {
-    invalid: [],
+    invalid: [
+        {
+            code: '{ "compilerOptions": {} }',
+            errors: [{ messageId: "missingSourceMap" }],
+            output: '{ "compilerOptions": { "sourceMap": true } }',
+        },
+        {
+            code: '{ "compilerOptions": { "sourceMap": false } }',
+            errors: [{ messageId: "missingSourceMap" }],
+            output: '{ "compilerOptions": { "sourceMap": true } }',
+        },
+    ],
     valid: [
         { code: '{ "compilerOptions": { "sourceMap": true } }' },
-        { code: '{ "compilerOptions": {} }' },
+        { code: '{ "compilerOptions": { "inlineSourceMap": true } }' },
+        { code: '{ "compilerOptions": { "noEmit": true } }' },
+        { code: '{ "compilerOptions": { "emitDeclarationOnly": true } }' },
+        { code: "{}" },
     ],
 });
 

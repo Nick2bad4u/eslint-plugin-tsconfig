@@ -12,9 +12,23 @@ import { createRuleTester } from "./_internal/ruleTester";
 const ruleTester = createRuleTester();
 
 ruleTester.run("require-verbatim-module-syntax", rule, {
-    invalid: [],
+    invalid: [
+        {
+            code: '{ "compilerOptions": { "module": "NodeNext" } }',
+            errors: [{ messageId: "missingVerbatimModuleSyntax" }],
+            output: '{ "compilerOptions": { "module": "NodeNext",\n    "verbatimModuleSyntax": true } }',
+        },
+        {
+            code: '{ "compilerOptions": { "module": "NodeNext", "verbatimModuleSyntax": false } }',
+            errors: [{ messageId: "missingVerbatimModuleSyntax" }],
+            output: '{ "compilerOptions": { "module": "NodeNext", "verbatimModuleSyntax": true } }',
+        },
+    ],
     valid: [
-        { code: '{ "compilerOptions": { "verbatimModuleSyntax": true } }' },
+        {
+            code: '{ "compilerOptions": { "module": "NodeNext", "verbatimModuleSyntax": true } }',
+        },
+        { code: '{ "compilerOptions": { "module": "CommonJS" } }' },
         { code: '{ "compilerOptions": {} }' },
     ],
 });

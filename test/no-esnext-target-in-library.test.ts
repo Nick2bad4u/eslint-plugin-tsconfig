@@ -12,9 +12,21 @@ import { createRuleTester } from "./_internal/ruleTester";
 const ruleTester = createRuleTester();
 
 ruleTester.run("no-esnext-target-in-library", rule, {
-    invalid: [],
+    invalid: [
+        {
+            code: '{ "compilerOptions": { "target": "ESNext" } }',
+            errors: [{ messageId: "esnextTargetInLibrary" }],
+        },
+        {
+            code: '{ "compilerOptions": { "target": "ESNext", "declaration": true } }',
+            errors: [{ messageId: "esnextTargetInLibrary" }],
+        },
+    ],
     valid: [
-        { code: '{ "compilerOptions": { "target": "ES2022" } }' },
+        { code: '{ "compilerOptions": { "target": "ES2020" } }' },
+        {
+            code: '{ "compilerOptions": { "target": "ES2020", "declaration": true } }',
+        },
         { code: '{ "compilerOptions": {} }' },
     ],
 });

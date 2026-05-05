@@ -12,12 +12,23 @@ import { createRuleTester } from "./_internal/ruleTester";
 const ruleTester = createRuleTester();
 
 ruleTester.run("require-force-consistent-casing-in-file-names", rule, {
-    invalid: [],
+    invalid: [
+        {
+            code: '{ "compilerOptions": {} }',
+            errors: [{ messageId: "missingForceConsistentCasingInFileNames" }],
+            output: '{ "compilerOptions": { "forceConsistentCasingInFileNames": true } }',
+        },
+        {
+            code: '{ "compilerOptions": { "forceConsistentCasingInFileNames": false } }',
+            errors: [{ messageId: "missingForceConsistentCasingInFileNames" }],
+            output: '{ "compilerOptions": { "forceConsistentCasingInFileNames": true } }',
+        },
+    ],
     valid: [
         {
             code: '{ "compilerOptions": { "forceConsistentCasingInFileNames": true } }',
         },
-        { code: '{ "compilerOptions": {} }' },
+        { code: "{}" },
     ],
 });
 

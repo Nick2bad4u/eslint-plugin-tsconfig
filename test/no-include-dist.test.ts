@@ -12,9 +12,19 @@ import { createRuleTester } from "./_internal/ruleTester";
 const ruleTester = createRuleTester();
 
 ruleTester.run("no-include-dist", rule, {
-    invalid: [],
+    invalid: [
+        {
+            code: '{ "include": ["dist/**/*"] }',
+            errors: [{ messageId: "distInInclude" }],
+        },
+        {
+            code: '{ "include": ["src", "dist"] }',
+            errors: [{ messageId: "distInInclude" }],
+        },
+    ],
     valid: [
         { code: '{ "include": ["src/**/*"] }' },
+        { code: '{ "include": [] }' },
         { code: '{ "compilerOptions": {} }' },
     ],
 });

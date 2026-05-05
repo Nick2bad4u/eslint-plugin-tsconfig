@@ -12,17 +12,23 @@ import { createRuleTester } from "./_internal/ruleTester";
 const ruleTester = createRuleTester();
 
 ruleTester.run("require-declaration-map", rule, {
-    invalid: [],
+    invalid: [
+        {
+            code: '{ "compilerOptions": { "declaration": true } }',
+            errors: [{ messageId: "missingDeclarationMap" }],
+            output: '{ "compilerOptions": { "declaration": true,\n    "declarationMap": true } }',
+        },
+        {
+            code: '{ "compilerOptions": { "declaration": true, "declarationMap": false } }',
+            errors: [{ messageId: "missingDeclarationMap" }],
+            output: '{ "compilerOptions": { "declaration": true, "declarationMap": true } }',
+        },
+    ],
     valid: [
         {
             code: '{ "compilerOptions": { "declaration": true, "declarationMap": true } }',
         },
-        {
-            code: '{ "compilerOptions": {} }',
-        },
-        {
-            code: '{ "compilerOptions": { "declaration": false } }',
-        },
+        { code: '{ "compilerOptions": {} }' },
     ],
 });
 

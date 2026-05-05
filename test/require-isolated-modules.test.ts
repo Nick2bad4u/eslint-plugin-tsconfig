@@ -12,12 +12,21 @@ import { createRuleTester } from "./_internal/ruleTester";
 const ruleTester = createRuleTester();
 
 ruleTester.run("require-isolated-modules", rule, {
-    invalid: [],
-    valid: [
+    invalid: [
         {
-            code: '{ "compilerOptions": { "isolatedModules": true } }',
+            code: '{ "compilerOptions": {} }',
+            errors: [{ messageId: "missingIsolatedModules" }],
+            output: '{ "compilerOptions": { "isolatedModules": true } }',
         },
-        { code: '{ "compilerOptions": {} }' },
+        {
+            code: '{ "compilerOptions": { "isolatedModules": false } }',
+            errors: [{ messageId: "missingIsolatedModules" }],
+            output: '{ "compilerOptions": { "isolatedModules": true } }',
+        },
+    ],
+    valid: [
+        { code: '{ "compilerOptions": { "isolatedModules": true } }' },
+        { code: "{}" },
     ],
 });
 

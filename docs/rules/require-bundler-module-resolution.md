@@ -1,13 +1,12 @@
 ---
 title: require-bundler-module-resolution
-description: Require moduleResolution Bundler when module is ESNext and a bundler is in use.
+description: Require a modern resolution mode for bundler-oriented module settings.
 ---
 
 # require-bundler-module-resolution
 
-Require `moduleResolution: "Bundler"` when `module` is set to `"ESNext"` and
-the project is processed by a bundler, to correctly model how the bundler
-resolves imports.
+Require a modern `moduleResolution` strategy for bundler-oriented `module`
+settings.
 
 ## Targeted pattern scope
 
@@ -16,50 +15,42 @@ any `tsconfig*.json` file.
 
 ## What this rule reports
 
-This rule reports when `"module": "ESNext"` is set without
-`"moduleResolution": "Bundler"`. The `ESNext` module format is intended for
-bundler-processed code where the bundler (not Node.js) resolves imports, but
-older resolution modes like `"node"` or `"node16"` do not model bundler
-semantics.
+This rule reports when `module` is one of these values and `moduleResolution`
+is absent or set to an older legacy mode:
+
+- `"ES2015"`
+- `"ES2016"`
+- `"ES2017"`
+- `"ES2018"`
+- `"ES2019"`
+- `"ES2020"`
+- `"ES2022"`
+- `"ESNext"`
+- `"Preserve"`
+
+The current implementation accepts `"Bundler"`, `"Node16"`, and `"NodeNext"`
+as modern resolution modes. When it auto-fixes, it inserts or replaces with
+`"Bundler"`.
 
 ## Why this rule exists
 
-`moduleResolution: "node"` requires that every import of a relative module
-path include the file extension (`.js`, `.ts`). Bundlers such as Vite,
-esbuild, webpack, and Rollup resolve extension-less imports by trying multiple
-extensions automatically — which is exactly what `"Bundler"` resolution
-models.
-
-Using `"module": "ESNext"` with `"moduleResolution": "node"` causes TypeScript
-to reject valid bundler-resolved imports and accept patterns that would fail
-under `"NodeNext"` semantics. The `"Bundler"` option was introduced in
-TypeScript 5.0 precisely to fix this mismatch.
-
-The auto-fixer inserts `"moduleResolution": "Bundler"` when it is absent.
+Using ESM-like or bundler-oriented module output with legacy resolution modes
+like `"node"`, `"node10"`, or `"classic"` causes TypeScript to model imports
+using rules that do not match modern bundlers or package `exports` fields.
 
 ## ❌ Incorrect
 
 ```json
 {
     "compilerOptions": {
-        "module": "ESNext",
+        "module": "Preserve",
         "moduleResolution": "node"
     }
 }
 ```
 
-`"node"` resolution does not match the semantics of a bundler.
-
-```json
-{
-    "compilerOptions": {
-        "module": "ESNext"
-    }
-}
-```
-
-Without an explicit `moduleResolution`, TypeScript defaults to `"node"` for
-`"ESNext"`, which is incorrect for bundler projects.
+`"node"` resolution does not match the modern resolution behavior expected by
+bundler-oriented output.
 
 ## ✅ Correct
 
@@ -72,11 +63,22 @@ Without an explicit `moduleResolution`, TypeScript defaults to `"node"` for
 }
 ```
 
+These are also treated as acceptable by the current implementation:
+
+```json
+{
+    "compilerOptions": {
+        "module": "ESNext",
+        "moduleResolution": "NodeNext"
+    }
+}
+```
+
 ## When not to use it
 
-Disable this rule when `"module": "ESNext"` is used in a non-bundler context,
-such as a Deno project or an experimental native ESM Node.js project that
-prefers `"NodeNext"` resolution.
+Disable this rule when these module settings are used in a workflow that
+intentionally prefers `"Node16"`/`"NodeNext"` semantics or some other
+non-bundler resolution strategy.
 
 ## Package documentation
 

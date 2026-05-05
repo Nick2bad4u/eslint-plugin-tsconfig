@@ -12,12 +12,19 @@ import { createRuleTester } from "./_internal/ruleTester";
 const ruleTester = createRuleTester();
 
 ruleTester.run("consistent-incremental-with-tsbuildinfo", rule, {
-    invalid: [],
+    invalid: [
+        {
+            code: '{ "compilerOptions": { "incremental": true } }',
+            errors: [{ messageId: "missingTsBuildInfoFile" }],
+            output: '{ "compilerOptions": { "incremental": true,\n    "tsBuildInfoFile": ".tsbuildinfo" } }',
+        },
+    ],
     valid: [
         {
             code: '{ "compilerOptions": { "incremental": true, "tsBuildInfoFile": ".tsbuildinfo" } }',
         },
         { code: '{ "compilerOptions": {} }' },
+        { code: '{ "compilerOptions": { "incremental": false } }' },
     ],
 });
 

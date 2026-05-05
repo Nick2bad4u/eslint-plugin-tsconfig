@@ -12,17 +12,21 @@ import { createRuleTester } from "./_internal/ruleTester";
 const ruleTester = createRuleTester();
 
 ruleTester.run("require-no-unused-parameters", rule, {
-    invalid: [],
-    valid: [
-        {
-            code: '{ "compilerOptions": { "noUnusedParameters": true } }',
-        },
+    invalid: [
         {
             code: '{ "compilerOptions": {} }',
+            errors: [{ messageId: "missingNoUnusedParameters" }],
+            output: '{ "compilerOptions": { "noUnusedParameters": true } }',
         },
         {
             code: '{ "compilerOptions": { "noUnusedParameters": false } }',
+            errors: [{ messageId: "missingNoUnusedParameters" }],
+            output: '{ "compilerOptions": { "noUnusedParameters": true } }',
         },
+    ],
+    valid: [
+        { code: '{ "compilerOptions": { "noUnusedParameters": true } }' },
+        { code: "{}" },
     ],
 });
 

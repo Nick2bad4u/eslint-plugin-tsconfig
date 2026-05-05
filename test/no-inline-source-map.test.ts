@@ -12,17 +12,15 @@ import { createRuleTester } from "./_internal/ruleTester";
 const ruleTester = createRuleTester();
 
 ruleTester.run("no-inline-source-map", rule, {
-    invalid: [],
+    invalid: [
+        {
+            code: '{ "compilerOptions": { "inlineSourceMap": true } }',
+            errors: [{ messageId: "inlineSourceMap" }],
+        },
+    ],
     valid: [
-        {
-            code: '{ "compilerOptions": { "sourceMap": true } }',
-        },
-        {
-            code: '{ "compilerOptions": {} }',
-        },
-        {
-            code: '{ "compilerOptions": { "inlineSourceMap": false } }',
-        },
+        { code: '{ "compilerOptions": { "sourceMap": true } }' },
+        { code: '{ "compilerOptions": {} }' },
     ],
 });
 

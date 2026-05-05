@@ -1,16 +1,53 @@
+import { isDefined, setHas } from "ts-extras";
+
 /**
  * @packageDocumentation
  * Rule: no-deprecated-target
  */
+import type {
+    JSONObjectExpression,
+    JSONProperty,
+} from "../_internal/jsonc-helpers.js";
 import type { JsoncRuleModule } from "../_internal/jsonc-rule.js";
 
+import {
+    findProperty,
+    getCompilerOptions,
+    getStringValue,
+    reportViolation,
+} from "../_internal/jsonc-helpers.js";
 import { createJsoncRule } from "../_internal/jsonc-rule.js";
 import { createRuleDocsUrl } from "../_internal/rule-docs-url.js";
 
 /** Rule implementation for this tsconfig lint rule. */
 const rule: JsoncRuleModule = createJsoncRule({
-    create() {
-        return {};
+    create(context) {
+        const DEPRECATED_TARGETS = new Set(["es3", "es5"]);
+
+        return {
+            JSONObjectExpression(node: Readonly<JSONObjectExpression>) {
+                if (node.parent?.type !== "JSONExpressionStatement") return;
+                const co = getCompilerOptions(node);
+                if (!co) return;
+
+                const targetProp: JSONProperty | undefined = findProperty(
+                    co,
+                    "target"
+                );
+                if (!isDefined(targetProp)) return;
+
+                const targetValue = getStringValue(targetProp);
+                if (!isDefined(targetValue)) return;
+                if (!setHas(DEPRECATED_TARGETS, targetValue.toLowerCase()))
+                    return;
+
+                reportViolation(context, {
+                    data: { target: targetValue },
+                    loc: targetProp.loc,
+                    messageId: "deprecatedTarget",
+                });
+            },
+        };
     },
     meta: {
         docs: {

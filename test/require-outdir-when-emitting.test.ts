@@ -1,38 +1,46 @@
-import * as fc from "fast-check";
 /**
  * @packageDocumentation
- * Tests for the `no-emit-in-root-config` rule.
+ * Tests for the `require-outdir-when-emitting` rule.
  */
+import * as fc from "fast-check";
 import * as parser from "jsonc-eslint-parser";
 import { describe, expect, it } from "vitest";
 
-import rule from "../src/rules/no-emit-in-root-config";
+import rule from "../src/rules/require-outdir-when-emitting";
 import { createRuleTester } from "./_internal/ruleTester";
 
 const ruleTester = createRuleTester();
 
-ruleTester.run("no-emit-in-root-config", rule, {
+ruleTester.run("require-outdir-when-emitting", rule, {
     invalid: [
         {
+            // Emitting without outDir — compiled output lands next to source
             code: '{ "compilerOptions": {} }',
-            errors: [{ messageId: "missingNoEmit" }],
-            filename: "tsconfig.json",
-            output: '{ "compilerOptions": { "noEmit": true } }',
+            errors: [{ messageId: "missingOutDir" }],
         },
         {
+            // noEmit: false explicitly still means emitting, no outDir
             code: '{ "compilerOptions": { "noEmit": false } }',
-            errors: [{ messageId: "missingNoEmit" }],
-            filename: "tsconfig.json",
-            output: '{ "compilerOptions": { "noEmit": true } }',
+            errors: [{ messageId: "missingOutDir" }],
         },
     ],
     valid: [
         {
-            code: '{ "compilerOptions": { "noEmit": true } }',
-            filename: "tsconfig.json",
+            // OutDir provided — no problem
+            code: '{ "compilerOptions": { "outDir": "dist" } }',
         },
-        { code: '{ "compilerOptions": {} }', filename: "tsconfig.build.json" },
-        { code: '{ "compilerOptions": {} }' },
+        {
+            // noEmit: true — not emitting, outDir not required
+            code: '{ "compilerOptions": { "noEmit": true } }',
+        },
+        {
+            // EmitDeclarationOnly: true — declaration-only builds don't need outDir
+            code: '{ "compilerOptions": { "emitDeclarationOnly": true } }',
+        },
+        {
+            // No compilerOptions at all — nothing to lint
+            code: "{}",
+        },
     ],
 });
 

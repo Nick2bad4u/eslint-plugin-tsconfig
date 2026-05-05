@@ -12,10 +12,18 @@ import { createRuleTester } from "./_internal/ruleTester";
 const ruleTester = createRuleTester();
 
 ruleTester.run("consistent-target-and-lib", rule, {
-    invalid: [],
+    invalid: [
+        {
+            code: '{ "compilerOptions": { "target": "es2020", "lib": ["es2022"] } }',
+            errors: [{ messageId: "inconsistentTargetAndLib" }],
+        },
+    ],
     valid: [
         {
-            code: '{ "compilerOptions": { "target": "ES2020", "lib": ["ES2020"] } }',
+            code: '{ "compilerOptions": { "target": "es2020", "lib": ["es2020"] } }',
+        },
+        {
+            code: '{ "compilerOptions": { "target": "esnext", "lib": ["es2020", "dom"] } }',
         },
         { code: '{ "compilerOptions": {} }' },
     ],

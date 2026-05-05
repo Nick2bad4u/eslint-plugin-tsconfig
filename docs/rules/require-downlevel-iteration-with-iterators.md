@@ -5,9 +5,8 @@ description: Require downlevelIteration when using ES2015+ iterators with an ES5
 
 # require-downlevel-iteration-with-iterators
 
-Require `"downlevelIteration": true` (or `"useDefineForClassFields"` equivalent
-for ES2015+ iterators) when `target` is below `"ES2015"` and iterator protocol
-features are used.
+Require `"downlevelIteration": true` when `target` is below `"ES2015"` and
+the configured `lib` entries imply iterator protocol support.
 
 ## Targeted pattern scope
 
@@ -16,12 +15,18 @@ The `compilerOptions.target`, `compilerOptions.downlevelIteration`, and
 
 ## What this rule reports
 
-This rule reports when `compilerOptions.target` is set to `"ES5"` (or `"ES3"`)
-and `"downlevelIteration"` is absent or `false`, while `lib` includes
-`"ES2015"` or higher iterables. Without `downlevelIteration`, TypeScript
-emits simplified for-of loop transforms that do not correctly handle all
-iterable types — they work for arrays but silently break for Maps, Sets,
-generators, and custom iterables.
+This rule reports when `compilerOptions.target` is set to `"ES5"` or `"ES3"`,
+`"downlevelIteration"` is absent or `false`, and `lib` includes one of the
+iterator-related entries the rule recognizes:
+
+- `"ES2015.Iterable"`
+- `"Symbol.Iterator"`
+- `"ES2018.AsyncIterable"`
+- `"ESNext.AsyncIterable"`
+
+Without `downlevelIteration`, TypeScript emits simplified for-of loop
+transforms that do not correctly handle all iterable types — they work for
+arrays but silently break for Maps, Sets, generators, and custom iterables.
 
 ## Why this rule exists
 
@@ -47,13 +52,13 @@ The auto-fixer adds `"downlevelIteration": true` to `compilerOptions`.
 {
     "compilerOptions": {
         "target": "ES5",
-        "lib": ["ES2015", "DOM"]
+        "lib": ["ES2015.Iterable", "DOM"]
     }
 }
 ```
 
-Using ES2015 iterables with an ES5 target without `downlevelIteration` will
-silently break non-array iteration at runtime.
+Using iterator-enabled libs with an ES5 target without `downlevelIteration`
+will silently break non-array iteration at runtime.
 
 ## ✅ Correct
 
@@ -61,7 +66,7 @@ silently break non-array iteration at runtime.
 {
     "compilerOptions": {
         "target": "ES5",
-        "lib": ["ES2015", "DOM"],
+        "lib": ["ES2015.Iterable", "DOM"],
         "downlevelIteration": true
     }
 }
@@ -73,7 +78,7 @@ Or, if ES5 is no longer required, raise the target:
 {
     "compilerOptions": {
         "target": "ES2017",
-        "lib": ["ES2017", "DOM"]
+        "lib": ["ES2018.AsyncIterable", "DOM"]
     }
 }
 ```

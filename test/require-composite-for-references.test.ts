@@ -12,10 +12,22 @@ import { createRuleTester } from "./_internal/ruleTester";
 const ruleTester = createRuleTester();
 
 ruleTester.run("require-composite-for-references", rule, {
-    invalid: [],
+    invalid: [
+        {
+            code: '{ "references": [{ "path": "../other" }] }',
+            errors: [{ messageId: "missingComposite" }],
+            output: '{ "references": [{ "path": "../other" }],\n    "compilerOptions": { "composite": true } }',
+        },
+        {
+            // CompilerOptions present but composite missing
+            code: '{ "compilerOptions": {}, "references": [{ "path": "../other" }] }',
+            errors: [{ messageId: "missingComposite" }],
+            output: '{ "compilerOptions": { "composite": true }, "references": [{ "path": "../other" }] }',
+        },
+    ],
     valid: [
         {
-            code: '{ "compilerOptions": { "composite": true }, "references": [{ "path": "./packages/core" }] }',
+            code: '{ "compilerOptions": { "composite": true }, "references": [{ "path": "../other" }] }',
         },
         { code: '{ "compilerOptions": {} }' },
     ],

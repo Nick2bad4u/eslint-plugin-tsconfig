@@ -1,46 +1,33 @@
 ---
 title: require-composite-for-references
-description: Require composite:true in any tsconfig referenced by another tsconfig.
+description: Require composite:true in a tsconfig that defines project references.
 ---
 
 # require-composite-for-references
 
-Require `"composite": true` in any `tsconfig.json` that is listed as a
-project reference by another tsconfig.
+Require `"composite": true` in a `tsconfig.json` that defines a `references`
+array.
 
 ## Targeted pattern scope
 
-The `references` array in `tsconfig*.json` files and the
-`compilerOptions.composite` field of referenced project configs.
+The `references` array and `compilerOptions.composite` field in the same
+`tsconfig*.json` file.
 
 ## What this rule reports
 
-This rule reports when a `tsconfig.json` that contains a `references` array
-points to a project that does not have `"composite": true` in its own
-`compilerOptions`. TypeScript itself enforces this at compile time, but this
-rule surfaces the misconfiguration at lint time — before `tsc` is invoked.
+This rule reports when a `tsconfig.json` contains a `references` array but does
+not set `"composite": true` in its own `compilerOptions`.
 
 ## Why this rule exists
 
-TypeScript project references rely on the `composite` flag in each referenced
-project to:
+In this plugin's project-reference model, a config that declares `references`
+should also opt into composite mode so the config is aligned with the build-mode
+workflow expected by TypeScript and the surrounding tooling.
 
-1. Generate `.d.ts` declaration files that the referencing project can consume
-   without re-reading source files.
-2. Produce `.tsbuildinfo` incremental build files so `tsc -b` can skip
-   unchanged projects.
-3. Enforce that the referenced project defines its `rootDir` and `outDir`
-   explicitly.
-
-Without `composite: true`, `tsc -b` will error at build time. Catching this at
-lint time gives faster feedback and avoids broken CI pipelines.
-
-The auto-fixer adds `"composite": true` to the referenced project's
+The auto-fixer adds `"composite": true` to the current config's
 `compilerOptions`.
 
 ## ❌ Incorrect
-
-`tsconfig.json` (root orchestrator):
 
 ```json
 {
@@ -50,35 +37,26 @@ The auto-fixer adds `"composite": true` to the referenced project's
 }
 ```
 
-`packages/core/tsconfig.json` (missing `composite`):
-
-```json
-{
-    "compilerOptions": {
-        "outDir": "./dist",
-        "declaration": true
-    }
-}
-```
+The config declares references but is not itself marked composite.
 
 ## ✅ Correct
 
-`packages/core/tsconfig.json`:
-
 ```json
 {
+    "references": [
+        { "path": "./packages/core" }
+    ],
     "compilerOptions": {
-        "composite": true,
-        "outDir": "./dist",
-        "declaration": true
+        "composite": true
     }
 }
 ```
 
 ## When not to use it
 
-Disable this rule only when project references are used in a non-standard
-`tsc` workflow where the normal `composite` requirements do not apply.
+Disable this rule only when `references` is being used in a non-standard
+workflow and you do not want this plugin to enforce `composite` on the current
+config.
 
 ## Package documentation
 

@@ -12,8 +12,9 @@ Disallow explicitly setting individual strict-mode flags to `false` when
 
 The `compilerOptions.strict` field and the individual strict-mode sub-flags
 (`strictNullChecks`, `strictFunctionTypes`, `strictBindCallApply`,
-`strictPropertyInitialization`, `noImplicitAny`, `noImplicitThis`,
-`alwaysStrict`, `useUnknownInCatchVariables`) in any `tsconfig*.json` file.
+`strictBuiltinIteratorReturn`, `strictPropertyInitialization`,
+`noImplicitAny`, `noImplicitThis`, `alwaysStrict`,
+`useUnknownInCatchVariables`) in any `tsconfig*.json` file.
 
 ## What this rule reports
 

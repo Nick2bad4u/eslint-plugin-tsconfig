@@ -12,12 +12,21 @@ import { createRuleTester } from "./_internal/ruleTester";
 const ruleTester = createRuleTester();
 
 ruleTester.run("require-isolated-declarations", rule, {
-    invalid: [],
-    valid: [
+    invalid: [
         {
-            code: '{ "compilerOptions": { "isolatedDeclarations": true } }',
+            code: '{ "compilerOptions": {} }',
+            errors: [{ messageId: "missingIsolatedDeclarations" }],
+            output: '{ "compilerOptions": { "isolatedDeclarations": true } }',
         },
-        { code: '{ "compilerOptions": {} }' },
+        {
+            code: '{ "compilerOptions": { "isolatedDeclarations": false } }',
+            errors: [{ messageId: "missingIsolatedDeclarations" }],
+            output: '{ "compilerOptions": { "isolatedDeclarations": true } }',
+        },
+    ],
+    valid: [
+        { code: '{ "compilerOptions": { "isolatedDeclarations": true } }' },
+        { code: "{}" },
     ],
 });
 

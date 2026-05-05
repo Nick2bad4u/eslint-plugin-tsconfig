@@ -12,14 +12,14 @@ import { createRuleTester } from "./_internal/ruleTester";
 const ruleTester = createRuleTester();
 
 ruleTester.run("no-legacy-module-detection", rule, {
-    invalid: [],
+    invalid: [
+        {
+            code: '{ "compilerOptions": { "moduleDetection": "legacy" } }',
+            errors: [{ messageId: "legacyModuleDetection" }],
+        },
+    ],
     valid: [
-        {
-            code: '{ "compilerOptions": { "moduleDetection": "auto" } }',
-        },
-        {
-            code: '{ "compilerOptions": { "moduleDetection": "force" } }',
-        },
+        { code: '{ "compilerOptions": { "moduleDetection": "auto" } }' },
         { code: '{ "compilerOptions": {} }' },
     ],
 });

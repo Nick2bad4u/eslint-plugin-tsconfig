@@ -12,10 +12,20 @@ import { createRuleTester } from "./_internal/ruleTester";
 const ruleTester = createRuleTester();
 
 ruleTester.run("no-disable-strict-subset", rule, {
-    invalid: [],
-    valid: [
+    invalid: [
         {
-            code: '{ "compilerOptions": { "strict": true, "noImplicitAny": true } }',
+            code: '{ "compilerOptions": { "strict": true, "strictNullChecks": false } }',
+            errors: [{ messageId: "disabledStrictSubflag" }],
+        },
+        {
+            code: '{ "compilerOptions": { "strict": true, "noImplicitAny": false } }',
+            errors: [{ messageId: "disabledStrictSubflag" }],
+        },
+    ],
+    valid: [
+        { code: '{ "compilerOptions": { "strict": true } }' },
+        {
+            code: '{ "compilerOptions": { "strict": true, "strictNullChecks": true } }',
         },
         { code: '{ "compilerOptions": {} }' },
     ],

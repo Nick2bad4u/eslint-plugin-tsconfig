@@ -1,36 +1,27 @@
 ---
 title: no-emit-in-root-config
-description: Disallow emit settings in root tsconfig when project references are used.
+description: Require noEmit:true in the root tsconfig.json file.
 ---
 
 # no-emit-in-root-config
 
-Disallow emit-producing compiler options in the root `tsconfig.json` when the
-project uses TypeScript project references.
+Require `"noEmit": true` in the root `tsconfig.json` file.
 
 ## Targeted pattern scope
 
-The `compilerOptions.noEmit`, `compilerOptions.emitDeclarationOnly`, and
-`references` fields in the root-level `tsconfig.json`.
+The `compilerOptions.noEmit` field in the root-level `tsconfig.json`.
 
 ## What this rule reports
 
-This rule reports when a `tsconfig.json` that declares a non-empty `references`
-array does not set `"noEmit": true` in its `compilerOptions`. In project
-reference builds the root config is used purely to orchestrate composite
-sub-projects; the root itself should not produce output.
+This rule reports when the root `tsconfig.json` file does not set
+`"noEmit": true` in `compilerOptions`, or sets it to `false`.
 
 ## Why this rule exists
 
-When TypeScript project references are used, each referenced sub-project is
-responsible for its own output. The root `tsconfig.json` is an orchestration
-file: running `tsc -b` from the root builds all references in dependency order.
-If the root config is also set to emit output, it creates two independent emit
-paths — one from the root and one from each composite sub-project — which
-frequently produce overlapping or conflicting output files.
-
-Setting `"noEmit": true` in the root config makes the orchestration role
-explicit and prevents accidental double-emit.
+In this plugin's opinionated model, the root `tsconfig.json` should coordinate
+other configs or provide shared settings, not emit JavaScript itself. Requiring
+`"noEmit": true` makes that separation explicit and avoids accidental output
+from the root config.
 
 ## ❌ Incorrect
 
@@ -38,16 +29,11 @@ explicit and prevents accidental double-emit.
 {
     "compilerOptions": {
         "outDir": "./dist"
-    },
-    "references": [
-        { "path": "./packages/core" },
-        { "path": "./packages/utils" }
-    ]
+    }
 }
 ```
 
-The root config has emit settings while also acting as a project references
-orchestrator.
+The root config is allowed to emit because `noEmit` is not enabled.
 
 ## ✅ Correct
 
@@ -55,22 +41,14 @@ orchestrator.
 {
     "compilerOptions": {
         "noEmit": true
-    },
-    "references": [
-        { "path": "./packages/core" },
-        { "path": "./packages/utils" }
-    ]
+    }
 }
 ```
 
-Each referenced sub-project (`packages/core/tsconfig.json`, etc.) handles its
-own emit with `"composite": true` and the appropriate `outDir`.
-
 ## When not to use it
 
-Disable this rule when the root config is intentionally both an entry point
-for type checking the full project and a build config for a monolithic output
-— a pattern more common in small single-package projects.
+Disable this rule when the root `tsconfig.json` is intentionally also the emit
+config for the project.
 
 ## Package documentation
 
@@ -78,5 +56,4 @@ for type checking the full project and a build config for a monolithic output
 
 ## Further reading
 
-- [TypeScript handbook — Project references](https://www.typescriptlang.org/docs/handbook/project-references.html)
 - [TypeScript handbook — `noEmit`](https://www.typescriptlang.org/tsconfig#noEmit)

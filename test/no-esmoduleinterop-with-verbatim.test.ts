@@ -12,7 +12,13 @@ import { createRuleTester } from "./_internal/ruleTester";
 const ruleTester = createRuleTester();
 
 ruleTester.run("no-esmoduleinterop-with-verbatim", rule, {
-    invalid: [],
+    invalid: [
+        {
+            code: '{ "compilerOptions": { "esModuleInterop": true, "verbatimModuleSyntax": true } }',
+            errors: [{ messageId: "conflictingFlags" }],
+            output: '{ "compilerOptions": {  "verbatimModuleSyntax": true } }',
+        },
+    ],
     valid: [
         { code: '{ "compilerOptions": { "verbatimModuleSyntax": true } }' },
         { code: '{ "compilerOptions": { "esModuleInterop": true } }' },

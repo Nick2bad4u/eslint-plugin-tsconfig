@@ -12,11 +12,23 @@ import { createRuleTester } from "./_internal/ruleTester";
 const ruleTester = createRuleTester();
 
 ruleTester.run("require-bundler-module-resolution", rule, {
-    invalid: [],
+    invalid: [
+        {
+            code: '{ "compilerOptions": { "module": "preserve" } }',
+            errors: [{ messageId: "missingBundlerResolution" }],
+            output: '{ "compilerOptions": { "module": "preserve",\n    "moduleResolution": "bundler" } }',
+        },
+        {
+            code: '{ "compilerOptions": { "module": "preserve", "moduleResolution": "node" } }',
+            errors: [{ messageId: "missingBundlerResolution" }],
+            output: '{ "compilerOptions": { "module": "preserve", "moduleResolution": "bundler" } }',
+        },
+    ],
     valid: [
         {
-            code: '{ "compilerOptions": { "module": "ESNext", "moduleResolution": "Bundler" } }',
+            code: '{ "compilerOptions": { "module": "preserve", "moduleResolution": "bundler" } }',
         },
+        { code: '{ "compilerOptions": { "module": "commonjs" } }' },
         { code: '{ "compilerOptions": {} }' },
     ],
 });

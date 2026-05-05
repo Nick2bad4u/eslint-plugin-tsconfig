@@ -12,12 +12,21 @@ import { createRuleTester } from "./_internal/ruleTester";
 const ruleTester = createRuleTester();
 
 ruleTester.run("require-no-implicit-returns", rule, {
-    invalid: [],
-    valid: [
+    invalid: [
         {
-            code: '{ "compilerOptions": { "noImplicitReturns": true } }',
+            code: '{ "compilerOptions": {} }',
+            errors: [{ messageId: "missingNoImplicitReturns" }],
+            output: '{ "compilerOptions": { "noImplicitReturns": true } }',
         },
-        { code: '{ "compilerOptions": {} }' },
+        {
+            code: '{ "compilerOptions": { "noImplicitReturns": false } }',
+            errors: [{ messageId: "missingNoImplicitReturns" }],
+            output: '{ "compilerOptions": { "noImplicitReturns": true } }',
+        },
+    ],
+    valid: [
+        { code: '{ "compilerOptions": { "noImplicitReturns": true } }' },
+        { code: "{}" },
     ],
 });
 

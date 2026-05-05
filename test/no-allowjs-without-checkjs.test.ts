@@ -12,15 +12,20 @@ import { createRuleTester } from "./_internal/ruleTester";
 const ruleTester = createRuleTester();
 
 ruleTester.run("no-allowjs-without-checkjs", rule, {
-    invalid: [],
+    invalid: [
+        {
+            code: '{ "compilerOptions": { "allowJs": true } }',
+            errors: [{ messageId: "allowJsWithoutCheckJs" }],
+        },
+        {
+            code: '{ "compilerOptions": { "allowJs": true, "checkJs": false } }',
+            errors: [{ messageId: "allowJsWithoutCheckJs" }],
+        },
+    ],
     valid: [
-        {
-            code: '{ "compilerOptions": { "allowJs": true, "checkJs": true } }',
-        },
-        {
-            code: '{ "compilerOptions": { "allowJs": false } }',
-        },
+        { code: '{ "compilerOptions": { "allowJs": true, "checkJs": true } }' },
         { code: '{ "compilerOptions": {} }' },
+        { code: '{ "compilerOptions": { "checkJs": true } }' },
     ],
 });
 

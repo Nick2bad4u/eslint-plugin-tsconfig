@@ -12,17 +12,21 @@ import { createRuleTester } from "./_internal/ruleTester";
 const ruleTester = createRuleTester();
 
 ruleTester.run("require-no-unused-locals", rule, {
-    invalid: [],
-    valid: [
-        {
-            code: '{ "compilerOptions": { "noUnusedLocals": true } }',
-        },
+    invalid: [
         {
             code: '{ "compilerOptions": {} }',
+            errors: [{ messageId: "missingNoUnusedLocals" }],
+            output: '{ "compilerOptions": { "noUnusedLocals": true } }',
         },
         {
             code: '{ "compilerOptions": { "noUnusedLocals": false } }',
+            errors: [{ messageId: "missingNoUnusedLocals" }],
+            output: '{ "compilerOptions": { "noUnusedLocals": true } }',
         },
+    ],
+    valid: [
+        { code: '{ "compilerOptions": { "noUnusedLocals": true } }' },
+        { code: "{}" },
     ],
 });
 

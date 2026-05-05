@@ -12,11 +12,24 @@ import { createRuleTester } from "./_internal/ruleTester";
 const ruleTester = createRuleTester();
 
 ruleTester.run("consistent-module-resolution", rule, {
-    invalid: [],
+    invalid: [
+        {
+            code: '{ "compilerOptions": { "module": "nodenext" } }',
+            errors: [{ messageId: "incompatibleModuleResolution" }],
+        },
+        {
+            code: '{ "compilerOptions": { "module": "node16", "moduleResolution": "node" } }',
+            errors: [{ messageId: "incompatibleModuleResolution" }],
+        },
+    ],
     valid: [
         {
-            code: '{ "compilerOptions": { "module": "ESNext", "moduleResolution": "bundler" } }',
+            code: '{ "compilerOptions": { "module": "nodenext", "moduleResolution": "nodenext" } }',
         },
+        {
+            code: '{ "compilerOptions": { "module": "node16", "moduleResolution": "node16" } }',
+        },
+        { code: '{ "compilerOptions": { "module": "commonjs" } }' },
         { code: '{ "compilerOptions": {} }' },
     ],
 });
