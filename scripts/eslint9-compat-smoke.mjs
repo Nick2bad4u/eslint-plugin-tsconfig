@@ -217,8 +217,8 @@ const runScenario = async ({
 
 const scenarios = /** @type {const} */ ([
     {
-        expectedMaximumMessages: 0,
-        expectedMinimumMessages: 0,
+        expectedMaximumMessages: 1,
+        expectedMinimumMessages: 1,
         filePath: path.resolve(
             repositoryRootPath,
             "temp/compat/tsconfig.strict-detection.json"
@@ -231,6 +231,7 @@ const scenarios = /** @type {const} */ ([
     {
         expectedMaximumMessages: 0,
         expectedMinimumMessages: 0,
+        expectedOutputIncludes: ['"strict": true'],
         filePath: path.resolve(
             repositoryRootPath,
             "temp/compat/tsconfig.strict-autofix.json"
@@ -241,8 +242,8 @@ const scenarios = /** @type {const} */ ([
         sourceText: '{"compilerOptions":{"target":"ES2022"}}',
     },
     {
-        expectedMaximumMessages: 0,
-        expectedMinimumMessages: 0,
+        expectedMaximumMessages: 1,
+        expectedMinimumMessages: 1,
         filePath: path.resolve(
             repositoryRootPath,
             "temp/compat/tsconfig.deprecated-target.json"
@@ -254,7 +255,7 @@ const scenarios = /** @type {const} */ ([
     },
 ]);
 
-console.log(pc.bold(pc.cyan("Running ESLint 9 compatibility smoke checks...")));
+console.log(pc.bold(pc.cyan("Running ESLint compatibility smoke checks...")));
 
 const expectedEslintMajor = parseExpectedEslintMajor(process.argv.slice(2));
 assertEslintMajor(expectedEslintMajor);
@@ -263,4 +264,4 @@ for (const scenario of scenarios) {
     await runScenario(scenario);
 }
 
-console.log(pc.bold(pc.green("ESLint 9 compatibility smoke checks passed.")));
+console.log(pc.bold(pc.green("ESLint compatibility smoke checks passed.")));
