@@ -119,13 +119,15 @@ exports[`rule metadata snapshots > keeps normalized rule metadata contract stabl
   {
     "defaultOptionsLength": 0,
     "docs": {
-      "recommended": false,
+      "recommended": true,
       "requiresTypeChecking": false,
       "ruleId": "R027",
       "ruleNumber": 27,
       "tsconfigConfigs": [
         "all",
         "lib-target",
+        "recommended",
+        "strict",
       ],
       "url": "https://nick2bad4u.github.io/eslint-plugin-tsconfig/docs/rules/no-deprecated-target",
     },
@@ -136,7 +138,7 @@ exports[`rule metadata snapshots > keeps normalized rule metadata contract stabl
     ],
     "ruleId": "no-deprecated-target",
     "schemaLength": 0,
-    "type": "suggestion",
+    "type": "problem",
   },
   {
     "defaultOptionsLength": 0,

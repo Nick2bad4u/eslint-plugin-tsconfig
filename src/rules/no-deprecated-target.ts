@@ -53,9 +53,14 @@ const rule: JsoncRuleModule = createJsoncRule({
         docs: {
             description:
                 "disallow obsolete `target` values below ES2015 in compiler options.",
-            recommended: false,
+            recommended: true,
             requiresTypeChecking: false,
-            tsconfigConfigs: ["all", "lib-target"],
+            tsconfigConfigs: [
+                "all",
+                "lib-target",
+                "recommended",
+                "strict",
+            ],
             url: createRuleDocsUrl("no-deprecated-target"),
         },
         messages: {
@@ -63,7 +68,7 @@ const rule: JsoncRuleModule = createJsoncRule({
                 '`target: "{{target}}"` compiles to an obsolete JavaScript version. All modern runtimes support ES2015 (Chrome 51+, Node.js 6+, Edge 14+, Firefox 54+, Safari 10+). Use `target: "ES2015"` or higher to take advantage of native language features and smaller output.',
         },
         schema: [],
-        type: "suggestion",
+        type: "problem",
     },
     name: "no-deprecated-target",
 });

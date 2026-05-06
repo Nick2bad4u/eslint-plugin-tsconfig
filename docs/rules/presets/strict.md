@@ -31,6 +31,7 @@ export default [tsconfig.configs.strict];
 | --- | :-: |
 | [`consistent-module-resolution`](https://nick2bad4u.github.io/eslint-plugin-tsconfig/docs/rules/consistent-module-resolution) | — |
 | [`no-declaration-only-without-declaration`](https://nick2bad4u.github.io/eslint-plugin-tsconfig/docs/rules/no-declaration-only-without-declaration) | 🔧 |
+| [`no-deprecated-target`](https://nick2bad4u.github.io/eslint-plugin-tsconfig/docs/rules/no-deprecated-target) | — |
 | [`no-disable-strict-subset`](https://nick2bad4u.github.io/eslint-plugin-tsconfig/docs/rules/no-disable-strict-subset) | — |
 | [`no-esmoduleinterop-with-verbatim`](https://nick2bad4u.github.io/eslint-plugin-tsconfig/docs/rules/no-esmoduleinterop-with-verbatim) | 🔧 |
 | [`no-include-dist`](https://nick2bad4u.github.io/eslint-plugin-tsconfig/docs/rules/no-include-dist) | — |
