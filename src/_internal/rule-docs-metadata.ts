@@ -66,12 +66,13 @@ const isRuleIdInCanonicalFormat = (value: string): boolean => {
         return false;
     }
 
-    for (
-        let index = RULE_ID_DIGIT_START_INDEX;
-        index < RULE_ID_DIGIT_END_INDEX;
-        index += 1
-    ) {
-        const codePoint = value.codePointAt(index);
+    const ruleIdDigits = value.slice(
+        RULE_ID_DIGIT_START_INDEX,
+        RULE_ID_DIGIT_END_INDEX
+    );
+
+    for (const digitCharacter of ruleIdDigits) {
+        const codePoint = digitCharacter.codePointAt(0);
 
         if (!isDefined(codePoint)) {
             return false;
@@ -261,7 +262,12 @@ export const deriveRuleDocsMetadataByName = (
     const metadataByRuleName: Record<string, RuleDocsMetadata> = {};
 
     for (const [ruleName, ruleModule] of objectEntries(rules)) {
-        const ruleDocs = getRuleDocsContract(ruleName, ruleModule.meta?.docs);
+        const ruleMeta = ruleModule.meta;
+        if (!isDefined(ruleMeta)) {
+            throw new TypeError(`Rule '${ruleName}' must declare meta.`);
+        }
+
+        const ruleDocs = getRuleDocsContract(ruleName, ruleMeta.docs);
         const configNames = normalizeTsconfigConfigNames(
             ruleName,
             ruleDocs.tsconfigConfigs

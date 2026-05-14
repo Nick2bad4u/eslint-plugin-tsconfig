@@ -2,7 +2,7 @@
  * @packageDocumentation
  * Rule: no-include-node-modules
  */
-import { arrayFirst, isDefined } from "ts-extras";
+import { isDefined } from "ts-extras";
 
 import type {
     JSONObjectExpression,
@@ -13,6 +13,7 @@ import type { JsoncRuleModule } from "../_internal/jsonc-rule.js";
 import {
     findProperty,
     getStringFromExpression,
+    rangeWithAdjacentComma,
     reportViolation,
 } from "../_internal/jsonc-helpers.js";
 import { createJsoncRule } from "../_internal/jsonc-rule.js";
@@ -21,11 +22,11 @@ import { createRuleDocsUrl } from "../_internal/rule-docs-url.js";
 /** Rule implementation for this tsconfig lint rule. */
 const rule: JsoncRuleModule = createJsoncRule({
     create(context) {
-        const NODE_MODULES_PATTERN = /node_modules/i;
+        const NODE_MODULES_PATTERN = /node_modules/iv;
 
         return {
             JSONObjectExpression(node: Readonly<JSONObjectExpression>) {
-                if (node.parent?.type !== "JSONExpressionStatement") return;
+                if (node.parent.type !== "JSONExpressionStatement") return;
                 // Check root-level `include` (not inside compilerOptions)
                 const includeProp: JSONProperty | undefined = findProperty(
                     node,
@@ -43,56 +44,12 @@ const rule: JsoncRuleModule = createJsoncRule({
                     reportViolation(context, {
                         data: { pattern: value },
                         fix(fixer) {
-                            const sourceCode = context.sourceCode;
-                            const tokenAfter = sourceCode.getTokenAfter(
-                                element as unknown as Parameters<
-                                    typeof sourceCode.getTokenAfter
-                                >[0]
+                            const removalRange = rangeWithAdjacentComma(
+                                context.sourceCode.text,
+                                element.range
                             );
-                            const tokenBefore = sourceCode.getTokenBefore(
-                                element as unknown as Parameters<
-                                    typeof sourceCode.getTokenBefore
-                                >[0]
-                            );
-                            if (tokenAfter?.value === ",") {
-                                return fixer.removeRange([
-                                    arrayFirst(
-                                        (
-                                            element as unknown as {
-                                                range: [number, number];
-                                            }
-                                        ).range
-                                    ),
-                                    (
-                                        tokenAfter as unknown as {
-                                            range: [number, number];
-                                        }
-                                    ).range[1],
-                                ]);
-                            }
-                            if (tokenBefore?.value === ",") {
-                                return fixer.removeRange([
-                                    arrayFirst(
-                                        (
-                                            tokenBefore as unknown as {
-                                                range: [number, number];
-                                            }
-                                        ).range
-                                    ),
-                                    (
-                                        element as unknown as {
-                                            range: [number, number];
-                                        }
-                                    ).range[1],
-                                ]);
-                            }
-                            return fixer.removeRange(
-                                (
-                                    element as unknown as {
-                                        range: [number, number];
-                                    }
-                                ).range
-                            );
+
+                            return fixer.removeRange(removalRange);
                         },
                         loc: element.loc,
                         messageId: "nodeModulesInInclude",

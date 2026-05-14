@@ -53,6 +53,8 @@ const isUnknownRecord = (value) => typeof value === "object" && value !== null;
  * @param {string} label - Label used in thrown error messages.
  *
  * @returns {UnknownRecord} Validated object record.
+ *
+ * @throws {TypeError} When the value is not an object record.
  */
 const ensureRecord = (value, label) => {
     if (!isUnknownRecord(value)) {
@@ -81,6 +83,8 @@ const isRuleEntry = (value) =>
  * @param {string} label - Context label used for validation errors.
  *
  * @returns {BenchmarkRules} Rules record with validated entries.
+ *
+ * @throws {TypeError} When a rule entry is not a valid ESLint rule entry.
  */
 const ensureRulesRecord = (value, label) => {
     const record = ensureRecord(value, label);

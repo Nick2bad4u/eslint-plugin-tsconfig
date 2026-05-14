@@ -1,6 +1,6 @@
 /**
- * @packageDocumentation
- * Synchronize or validate presets documentation tables from canonical rule metadata.
+ * Synchronize or validate presets documentation tables from canonical rule
+ * metadata.
  */
 // @ts-check
 
@@ -124,6 +124,8 @@ const toPluginRuleName = (configRuleKey) => {
  * @param {PresetConfigName} presetConfigName
  *
  * @returns {readonly string[]}
+ *
+ * @throws {TypeError} When the built plugin preset config is missing.
  */
 const collectPresetRuleNames = (presetConfigName) => {
     const presetConfig = builtPlugin.configs[presetConfigName];
@@ -175,6 +177,8 @@ const getRuleFixIndicator = (ruleModule) => {
  * @param {string} ruleName
  *
  * @returns {RuleModule}
+ *
+ * @throws {TypeError} When the rule is missing from the built plugin.
  */
 const getRuleModuleByName = (ruleName) => {
     const candidate = builtPlugin.rules[ruleName];
@@ -190,6 +194,8 @@ const getRuleModuleByName = (ruleName) => {
  * @param {string} ruleName
  *
  * @returns {string}
+ *
+ * @throws {TypeError} When rule docs metadata is incomplete.
  */
 const toPresetRuleRow = (ruleName) => {
     const ruleModule = getRuleModuleByName(ruleName);
@@ -256,6 +262,8 @@ const generateStandardPresetRulesSection = (presetConfigName) => {
  * @param {readonly string[]} headingCandidates
  *
  * @returns {{ headingOffset: number; sectionEndOffset: number }}
+ *
+ * @throws {Error} When none of the heading candidates are present.
  */
 const findSectionBoundsByHeadings = (markdown, headingCandidates) => {
     /** @type {number[]} */

@@ -27,6 +27,14 @@ import {
  * }>} LintScenarioOptions
  */
 
+/**
+ * @typedef {Readonly<
+ *     Partial<
+ *         Record<"maximumReportedProblems" | "minimumReportedProblems", number>
+ *     >
+ * >} BenchmarkSignalBounds
+ */
+
 const standardBenchmarkOptions = Object.freeze({
     iterations: 3,
     warmupIterations: 1,
@@ -56,11 +64,11 @@ const countReportedProblems = (lintResults) =>
  *
  * @param {string} scenarioName - Human-friendly scenario label.
  * @param {LintResults} lintResults - ESLint lint results.
- * @param {{
- *     maximumReportedProblems?: number;
- *     minimumReportedProblems?: number;
- * }} [options]
+ * @param {BenchmarkSignalBounds} [options]
+ *
  *   - Optional expected problem-count bounds.
+ *
+ * @throws {Error} When benchmark output does not satisfy expected bounds.
  */
 const assertMeaningfulBenchmarkSignal = (
     scenarioName,
@@ -92,7 +100,8 @@ const assertMeaningfulBenchmarkSignal = (
 /**
  * Run ESLint with a temporary benchmark-specific config.
  *
- * @param {LintScenarioOptions} options - Scenario options.
+ * @param {LintScenarioOptions} options - Scenario settings for file patterns,
+ *   fix mode, and rules.
  *
  * @returns {Promise<LintResult[]>} ESLint lint results.
  */

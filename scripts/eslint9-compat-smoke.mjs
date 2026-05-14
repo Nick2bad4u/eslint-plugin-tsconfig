@@ -41,6 +41,8 @@ const isUnknownRecord = (value) =>
  * @param {readonly string[]} argv
  *
  * @returns {number | undefined}
+ *
+ * @throws {TypeError} When the expected-major argument is present but invalid.
  */
 const parseExpectedEslintMajor = (argv) => {
     const matchingArgument = argv.find((argument) =>
@@ -74,6 +76,8 @@ const parseExpectedEslintMajor = (argv) => {
 
 /**
  * @param {number | undefined} expectedMajor
+ *
+ * @throws {Error | RangeError | TypeError} When runtime version checks fail.
  */
 const assertEslintMajor = (expectedMajor) => {
     const runtimeVersion = ESLint.version;
@@ -116,6 +120,8 @@ const assertEslintMajor = (expectedMajor) => {
  * @param {string} ruleId
  *
  * @returns {import("eslint").Linter.Config[]}
+ *
+ * @throws {Error} When the plugin recommended config is unavailable.
  */
 const createCompatibilityConfig = (ruleId) => {
     const recommendedConfig = plugin.configs?.["recommended"];

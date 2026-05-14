@@ -43,20 +43,23 @@ const rule: JsoncRuleModule = createJsoncRule({
         ] as const;
         type EsVersion = (typeof ES_VERSIONS)[number];
         function esIndex(v: string): number {
-            return ES_VERSIONS.indexOf(v.toLowerCase() as EsVersion);
+            const normalized = v.toLowerCase();
+            return ES_VERSIONS.findIndex(
+                (candidate): candidate is EsVersion => candidate === normalized
+            );
         }
 
         /** Lib entries that imply iterator usage. */
         const ITERATOR_LIBS = [
-            /symbol\.iterator/i,
-            /^es2015\.iterable$/i,
-            /^es2018\.asynciterable$/i,
-            /^esnext\.asynciterable$/i,
+            /symbol\.iterator/iv,
+            /^es2015\.iterable$/iv,
+            /^es2018\.asynciterable$/iv,
+            /^esnext\.asynciterable$/iv,
         ];
 
         return {
             JSONObjectExpression(node: Readonly<JSONObjectExpression>) {
-                if (node.parent?.type !== "JSONExpressionStatement") return;
+                if (node.parent.type !== "JSONExpressionStatement") return;
                 const co = getCompilerOptions(node);
                 if (!co) return;
 

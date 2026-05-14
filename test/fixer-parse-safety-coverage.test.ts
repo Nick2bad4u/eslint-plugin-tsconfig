@@ -130,7 +130,10 @@ const enqueueChildNodes = ({
             for (const arrayValue of value) {
                 nodesToVisit.push(arrayValue);
             }
-        } else if (isObjectRecord(value)) {
+            continue;
+        }
+
+        if (isObjectRecord(value)) {
             nodesToVisit.push(value);
         }
     }

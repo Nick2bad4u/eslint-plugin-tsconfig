@@ -99,7 +99,10 @@ const collectLintableFixtureFilesFromDirectory = (
             lintableFilePaths.push(
                 ...collectLintableFixtureFilesFromDirectory(directoryEntryPath)
             );
-        } else if (
+            continue;
+        }
+
+        if (
             directoryEntryStats.isFile() &&
             isLintableFixturePath(directoryEntryPath)
         ) {

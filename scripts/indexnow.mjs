@@ -83,6 +83,8 @@ const delay = async (durationMs) => {
  *     readonly command: string | undefined;
  *     readonly options: ReadonlyMap<string, string>;
  * }}
+ *
+ * @throws {Error} When an option is malformed or missing its value.
  */
 const parseCliArguments = (argv) => {
     /** @type {Map<string, string>} */
@@ -163,6 +165,8 @@ const readOption = (options, optionName, environmentValue) =>
  * @param {string} environmentName
  *
  * @returns {string}
+ *
+ * @throws {Error} When no non-empty value is available.
  */
 const readRequiredOption = (
     options,
@@ -250,6 +254,8 @@ const createRouteManifestEntryCandidate = (value, siteDirectory) => {
  *           readonly nextSearchStart: number;
  *       }
  *     | undefined}
+ *
+ * @throws {Error} When a `&lt;loc&gt;` tag is not closed properly.
  */
 const findNextLocElementValue = (sitemapXml, searchStart) => {
     const openingTagOffset = sitemapXml.indexOf(LOC_OPEN_TAG, searchStart);
@@ -281,7 +287,12 @@ const findNextLocElementValue = (sitemapXml, searchStart) => {
  *
  * @param {IndexNowPayload} payload
  *
- * @returns {RequestInit}
+ * @returns {{
+ *     body: string;
+ *     headers: Record<string, string>;
+ *     method: "POST";
+ *     signal: AbortSignal;
+ * }}
  */
 const createIndexNowSubmissionRequest = (payload) => ({
     body: JSON.stringify(payload),
@@ -386,6 +397,8 @@ const createRejectedPayloadError = ({
  * @param {string} label
  *
  * @returns {number}
+ *
+ * @throws {Error} When the provided value is not a positive integer.
  */
 const parsePositiveInteger = (rawValue, defaultValue, label) => {
     if (rawValue === undefined || rawValue.trim().length === 0) {
@@ -408,6 +421,8 @@ const parsePositiveInteger = (rawValue, defaultValue, label) => {
  * @param {string} label
  *
  * @returns {readonly string[] | undefined}
+ *
+ * @throws {Error} When the provided JSON is not an array of non-empty strings.
  */
 const parseOptionalStringArrayOption = (rawValue, label) => {
     if (rawValue === undefined || rawValue.trim().length === 0) {
@@ -473,6 +488,8 @@ const readConfiguredSiteUrl = async (siteDirectory) => {
  * @param {string} rawKey
  *
  * @returns {string}
+ *
+ * @throws {Error} When the key format is invalid.
  */
 export const ensureValidIndexNowKey = (rawKey) => {
     const key = rawKey.trim();
@@ -512,6 +529,8 @@ export const normalizeSiteUrl = (rawSiteUrl) => {
  *   `indexnow-key.txt`.
  *
  * @returns {IndexNowSiteConfiguration}
+ *
+ * @throws {Error} When the key file name is empty.
  */
 export const deriveSiteConfiguration = (
     rawSiteUrl,
@@ -581,17 +600,17 @@ export const decodeXmlEntities = (value) =>
     });
 
 /**
- * Parse and deduplicate all `&lt;loc&gt;` entries from a sitemap.
- *
- * @remarks
- * Docusaurus emits a standard XML sitemap with raw URL text content inside
- * `&lt;loc&gt;` elements. We only need those URL values and deliberately keep
- * this parser constrained to the sitemap contract rather than introducing a
- * heavier XML dependency for one deterministic extraction step.
+ * Parse and deduplicate all `&lt;loc&gt;` entries from a sitemap. Docusaurus
+ * emits a standard XML sitemap with raw URL text content inside `&lt;loc&gt;`
+ * elements. We only need those URL values and deliberately keep this parser
+ * constrained to the sitemap contract rather than introducing a heavier XML
+ * dependency for one deterministic extraction step.
  *
  * @param {string} sitemapXml
  *
  * @returns {readonly string[]}
+ *
+ * @throws {Error} When the sitemap does not contain any `&lt;loc&gt;` entries.
  */
 export const parseSitemapUrls = (sitemapXml) => {
     /** @type {string[]} */
@@ -639,19 +658,19 @@ export const parseSitemapUrls = (sitemapXml) => {
 /**
  * Split a list into stable batches.
  *
- * @template T - Element type being chunked into stable submission batches.
- *
- * @param {readonly T[]} values
+ * @param {readonly string[]} values
  * @param {number} batchSize
  *
- * @returns {readonly (readonly T[])[]}
+ * @returns {readonly (readonly string[])[]}
+ *
+ * @throws {Error} When `batchSize` is not a positive integer.
  */
 export const chunkValues = (values, batchSize) => {
     if (!Number.isSafeInteger(batchSize) || batchSize <= 0) {
         throw new Error("batchSize must be a positive integer.");
     }
 
-    /** @type {T[][]} */
+    /** @type {string[][]} */
     const chunks = [];
 
     for (let index = 0; index < values.length; index += batchSize) {

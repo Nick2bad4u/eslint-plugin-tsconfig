@@ -75,8 +75,8 @@ exports[`rule metadata snapshots > keeps normalized rule metadata contract stabl
     "docs": {
       "recommended": false,
       "requiresTypeChecking": false,
-      "ruleId": "R026",
-      "ruleNumber": 26,
+      "ruleId": "R004",
+      "ruleNumber": 4,
       "tsconfigConfigs": [
         "all",
         "include-hygiene",
@@ -98,8 +98,8 @@ exports[`rule metadata snapshots > keeps normalized rule metadata contract stabl
     "docs": {
       "recommended": false,
       "requiresTypeChecking": false,
-      "ruleId": "R004",
-      "ruleNumber": 4,
+      "ruleId": "R005",
+      "ruleNumber": 5,
       "tsconfigConfigs": [
         "all",
         "emit-config",
@@ -121,8 +121,8 @@ exports[`rule metadata snapshots > keeps normalized rule metadata contract stabl
     "docs": {
       "recommended": true,
       "requiresTypeChecking": false,
-      "ruleId": "R027",
-      "ruleNumber": 27,
+      "ruleId": "R006",
+      "ruleNumber": 6,
       "tsconfigConfigs": [
         "all",
         "lib-target",
@@ -145,8 +145,8 @@ exports[`rule metadata snapshots > keeps normalized rule metadata contract stabl
     "docs": {
       "recommended": false,
       "requiresTypeChecking": false,
-      "ruleId": "R005",
-      "ruleNumber": 5,
+      "ruleId": "R007",
+      "ruleNumber": 7,
       "tsconfigConfigs": [
         "all",
         "strict",
@@ -168,8 +168,8 @@ exports[`rule metadata snapshots > keeps normalized rule metadata contract stabl
     "docs": {
       "recommended": false,
       "requiresTypeChecking": false,
-      "ruleId": "R006",
-      "ruleNumber": 6,
+      "ruleId": "R008",
+      "ruleNumber": 8,
       "tsconfigConfigs": [
         "all",
         "emit-config",
@@ -191,8 +191,8 @@ exports[`rule metadata snapshots > keeps normalized rule metadata contract stabl
     "docs": {
       "recommended": false,
       "requiresTypeChecking": false,
-      "ruleId": "R007",
-      "ruleNumber": 7,
+      "ruleId": "R009",
+      "ruleNumber": 9,
       "tsconfigConfigs": [
         "all",
         "module-resolution",
@@ -214,8 +214,8 @@ exports[`rule metadata snapshots > keeps normalized rule metadata contract stabl
     "docs": {
       "recommended": false,
       "requiresTypeChecking": false,
-      "ruleId": "R008",
-      "ruleNumber": 8,
+      "ruleId": "R010",
+      "ruleNumber": 10,
       "tsconfigConfigs": [
         "all",
         "lib-target",
@@ -236,8 +236,8 @@ exports[`rule metadata snapshots > keeps normalized rule metadata contract stabl
     "docs": {
       "recommended": false,
       "requiresTypeChecking": false,
-      "ruleId": "R009",
-      "ruleNumber": 9,
+      "ruleId": "R011",
+      "ruleNumber": 11,
       "tsconfigConfigs": [
         "all",
         "include-hygiene",
@@ -259,8 +259,8 @@ exports[`rule metadata snapshots > keeps normalized rule metadata contract stabl
     "docs": {
       "recommended": false,
       "requiresTypeChecking": false,
-      "ruleId": "R010",
-      "ruleNumber": 10,
+      "ruleId": "R012",
+      "ruleNumber": 12,
       "tsconfigConfigs": [
         "all",
         "include-hygiene",
@@ -282,8 +282,8 @@ exports[`rule metadata snapshots > keeps normalized rule metadata contract stabl
     "docs": {
       "recommended": false,
       "requiresTypeChecking": false,
-      "ruleId": "R038",
-      "ruleNumber": 38,
+      "ruleId": "R013",
+      "ruleNumber": 13,
       "tsconfigConfigs": [
         "all",
         "emit-config",
@@ -304,8 +304,8 @@ exports[`rule metadata snapshots > keeps normalized rule metadata contract stabl
     "docs": {
       "recommended": false,
       "requiresTypeChecking": false,
-      "ruleId": "R031",
-      "ruleNumber": 31,
+      "ruleId": "R014",
+      "ruleNumber": 14,
       "tsconfigConfigs": [
         "all",
         "module-resolution",
@@ -326,8 +326,8 @@ exports[`rule metadata snapshots > keeps normalized rule metadata contract stabl
     "docs": {
       "recommended": false,
       "requiresTypeChecking": false,
-      "ruleId": "R011",
-      "ruleNumber": 11,
+      "ruleId": "R015",
+      "ruleNumber": 15,
       "tsconfigConfigs": [
         "all",
         "module-resolution",
@@ -348,8 +348,8 @@ exports[`rule metadata snapshots > keeps normalized rule metadata contract stabl
     "docs": {
       "recommended": false,
       "requiresTypeChecking": false,
-      "ruleId": "R012",
-      "ruleNumber": 12,
+      "ruleId": "R016",
+      "ruleNumber": 16,
       "tsconfigConfigs": [
         "all",
         "emit-config",
@@ -371,8 +371,8 @@ exports[`rule metadata snapshots > keeps normalized rule metadata contract stabl
     "docs": {
       "recommended": false,
       "requiresTypeChecking": false,
-      "ruleId": "R013",
-      "ruleNumber": 13,
+      "ruleId": "R017",
+      "ruleNumber": 17,
       "tsconfigConfigs": [
         "all",
         "include-hygiene",
@@ -393,8 +393,8 @@ exports[`rule metadata snapshots > keeps normalized rule metadata contract stabl
     "docs": {
       "recommended": false,
       "requiresTypeChecking": false,
-      "ruleId": "R036",
-      "ruleNumber": 36,
+      "ruleId": "R018",
+      "ruleNumber": 18,
       "tsconfigConfigs": [
         "all",
         "strict-mode",
@@ -416,8 +416,8 @@ exports[`rule metadata snapshots > keeps normalized rule metadata contract stabl
     "docs": {
       "recommended": false,
       "requiresTypeChecking": false,
-      "ruleId": "R014",
-      "ruleNumber": 14,
+      "ruleId": "R019",
+      "ruleNumber": 19,
       "tsconfigConfigs": [
         "all",
         "module-resolution",
@@ -438,8 +438,8 @@ exports[`rule metadata snapshots > keeps normalized rule metadata contract stabl
     "docs": {
       "recommended": false,
       "requiresTypeChecking": false,
-      "ruleId": "R015",
-      "ruleNumber": 15,
+      "ruleId": "R020",
+      "ruleNumber": 20,
       "tsconfigConfigs": [
         "all",
         "project-references",
@@ -461,8 +461,8 @@ exports[`rule metadata snapshots > keeps normalized rule metadata contract stabl
     "docs": {
       "recommended": false,
       "requiresTypeChecking": false,
-      "ruleId": "R037",
-      "ruleNumber": 37,
+      "ruleId": "R021",
+      "ruleNumber": 21,
       "tsconfigConfigs": [
         "all",
         "emit-config",
@@ -483,8 +483,8 @@ exports[`rule metadata snapshots > keeps normalized rule metadata contract stabl
     "docs": {
       "recommended": false,
       "requiresTypeChecking": false,
-      "ruleId": "R016",
-      "ruleNumber": 16,
+      "ruleId": "R022",
+      "ruleNumber": 22,
       "tsconfigConfigs": [
         "all",
         "project-references",
@@ -506,8 +506,8 @@ exports[`rule metadata snapshots > keeps normalized rule metadata contract stabl
     "docs": {
       "recommended": false,
       "requiresTypeChecking": false,
-      "ruleId": "R017",
-      "ruleNumber": 17,
+      "ruleId": "R023",
+      "ruleNumber": 23,
       "tsconfigConfigs": [
         "all",
         "lib-target",
@@ -528,8 +528,8 @@ exports[`rule metadata snapshots > keeps normalized rule metadata contract stabl
     "docs": {
       "recommended": false,
       "requiresTypeChecking": false,
-      "ruleId": "R018",
-      "ruleNumber": 18,
+      "ruleId": "R024",
+      "ruleNumber": 24,
       "tsconfigConfigs": [
         "all",
         "strict-mode",
@@ -550,8 +550,8 @@ exports[`rule metadata snapshots > keeps normalized rule metadata contract stabl
     "docs": {
       "recommended": false,
       "requiresTypeChecking": false,
-      "ruleId": "R019",
-      "ruleNumber": 19,
+      "ruleId": "R025",
+      "ruleNumber": 25,
       "tsconfigConfigs": [
         "all",
         "include-hygiene",
@@ -572,8 +572,8 @@ exports[`rule metadata snapshots > keeps normalized rule metadata contract stabl
     "docs": {
       "recommended": true,
       "requiresTypeChecking": false,
-      "ruleId": "R028",
-      "ruleNumber": 28,
+      "ruleId": "R026",
+      "ruleNumber": 26,
       "tsconfigConfigs": [
         "all",
         "include-hygiene",
@@ -597,8 +597,8 @@ exports[`rule metadata snapshots > keeps normalized rule metadata contract stabl
     "docs": {
       "recommended": false,
       "requiresTypeChecking": false,
-      "ruleId": "R034",
-      "ruleNumber": 34,
+      "ruleId": "R027",
+      "ruleNumber": 27,
       "tsconfigConfigs": [
         "all",
         "emit-config",
@@ -620,8 +620,8 @@ exports[`rule metadata snapshots > keeps normalized rule metadata contract stabl
     "docs": {
       "recommended": false,
       "requiresTypeChecking": false,
-      "ruleId": "R029",
-      "ruleNumber": 29,
+      "ruleId": "R028",
+      "ruleNumber": 28,
       "tsconfigConfigs": [
         "all",
         "module-resolution",
@@ -642,8 +642,8 @@ exports[`rule metadata snapshots > keeps normalized rule metadata contract stabl
     "docs": {
       "recommended": false,
       "requiresTypeChecking": false,
-      "ruleId": "R032",
-      "ruleNumber": 32,
+      "ruleId": "R029",
+      "ruleNumber": 29,
       "tsconfigConfigs": [
         "all",
         "strict-mode",
@@ -665,8 +665,8 @@ exports[`rule metadata snapshots > keeps normalized rule metadata contract stabl
     "docs": {
       "recommended": false,
       "requiresTypeChecking": false,
-      "ruleId": "R020",
-      "ruleNumber": 20,
+      "ruleId": "R030",
+      "ruleNumber": 30,
       "tsconfigConfigs": [
         "all",
         "strict-mode",
@@ -687,8 +687,8 @@ exports[`rule metadata snapshots > keeps normalized rule metadata contract stabl
     "docs": {
       "recommended": false,
       "requiresTypeChecking": false,
-      "ruleId": "R033",
-      "ruleNumber": 33,
+      "ruleId": "R031",
+      "ruleNumber": 31,
       "tsconfigConfigs": [
         "all",
         "strict-mode",
@@ -710,8 +710,8 @@ exports[`rule metadata snapshots > keeps normalized rule metadata contract stabl
     "docs": {
       "recommended": false,
       "requiresTypeChecking": false,
-      "ruleId": "R035",
-      "ruleNumber": 35,
+      "ruleId": "R032",
+      "ruleNumber": 32,
       "tsconfigConfigs": [
         "all",
         "strict-mode",
@@ -733,8 +733,8 @@ exports[`rule metadata snapshots > keeps normalized rule metadata contract stabl
     "docs": {
       "recommended": false,
       "requiresTypeChecking": false,
-      "ruleId": "R021",
-      "ruleNumber": 21,
+      "ruleId": "R033",
+      "ruleNumber": 33,
       "tsconfigConfigs": [
         "all",
         "strict-mode",
@@ -755,8 +755,8 @@ exports[`rule metadata snapshots > keeps normalized rule metadata contract stabl
     "docs": {
       "recommended": false,
       "requiresTypeChecking": false,
-      "ruleId": "R039",
-      "ruleNumber": 39,
+      "ruleId": "R034",
+      "ruleNumber": 34,
       "tsconfigConfigs": [
         "all",
         "strict-mode",
@@ -778,8 +778,8 @@ exports[`rule metadata snapshots > keeps normalized rule metadata contract stabl
     "docs": {
       "recommended": false,
       "requiresTypeChecking": false,
-      "ruleId": "R040",
-      "ruleNumber": 40,
+      "ruleId": "R035",
+      "ruleNumber": 35,
       "tsconfigConfigs": [
         "all",
         "strict-mode",
@@ -801,8 +801,8 @@ exports[`rule metadata snapshots > keeps normalized rule metadata contract stabl
     "docs": {
       "recommended": false,
       "requiresTypeChecking": false,
-      "ruleId": "R022",
-      "ruleNumber": 22,
+      "ruleId": "R036",
+      "ruleNumber": 36,
       "tsconfigConfigs": [
         "all",
         "emit-config",
@@ -824,8 +824,8 @@ exports[`rule metadata snapshots > keeps normalized rule metadata contract stabl
     "docs": {
       "recommended": false,
       "requiresTypeChecking": false,
-      "ruleId": "R023",
-      "ruleNumber": 23,
+      "ruleId": "R037",
+      "ruleNumber": 37,
       "tsconfigConfigs": [
         "all",
         "emit-config",
@@ -846,8 +846,8 @@ exports[`rule metadata snapshots > keeps normalized rule metadata contract stabl
     "docs": {
       "recommended": true,
       "requiresTypeChecking": false,
-      "ruleId": "R024",
-      "ruleNumber": 24,
+      "ruleId": "R038",
+      "ruleNumber": 38,
       "tsconfigConfigs": [
         "all",
         "recommended",
@@ -870,8 +870,8 @@ exports[`rule metadata snapshots > keeps normalized rule metadata contract stabl
     "docs": {
       "recommended": false,
       "requiresTypeChecking": false,
-      "ruleId": "R030",
-      "ruleNumber": 30,
+      "ruleId": "R039",
+      "ruleNumber": 39,
       "tsconfigConfigs": [
         "all",
         "strict-mode",
@@ -893,8 +893,8 @@ exports[`rule metadata snapshots > keeps normalized rule metadata contract stabl
     "docs": {
       "recommended": false,
       "requiresTypeChecking": false,
-      "ruleId": "R025",
-      "ruleNumber": 25,
+      "ruleId": "R040",
+      "ruleNumber": 40,
       "tsconfigConfigs": [
         "all",
         "module-resolution",

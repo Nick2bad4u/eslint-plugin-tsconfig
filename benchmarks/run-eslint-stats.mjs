@@ -14,11 +14,13 @@ import {
 const defaultIterations = 3;
 const defaultWarmupIterations = 1;
 
-const mathWithSumPrecise = /**
- * @type {typeof Math & {
+/**
+ * @typedef {typeof Math & {
  *     sumPrecise: (values: readonly number[]) => number;
- * }}
- */ (Math);
+ * }} MathWithSumPrecise
+ */
+
+const mathWithSumPrecise = /** @type {MathWithSumPrecise} */ (Math);
 
 const benchmarkScenarios = Object.freeze([
     {
@@ -54,6 +56,8 @@ const benchmarkScenarios = Object.freeze([
  * @param {number} fallbackValue - Default value when argument is absent.
  *
  * @returns {number} Parsed non-negative integer value.
+ *
+ * @throws {TypeError} When a provided value is not a non-negative integer.
  */
 const parseIntegerArgument = (key, fallbackValue) => {
     const matchingArgument = process.argv.find((argument) =>

@@ -14,6 +14,7 @@ import {
     safeCastTo,
 } from "ts-extras";
 
+// eslint-disable-next-line import-x/extensions -- JSON module imports require explicit `.json` extension.
 import packageJson from "../package.json" with { type: "json" };
 import {
     deriveRuleDocsMetadataByName,
@@ -31,16 +32,16 @@ const WARN_SEVERITY = "warn" as const;
 
 /** Default file globs targeted by plugin presets when `files` is omitted. */
 const TSCONFIG_FILES = [
-    "**/tsconfig.json",
-    "**/tsconfig.*.json",
     "**/tsconfig-*.json",
+    "**/tsconfig.*.json",
+    "**/tsconfig.json",
 ] as const;
 
 /** Default file globs targeted by the jsconfig-focused preset. */
 const JSCONFIG_FILES = [
-    "**/jsconfig.json",
-    "**/jsconfig.*.json",
     "**/jsconfig-*.json",
+    "**/jsconfig.*.json",
+    "**/jsconfig.json",
 ] as const;
 
 /**
@@ -54,6 +55,18 @@ export type TsconfigConfigName = InternalTsconfigConfigName;
 export type TsconfigPresetConfig = Linter.Config & {
     rules: NonNullable<Linter.Config["rules"]>;
 };
+
+/**
+ * Fully-qualified ESLint rule id used by this plugin.
+ *
+ * @remarks
+ * Consumers use this when building strongly typed rule maps or helper utilities
+ * that require namespaced rule identifiers.
+ */
+export type TsconfigRuleId = `tsconfig/${TsconfigRuleName}`;
+
+/** Unqualified rule name supported by `eslint-plugin-tsconfig`. */
+export type TsconfigRuleName = keyof typeof tsconfigRules;
 
 /** Rule-map type used by preset rule-list expansion helpers. */
 type RulesConfig = TsconfigPresetConfig["rules"];
@@ -73,21 +86,6 @@ type TsconfigPluginContract = Except<ESLint.Plugin, "configs" | "rules"> & {
     rules: NonNullable<ESLint.Plugin["rules"]>;
 };
 
-/** Package metadata used to populate plugin runtime `meta.version`. */
-const packageJsonValue = safeCastTo<unknown>(packageJson);
-
-/**
- * Fully-qualified ESLint rule id used by this plugin.
- *
- * @remarks
- * Consumers use this when building strongly typed rule maps or helper utilities
- * that require namespaced rule identifiers.
- */
-export type TsconfigRuleId = `tsconfig/${TsconfigRuleName}`;
-
-/** Unqualified rule name supported by `eslint-plugin-tsconfig`. */
-export type TsconfigRuleName = keyof typeof tsconfigRules;
-
 /**
  * Resolve package version from package.json data.
  *
@@ -100,19 +98,17 @@ function getPackageVersion(pkg: unknown): string {
         return "0.0.0";
     }
 
-    const version = Reflect.get(pkg, "version");
+    const version: unknown = Reflect.get(pkg, "version");
 
     return typeof version === "string" ? version : "0.0.0";
 }
 
+const packageJsonValue = safeCastTo<unknown>(packageJson);
+
 /**
  * ESLint-compatible rule map view of the strongly typed internal rule record.
  */
-const tsconfigEslintRules: NonNullable<ESLint.Plugin["rules"]> &
-    typeof tsconfigRules = tsconfigRules as NonNullable<
-    ESLint.Plugin["rules"]
-> &
-    typeof tsconfigRules;
+const tsconfigEslintRules = tsconfigRules;
 
 const isTsconfigRuleName = (value: string): value is TsconfigRuleName =>
     objectHasIn(tsconfigRules, value);
@@ -193,14 +189,32 @@ const presetRuleNameOverrides: Readonly<
     strictest: strictestPresetRuleNames,
 };
 
+const hasAllConfigNameEntries = <T>(
+    value: Readonly<Partial<Record<TsconfigConfigName, T>>>
+): value is Record<TsconfigConfigName, T> => {
+    for (const configName of tsconfigConfigNames) {
+        if (!isDefined(value[configName])) {
+            return false;
+        }
+    }
+
+    return true;
+};
+
 const createEmptyPresetRuleMap = (): Record<
     TsconfigConfigName,
     TsconfigRuleName[]
 > => {
-    const presetRuleMap = {} as Record<TsconfigConfigName, TsconfigRuleName[]>;
+    const presetRuleMap: Partial<
+        Record<TsconfigConfigName, TsconfigRuleName[]>
+    > = {};
 
     for (const configName of tsconfigConfigNames) {
         presetRuleMap[configName] = [];
+    }
+
+    if (!hasAllConfigNameEntries(presetRuleMap)) {
+        throw new TypeError("Failed to initialize empty preset rule map.");
     }
 
     return presetRuleMap;
@@ -214,6 +228,9 @@ const derivePresetRuleNamesByConfig = (): Readonly<
     Record<TsconfigConfigName, readonly TsconfigRuleName[]>
 > => {
     const presetRuleNamesByConfig = createEmptyPresetRuleMap();
+    const derivedRuleNamesByConfig: Partial<
+        Record<TsconfigConfigName, readonly TsconfigRuleName[]>
+    > = {};
 
     for (const [ruleName] of tsconfigRuleEntries) {
         const configNames = rulePresetMembership[ruleName];
@@ -229,20 +246,19 @@ const derivePresetRuleNamesByConfig = (): Readonly<
         }
     }
 
-    const result = {} as Record<
-        TsconfigConfigName,
-        readonly TsconfigRuleName[]
-    >;
-
     for (const configName of tsconfigConfigNames) {
         const overrideRuleNames = presetRuleNameOverrides[configName];
-
-        result[configName] = dedupeRuleNames(
+        const ruleNames = dedupeRuleNames(
             overrideRuleNames ?? presetRuleNamesByConfig[configName]
         );
+        derivedRuleNamesByConfig[configName] = ruleNames;
     }
 
-    return result;
+    if (!hasAllConfigNameEntries(derivedRuleNamesByConfig)) {
+        throw new TypeError("Failed to derive complete preset rule-name map.");
+    }
+
+    return derivedRuleNamesByConfig;
 };
 
 const presetRuleNamesByConfig = derivePresetRuleNamesByConfig();
@@ -310,52 +326,76 @@ const pluginForConfigs: ESLint.Plugin = {
  * (`strict-mode`, `module-resolution`, etc.) enable only the rules belonging to
  * that category.
  */
-const createTsconfigConfigsDefinition = (): TsconfigConfigsContract => {
-    const configs = {} as TsconfigConfigsContract;
+const createTsconfigConfigsDefinition = (): TsconfigConfigsContract =>
+    (() => {
+        const configsByName: Partial<
+            Record<TsconfigConfigName, TsconfigPresetConfig>
+        > = {};
 
-    for (const configName of tsconfigConfigNames) {
-        const ruleNames = presetRuleNamesByConfig[configName];
+        for (const configKey of tsconfigConfigNames) {
+            const ruleNames = presetRuleNamesByConfig[configKey];
 
-        // For "all", mix error and warn based on each rule's default severity.
-        // For "strict", use error. For "recommended", use warn.
-        // Category presets use the default severity from rule metadata.
-        const isAllPreset = configName === "all";
-        const isStrictPreset = configName === "strict";
-        const isStrictestPreset = configName === "strictest";
+            // For "all", mix error and warn based on each rule's default severity.
+            // For "strict", use error. For "recommended", use warn.
+            // Category presets use the default severity from rule metadata.
+            const isAllPreset = configKey === "all";
+            const isStrictPreset = configKey === "strict";
+            const isStrictestPreset = configKey === "strictest";
 
-        let rules: RulesConfig = {};
+            let rules: RulesConfig = {};
 
-        if (isAllPreset) {
-            // All: each rule at its own default severity
-            for (const ruleName of ruleNames) {
-                const ruleMeta = tsconfigRules[ruleName]?.meta;
-                const ruleType = ruleMeta?.type;
-                const severity =
-                    ruleType === "problem" ? ERROR_SEVERITY : WARN_SEVERITY;
-                rules[`tsconfig/${ruleName}`] = severity;
+            if (isAllPreset) {
+                // All: each rule at its own default severity
+                for (const ruleName of ruleNames) {
+                    const ruleDefinition = tsconfigRules[ruleName];
+                    if (!isDefined(ruleDefinition)) {
+                        throw new TypeError(
+                            `Missing rule definition for '${ruleName}'.`
+                        );
+                    }
+
+                    const ruleMeta = ruleDefinition.meta;
+                    if (!isDefined(ruleMeta)) {
+                        throw new TypeError(
+                            `Rule '${ruleName}' is missing meta.`
+                        );
+                    }
+
+                    const ruleType = ruleMeta.type;
+                    const severity =
+                        ruleType === "problem" ? ERROR_SEVERITY : WARN_SEVERITY;
+                    rules[`tsconfig/${ruleName}`] = severity;
+                }
+            } else if (isStrictPreset || isStrictestPreset) {
+                rules = severityRulesFor(ruleNames, ERROR_SEVERITY);
+            } else {
+                rules = severityRulesFor(ruleNames, WARN_SEVERITY);
             }
-        } else if (isStrictPreset || isStrictestPreset) {
-            rules = severityRulesFor(ruleNames, ERROR_SEVERITY);
-        } else {
-            rules = severityRulesFor(ruleNames, WARN_SEVERITY);
+
+            const configValue = withTsconfigPlugin(
+                {
+                    ...(configKey === "jsconfig"
+                        ? {
+                              files: [...JSCONFIG_FILES],
+                          }
+                        : {}),
+                    name: `tsconfig/${configKey}`,
+                    rules,
+                },
+                pluginForConfigs
+            );
+
+            configsByName[configKey] = configValue;
         }
 
-        configs[configName] = withTsconfigPlugin(
-            {
-                ...(configName === "jsconfig"
-                    ? {
-                          files: [...JSCONFIG_FILES],
-                      }
-                    : {}),
-                name: `tsconfig/${configName}`,
-                rules,
-            },
-            pluginForConfigs
-        );
-    }
+        if (!hasAllConfigNameEntries(configsByName)) {
+            throw new TypeError(
+                "Failed to derive complete tsconfig preset config map."
+            );
+        }
 
-    return configs;
-};
+        return configsByName;
+    })();
 
 const tsconfigConfigsDefinition = createTsconfigConfigsDefinition();
 

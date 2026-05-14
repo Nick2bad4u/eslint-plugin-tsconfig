@@ -39,7 +39,10 @@ type EsVersion = (typeof ES_VERSIONS)[number];
 
 /** Get the index of an ES version in the versions array. */
 function esIndex(v: string): number {
-    return ES_VERSIONS.indexOf(v.toLowerCase() as EsVersion);
+    const normalized = v.toLowerCase();
+    return ES_VERSIONS.findIndex(
+        (candidate): candidate is EsVersion => candidate === normalized
+    );
 }
 
 /**
@@ -47,7 +50,7 @@ function esIndex(v: string): number {
  * `'es2020'`).
  */
 function libEsVersion(lib: string): string | undefined {
-    const m = /^(?<ver>esnext|es\d{4})/i.exec(lib);
+    const m = /^(?<ver>esnext|es\d{4})/iv.exec(lib);
     return m?.groups?.["ver"]?.toLowerCase();
 }
 
@@ -56,7 +59,7 @@ const rule: JsoncRuleModule = createJsoncRule({
     create(context) {
         return {
             JSONObjectExpression(node: Readonly<JSONObjectExpression>) {
-                if (node.parent?.type !== "JSONExpressionStatement") return;
+                if (node.parent.type !== "JSONExpressionStatement") return;
                 const co = getCompilerOptions(node);
                 if (!co) return;
 

@@ -1,7 +1,4 @@
-/**
- * @packageDocumentation
- * Synchronize or validate the README rules matrix from canonical rule metadata.
- */
+/** Synchronize or validate the README rules matrix from canonical rule metadata. */
 // @ts-check
 
 import { readFile, writeFile } from "node:fs/promises";
@@ -62,6 +59,8 @@ const normalizeMarkdownLineEndings = (markdown, lineEnding) =>
  * @param {string} markdown
  *
  * @returns {Readonly<{ endOffset: number; startOffset: number }>}
+ *
+ * @throws {Error} When README.md is missing the `## Rules` heading.
  */
 const getReadmeRulesSectionBounds = (markdown) => {
     const startOffset = markdown.indexOf(rulesSectionHeading);
@@ -309,6 +308,8 @@ const getPresetIndicator = (ruleModule) => {
  * @param {readonly [string, ReadmeRuleModule]} entry
  *
  * @returns {string}
+ *
+ * @throws {TypeError} When rule docs metadata is incomplete.
  */
 const toRuleTableRow = ([ruleName, ruleModule]) => {
     const docsUrl = ruleModule.meta?.docs?.url;

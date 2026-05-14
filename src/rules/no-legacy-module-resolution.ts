@@ -30,7 +30,7 @@ const rule: JsoncRuleModule = createJsoncRule({
 
         return {
             JSONObjectExpression(node: Readonly<JSONObjectExpression>) {
-                if (node.parent?.type !== "JSONExpressionStatement") return;
+                if (node.parent.type !== "JSONExpressionStatement") return;
                 const co = getCompilerOptions(node);
                 if (!co) return;
 

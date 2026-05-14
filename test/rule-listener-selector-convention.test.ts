@@ -60,7 +60,10 @@ const pushChildNodes = ({
             for (const arrayEntry of value) {
                 nodesToVisit.push(arrayEntry);
             }
-        } else if (isObjectRecord(value)) {
+            continue;
+        }
+
+        if (isObjectRecord(value)) {
             nodesToVisit.push(value);
         }
     }

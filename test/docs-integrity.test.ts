@@ -26,21 +26,6 @@ interface RuleWithMeta {
     };
 }
 
-const canonicalHeadingOrder = [
-    "Targeted pattern scope",
-    "What this rule reports",
-    "Why this rule exists",
-    "❌ Incorrect",
-    "✅ Correct",
-    "Behavior and migration notes",
-    "Additional examples",
-    "ESLint flat config example",
-    "When not to use it",
-    "Package documentation",
-    "Further reading",
-    "Adoption resources",
-] as const;
-
 const requiredCoreHeadings = [
     "✅ Correct",
     "❌ Incorrect",
@@ -51,9 +36,20 @@ const requiredCoreHeadings = [
     "Why this rule exists",
 ] as const;
 
-const canonicalHeadingOrderIndex = new Map<string, number>(
-    canonicalHeadingOrder.map((heading, index) => [heading, index])
-);
+const canonicalHeadingOrderIndex = {
+    "✅ Correct": 4,
+    "❌ Incorrect": 3,
+    "Additional examples": 5,
+    "Adoption resources": 6,
+    "Behavior and migration notes": 7,
+    "ESLint flat config example": 8,
+    "Further reading": 11,
+    "Package documentation": 10,
+    "Targeted pattern scope": 0,
+    "What this rule reports": 1,
+    "When not to use it": 9,
+    "Why this rule exists": 2,
+} as const;
 
 const legacyHeadingsPattern =
     /^##\s+(?:Targeted assertion pattern|Upstream helper TSDoc|Upstream helper status|Upstream type TSDoc|What it checks|Why)$/mv;
@@ -72,7 +68,9 @@ function assertCanonicalHeadingSchema(headings: readonly string[]): void {
     let lastHeadingOrder = -1;
 
     for (const heading of headings) {
-        const headingOrder = canonicalHeadingOrderIndex.get(heading);
+        const headingOrder = isCanonicalHeading(heading)
+            ? canonicalHeadingOrderIndex[heading]
+            : undefined;
 
         expect(headingOrder).toBeDefined();
 
@@ -171,6 +169,19 @@ function assertRuleCatalogIdLine(markdown: string): void {
     expect(furtherReadingHeadingIndex).toBeGreaterThanOrEqual(0);
     expect(separatorLine).toMatch(/^\s*$/v);
     expect(ruleCatalogIdLineIndex).toBe(furtherReadingHeadingIndex - 2);
+}
+
+/**
+ * Narrow arbitrary heading text to canonical H2 heading keys.
+ *
+ * @param heading - Candidate heading label.
+ *
+ * @returns `true` when the heading is a canonical H2 heading key.
+ */
+function isCanonicalHeading(
+    heading: string
+): heading is keyof typeof canonicalHeadingOrderIndex {
+    return Object.hasOwn(canonicalHeadingOrderIndex, heading);
 }
 
 /**

@@ -71,7 +71,9 @@ const runTimedRuleTesterCase = ({
 };
 
 assertRuleTesterHook(afterAll, "afterAll");
-RuleTester.afterAll = afterAll;
+RuleTester.afterAll = (...arguments_) => {
+    Reflect.apply(afterAll, undefined, arguments_);
+};
 assertRuleTesterHook(describe, "describe");
 RuleTester.describe = describe;
 assertRuleTesterHook(it, "it");

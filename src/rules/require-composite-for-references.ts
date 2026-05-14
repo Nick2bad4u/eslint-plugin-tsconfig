@@ -26,7 +26,7 @@ const rule: JsoncRuleModule = createJsoncRule({
     create(context) {
         return {
             JSONObjectExpression(node: Readonly<JSONObjectExpression>) {
-                if (node.parent?.type !== "JSONExpressionStatement") return;
+                if (node.parent.type !== "JSONExpressionStatement") return;
                 // Check root-level `references` array
                 const referencesProp: JSONProperty | undefined = findProperty(
                     node,
@@ -44,10 +44,8 @@ const rule: JsoncRuleModule = createJsoncRule({
                             // Insert compilerOptions with composite: true after last property
                             const lastProp = arrayAt(node.properties, -1);
                             if (!lastProp) return null;
-                            return fixer.insertTextAfter(
-                                lastProp as unknown as Parameters<
-                                    typeof fixer.insertTextAfter
-                                >[0],
+                            return fixer.insertTextAfterRange(
+                                lastProp.range,
                                 ',\n    "compilerOptions": { "composite": true }'
                             );
                         },

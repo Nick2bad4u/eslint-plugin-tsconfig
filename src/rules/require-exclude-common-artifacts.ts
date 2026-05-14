@@ -22,11 +22,11 @@ import { createRuleDocsUrl } from "../_internal/rule-docs-url.js";
 /** Rule implementation for this tsconfig lint rule. */
 const rule: JsoncRuleModule = createJsoncRule({
     create(context) {
-        const REQUIRED_EXCLUDES = ["node_modules", "dist"] as const;
+        const REQUIRED_EXCLUDES = ["dist", "node_modules"] as const;
 
         return {
             JSONObjectExpression(node: Readonly<JSONObjectExpression>) {
-                if (node.parent?.type !== "JSONExpressionStatement") return;
+                if (node.parent.type !== "JSONExpressionStatement") return;
 
                 const excludeProp: JSONProperty | undefined = findProperty(
                     node,
@@ -57,22 +57,16 @@ const rule: JsoncRuleModule = createJsoncRule({
                                 const arr = excludeProp.value;
                                 if (isEmpty(arr.elements)) {
                                     return fixer.replaceTextRange(
-                                        (
-                                            arr as unknown as {
-                                                range: [number, number];
-                                            }
-                                        ).range,
+                                        arr.range,
                                         `["${entry}"]`
                                     );
                                 }
                                 const lastEl = arrayAt(arr.elements, -1);
-                                if (lastEl === null) return null;
+                                if (!isDefined(lastEl) || lastEl === null) {
+                                    return null;
+                                }
                                 return fixer.insertTextAfterRange(
-                                    (
-                                        lastEl as unknown as {
-                                            range: [number, number];
-                                        }
-                                    ).range,
+                                    lastEl.range,
                                     `, "${entry}"`
                                 );
                             }

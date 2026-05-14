@@ -2,7 +2,7 @@
  * @packageDocumentation
  * Rule: no-emit-in-root-config
  */
-import { basename } from "node:path";
+import path from "node:path";
 import { isDefined } from "ts-extras";
 
 import type {
@@ -29,11 +29,11 @@ import { createRuleDocsUrl } from "../_internal/rule-docs-url.js";
  * workspace markers.
  */
 function isRootTsconfigPath(filename: string): boolean {
-    if (basename(filename) !== "tsconfig.json") return false;
+    if (path.basename(filename) !== "tsconfig.json") return false;
 
     // Monorepo workspace directory patterns to exclude (case-insensitive)
     const workspacePatterns =
-        /[/\\](?:apps|build|dist|libs|modules|out|packages|projects|src|test|tests|workspace|workspaces)[/\\]/iu;
+        /[\/\\](?:apps|build|dist|libs|modules|out|packages|projects|src|test|tests|workspace|workspaces)[\/\\]/iv;
     return !workspacePatterns.test(filename);
 }
 
@@ -42,7 +42,7 @@ const rule: JsoncRuleModule = createJsoncRule({
     create(context) {
         return {
             JSONObjectExpression(node: Readonly<JSONObjectExpression>) {
-                if (node.parent?.type !== "JSONExpressionStatement") return;
+                if (node.parent.type !== "JSONExpressionStatement") return;
                 // Only applies to root tsconfig.json (not workspace or non-root tsconfig files)
                 if (!isRootTsconfigPath(context.filename)) return;
 

@@ -2,7 +2,7 @@
  * @packageDocumentation
  * Rule: no-rootdir-includes-outdir
  */
-import { dirname, isAbsolute, normalize, relative, resolve } from "node:path";
+import path from "node:path";
 import { isDefined } from "ts-extras";
 
 import type {
@@ -25,7 +25,7 @@ const rule: JsoncRuleModule = createJsoncRule({
     create(context) {
         return {
             JSONObjectExpression(node: Readonly<JSONObjectExpression>) {
-                if (node.parent?.type !== "JSONExpressionStatement") return;
+                if (node.parent.type !== "JSONExpressionStatement") return;
                 const co = getCompilerOptions(node);
                 if (!co) return;
 
@@ -43,18 +43,21 @@ const rule: JsoncRuleModule = createJsoncRule({
                 const outDirValue = getStringValue(outDirProp);
                 if (!isDefined(rootDirValue) || !isDefined(outDirValue)) return;
 
-                const tsconfigDir = dirname(context.filename);
-                const normalizedRoot = normalize(
-                    resolve(tsconfigDir, rootDirValue)
+                const tsconfigDir = path.dirname(context.filename);
+                const normalizedRoot = path.normalize(
+                    path.resolve(tsconfigDir, rootDirValue)
                 );
-                const normalizedOut = normalize(
-                    resolve(tsconfigDir, outDirValue)
+                const normalizedOut = path.normalize(
+                    path.resolve(tsconfigDir, outDirValue)
                 );
-                const relativeOutDir = relative(normalizedRoot, normalizedOut);
+                const relativeOutDir = path.relative(
+                    normalizedRoot,
+                    normalizedOut
+                );
                 if (
                     relativeOutDir !== "" &&
                     (relativeOutDir.startsWith("..") ||
-                        isAbsolute(relativeOutDir))
+                        path.isAbsolute(relativeOutDir))
                 )
                     return;
 

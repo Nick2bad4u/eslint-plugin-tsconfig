@@ -2,7 +2,7 @@
  * @packageDocumentation
  * Rule: no-esmoduleinterop-with-verbatim
  */
-import { arrayFirst, isDefined } from "ts-extras";
+import { isDefined } from "ts-extras";
 
 import type {
     JSONObjectExpression,
@@ -14,6 +14,7 @@ import {
     findProperty,
     getBooleanValue,
     getCompilerOptions,
+    rangeWithAdjacentComma,
     reportViolation,
 } from "../_internal/jsonc-helpers.js";
 import { createJsoncRule } from "../_internal/jsonc-rule.js";
@@ -24,7 +25,7 @@ const rule: JsoncRuleModule = createJsoncRule({
     create(context) {
         return {
             JSONObjectExpression(node: Readonly<JSONObjectExpression>) {
-                if (node.parent?.type !== "JSONExpressionStatement") return;
+                if (node.parent.type !== "JSONExpressionStatement") return;
                 const co = getCompilerOptions(node);
                 if (!co) return;
 
@@ -48,56 +49,12 @@ const rule: JsoncRuleModule = createJsoncRule({
 
                 reportViolation(context, {
                     fix(fixer) {
-                        const sourceCode = context.sourceCode;
-                        const tokenAfter = sourceCode.getTokenAfter(
-                            esModuleInteropProp as unknown as Parameters<
-                                typeof sourceCode.getTokenAfter
-                            >[0]
+                        const removalRange = rangeWithAdjacentComma(
+                            context.sourceCode.text,
+                            esModuleInteropProp.range
                         );
-                        const tokenBefore = sourceCode.getTokenBefore(
-                            esModuleInteropProp as unknown as Parameters<
-                                typeof sourceCode.getTokenBefore
-                            >[0]
-                        );
-                        if (tokenAfter?.value === ",") {
-                            return fixer.removeRange([
-                                arrayFirst(
-                                    (
-                                        esModuleInteropProp as unknown as {
-                                            range: [number, number];
-                                        }
-                                    ).range
-                                ),
-                                (
-                                    tokenAfter as unknown as {
-                                        range: [number, number];
-                                    }
-                                ).range[1],
-                            ]);
-                        }
-                        if (tokenBefore?.value === ",") {
-                            return fixer.removeRange([
-                                arrayFirst(
-                                    (
-                                        tokenBefore as unknown as {
-                                            range: [number, number];
-                                        }
-                                    ).range
-                                ),
-                                (
-                                    esModuleInteropProp as unknown as {
-                                        range: [number, number];
-                                    }
-                                ).range[1],
-                            ]);
-                        }
-                        return fixer.removeRange(
-                            (
-                                esModuleInteropProp as unknown as {
-                                    range: [number, number];
-                                }
-                            ).range
-                        );
+
+                        return fixer.removeRange(removalRange);
                     },
                     loc: esModuleInteropProp.loc,
                     messageId: "conflictingFlags",

@@ -21,11 +21,11 @@ import { createRuleDocsUrl } from "../_internal/rule-docs-url.js";
 /** Rule implementation for this tsconfig lint rule. */
 const rule: JsoncRuleModule = createJsoncRule({
     create(context) {
-        const DIST_PATTERN = /(?:^|[/\\])dist(?:[/\\]|$)/i;
+        const DIST_PATTERN = /(?:^|\/|\\)dist(?:\/|\\|$)/iv;
 
         return {
             JSONObjectExpression(node: Readonly<JSONObjectExpression>) {
-                if (node.parent?.type !== "JSONExpressionStatement") return;
+                if (node.parent.type !== "JSONExpressionStatement") return;
                 // Check root-level `include` (not inside compilerOptions)
                 const includeProp: JSONProperty | undefined = findProperty(
                     node,

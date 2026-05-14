@@ -55,7 +55,7 @@ export type JSONPropertyKey =
  * `reportViolation(context, …)` instead so that the rule-reporting policy
  * contract test can verify all violations go through a shared helper.
  */
-export type ViolationReport = {
+export interface ViolationReport {
     /**
      * Optional data to interpolate into the `messageId` template.
      *
@@ -75,16 +75,16 @@ export type ViolationReport = {
      * Key into the rule's `meta.messages` map.
      */
     messageId: string;
-};
+}
 
 /**
  * Source-location shape compatible with both JSONC AST nodes and ESLint's
  * `SourceLocation`.
  */
-type ReportLoc = {
+interface ReportLoc {
     end: { column: number; line: number };
     start: { column: number; line: number };
-};
+}
 
 /**
  * JSON-encode a primitive value for insertion into source text.
@@ -112,21 +112,11 @@ export function findProperty(
     key: string
 ): JSONProperty | undefined {
     return obj.properties.find((prop) => {
-        if (prop.type !== "JSONProperty") {
-            return false;
-        }
-
-        let keyText = "";
         if (prop.key.type === "JSONIdentifier") {
-            keyText = prop.key.name;
-        } else if (
-            prop.key.type === "JSONLiteral" &&
-            typeof prop.key.value === "string"
-        ) {
-            keyText = prop.key.value;
+            return prop.key.name === key;
         }
 
-        return keyText === key;
+        return typeof prop.key.value === "string" && prop.key.value === key;
     });
 }
 
@@ -280,25 +270,58 @@ export function insertProperty(
     const propertyText = `"${key}": ${encodedValue}`;
 
     if (isEmpty(obj.properties)) {
-        return fixer.replaceText(
-            obj as unknown as Parameters<Fixer["replaceText"]>[0], // NOSONAR typescript:S4325 -- JSONC parent types are incompatible with Rule.Node; double-cast is required
-            `{ ${propertyText} }`
-        );
+        return fixer.replaceTextRange(obj.range, `{ ${propertyText} }`);
     }
 
     const lastProp = arrayAt(obj.properties, -1);
 
     if (!isDefined(lastProp)) {
-        return fixer.replaceText(
-            obj as unknown as Parameters<Fixer["replaceText"]>[0], // NOSONAR typescript:S4325 -- JSONC parent types are incompatible with Rule.Node; double-cast is required
-            `{ ${propertyText} }`
-        );
+        return fixer.replaceTextRange(obj.range, `{ ${propertyText} }`);
     }
 
-    return fixer.insertTextAfter(
-        lastProp as unknown as Parameters<Fixer["insertTextAfter"]>[0], // NOSONAR typescript:S4325 -- JSONC parent types are incompatible with Rule.Node; double-cast is required
+    return fixer.insertTextAfterRange(
+        lastProp.range,
         `,\n${indent}${propertyText}`
     );
+}
+
+/**
+ * Expand a node removal range so adjacent commas are removed safely too.
+ *
+ * @param sourceText - Full source file text.
+ * @param range - Node range to remove.
+ *
+ * @returns Range that includes the nearest comma when needed.
+ */
+export function rangeWithAdjacentComma(
+    sourceText: string,
+    range: Readonly<[number, number]>
+): [number, number] {
+    const [start, end] = range;
+    const sourceLength = sourceText.length;
+
+    let afterIndex = end;
+    while (
+        afterIndex < sourceLength &&
+        /\s/v.test(sourceText.charAt(afterIndex))
+    ) {
+        afterIndex++;
+    }
+
+    if (afterIndex < sourceLength && sourceText.charAt(afterIndex) === ",") {
+        return [start, afterIndex + 1];
+    }
+
+    let beforeIndex = start - 1;
+    while (beforeIndex >= 0 && /\s/v.test(sourceText.charAt(beforeIndex))) {
+        beforeIndex--;
+    }
+
+    if (beforeIndex >= 0 && sourceText.charAt(beforeIndex) === ",") {
+        return [beforeIndex, end];
+    }
+
+    return [start, end];
 }
 
 /**
@@ -315,10 +338,7 @@ export function replacePropertyValue(
     prop: Readonly<JSONProperty>,
     value: JSONPrimitive
 ): ReturnType<Fixer["replaceText"]> {
-    return fixer.replaceText(
-        prop.value as unknown as Parameters<Fixer["replaceText"]>[0], // NOSONAR typescript:S4325 -- JSONC node parent types are incompatible with Rule.Node; double-cast is required
-        encodeValue(value)
-    );
+    return fixer.replaceTextRange(prop.value.range, encodeValue(value));
 }
 
 // ─── Array helpers ────────────────────────────────────────────────────────────
@@ -330,9 +350,6 @@ export function replacePropertyValue(
  * This wrapper exists so that the rule-reporting policy contract test can
  * confirm every rule uses a shared channel instead of calling
  * `context.report()` directly. The cast to `unknown` is required because the
- * JSONC `SourceLocation` type carries an additional `offset` field that
- * ESLint's internal `SourceLocation` does not declare, even though both shapes
- * are structurally equivalent at runtime.
  *
  * @param context - The ESLint rule context provided by `createJsoncRule`.
  * @param violation - Violation descriptor (location, messageId, optional fix).
@@ -341,5 +358,5 @@ export function reportViolation(
     context: Readonly<Rule.RuleContext>,
     violation: Readonly<ViolationReport>
 ): void {
-    context.report(violation); // NOSONAR typescript:S4325 -- JSONC SourceLocation carries an extra `offset` field; double-cast is required for structural compatibility
+    context.report(violation);
 }

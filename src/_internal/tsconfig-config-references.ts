@@ -7,16 +7,16 @@ import { objectHasOwn } from "ts-extras";
 /** Canonical flat-config preset keys exposed through `plugin.configs`. */
 export const tsconfigConfigNames = [
     "all",
-    "jsconfig",
-    "recommended",
-    "strict",
-    "strictest",
     "emit-config",
     "include-hygiene",
+    "jsconfig",
     "lib-target",
     "module-resolution",
     "project-references",
+    "recommended",
+    "strict",
     "strict-mode",
+    "strictest",
 ] as const;
 
 /** Metadata contract shared across preset wiring, docs, and README rendering. */

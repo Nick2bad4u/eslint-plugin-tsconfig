@@ -83,9 +83,9 @@ const EXTERNAL_PROTOCOLS = [
 ];
 
 /**
- * Truncate safely keeping last `max` codepoints
+ * Truncate a string while retaining the final `max` Unicode code points.
  *
- * @param {any} str
+ * @param {string} str
  * @param {number} max
  */
 function truncateEnd(str, max) {
@@ -222,10 +222,10 @@ const getPathCandidates = (
  * Validate a single link and push to issues if broken. Returns true if broken
  * (so caller can optionally fail-fast).
  *
- * @param {any} markdownPath
+ * @param {string} markdownPath
  * @param {string} link
- * @param {{ file: any; link: any; resolvedPath: string }[]} issues
- * @param {{ has: (arg0: string) => any; add: (arg0: string) => void }} issueSet
+ * @param {{ file: string; link: string; resolvedPath: string }[]} issues
+ * @param {{ has: (arg0: string) => boolean; add: (arg0: string) => void }} issueSet
  * @param {{
  *     totalLinksChecked: number;
  *     emptyLinks: number;
@@ -278,8 +278,7 @@ async function validateLink(markdownPath, link, issues, issueSet, metrics) {
 }
 
 /**
- * @param {import("node:fs").PathLike
- *     | import("node:fs/promises").FileHandle} markdownPath
+ * @param {string} markdownPath
  * @param {{ file: string; link: string; resolvedPath: string }[]} issues
  * @param {Set<string>} issueSet
  * @param {{
@@ -337,7 +336,7 @@ async function checkFile(markdownPath, issues, issueSet, metrics) {
 }
 
 /**
- * Split array into batches
+ * Split an array into fixed-size batches.
  *
  * @param {readonly string[]} array
  * @param {number} size
@@ -364,7 +363,7 @@ function batches(array, size) {
  */
 async function main() {
     /**
-     * @type {any[]}
+     * @type {{ file: string; link: string; resolvedPath: string }[]}
      */
     const issues = [];
     const issueSet = new Set();

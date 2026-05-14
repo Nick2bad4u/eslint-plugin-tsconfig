@@ -144,7 +144,19 @@ describe("jsonc-helpers", () => {
 
                 return text;
             },
+            insertTextAfterRange(...args: readonly [unknown, string]) {
+                const text = args[1];
+                calls.push(`insert:${text}`);
+
+                return text;
+            },
             replaceText(...args: readonly [unknown, string]) {
+                const text = args[1];
+                calls.push(`replace:${text}`);
+
+                return text;
+            },
+            replaceTextRange(...args: readonly [unknown, string]) {
                 const text = args[1];
                 calls.push(`replace:${text}`);
 

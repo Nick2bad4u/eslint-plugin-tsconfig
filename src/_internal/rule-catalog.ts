@@ -2,7 +2,7 @@
  * @packageDocumentation
  * Stable catalog IDs for all plugin rules.
  */
-import { objectFromEntries, setHas } from "ts-extras";
+import { setHas } from "ts-extras";
 
 /**
  * Catalog metadata for a single rule.
@@ -28,43 +28,43 @@ const orderedRuleNames = [
     "consistent-incremental-with-tsbuildinfo",
     "consistent-module-resolution",
     "consistent-target-and-lib",
+    "no-allowjs-without-checkjs",
     "no-declaration-only-without-declaration",
+    "no-deprecated-target",
     "no-disable-strict-subset",
     "no-emit-in-root-config",
     "no-esmoduleinterop-with-verbatim",
     "no-esnext-target-in-library",
     "no-include-dist",
     "no-include-node-modules",
+    "no-inline-source-map",
+    "no-legacy-module-detection",
     "no-legacy-module-resolution",
     "no-rootdir-includes-outdir",
     "no-skip-lib-check",
+    "no-suppress-implicit-any-index-errors",
     "require-bundler-module-resolution",
     "require-composite-for-references",
+    "require-declaration-map",
     "require-declaration-with-composite",
     "require-downlevel-iteration-with-iterators",
     "require-exact-optional-property-types",
     "require-exclude-common-artifacts",
+    "require-force-consistent-casing-in-file-names",
+    "require-isolated-declarations",
+    "require-isolated-modules",
+    "require-no-fallthrough-cases-in-switch",
     "require-no-implicit-override",
+    "require-no-implicit-returns",
+    "require-no-property-access-from-index-signature",
     "require-no-unchecked-indexed-access",
+    "require-no-unused-locals",
+    "require-no-unused-parameters",
     "require-outdir-when-emitting",
     "require-source-map-in-dev",
     "require-strict-mode",
-    "require-verbatim-module-syntax",
-    "no-allowjs-without-checkjs",
-    "no-deprecated-target",
-    "require-force-consistent-casing-in-file-names",
-    "require-isolated-modules",
     "require-use-unknown-in-catch-variables",
-    "no-legacy-module-detection",
-    "require-no-fallthrough-cases-in-switch",
-    "require-no-implicit-returns",
-    "require-isolated-declarations",
-    "require-no-property-access-from-index-signature",
-    "no-suppress-implicit-any-index-errors",
-    "require-declaration-map",
-    "no-inline-source-map",
-    "require-no-unused-locals",
-    "require-no-unused-parameters",
+    "require-verbatim-module-syntax",
 ] as const satisfies readonly string[];
 
 const toRuleCatalogId = (ruleNumber: number): TsconfigRuleCatalogId =>
@@ -87,9 +87,17 @@ export const tsconfigRuleCatalogEntries: readonly TsconfigRuleCatalogEntry[] =
 /**
  * Fast lookup map for rule catalog metadata by rule name.
  */
-export const tsconfigRuleCatalogByRuleName = objectFromEntries(
-    tsconfigRuleCatalogEntries.map((entry) => [entry.ruleName, entry])
-) as Readonly<Record<string, TsconfigRuleCatalogEntry>>;
+export const tsconfigRuleCatalogByRuleName: Readonly<
+    Record<string, TsconfigRuleCatalogEntry>
+> = (() => {
+    const byRuleName: Record<string, TsconfigRuleCatalogEntry> = {};
+
+    for (const entry of tsconfigRuleCatalogEntries) {
+        byRuleName[entry.ruleName] = entry;
+    }
+
+    return byRuleName;
+})();
 
 /**
  * Resolve stable catalog metadata for a rule name when available.
