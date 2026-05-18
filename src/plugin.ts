@@ -32,16 +32,24 @@ const WARN_SEVERITY = "warn" as const;
 
 /** Default file globs targeted by plugin presets when `files` is omitted. */
 const TSCONFIG_FILES = [
+    "**/.*tsconfig.*.json",
+    "**/tsconfig*.*.json",
+    "**/tsconfig*.json",
     "**/tsconfig-*.json",
     "**/tsconfig.*.json",
     "**/tsconfig.json",
+    "tsconfig*.json",
 ] as const;
 
 /** Default file globs targeted by the jsconfig-focused preset. */
 const JSCONFIG_FILES = [
+    "**/.*jsconfig.*.json",
+    "**/jsconfig*.*.json",
+    "**/jsconfig*.json",
     "**/jsconfig-*.json",
     "**/jsconfig.*.json",
     "**/jsconfig.json",
+    "jsconfig*.json",
 ] as const;
 
 /**

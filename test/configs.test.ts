@@ -24,6 +24,26 @@ interface FlatConfigLike {
     rules?: UnknownRecord;
 }
 
+const expectedDefaultTsconfigFiles = [
+    "**/.*tsconfig.*.json",
+    "**/tsconfig*.*.json",
+    "**/tsconfig*.json",
+    "**/tsconfig-*.json",
+    "**/tsconfig.*.json",
+    "**/tsconfig.json",
+    "tsconfig*.json",
+] as const;
+
+const expectedJsconfigFiles = [
+    "**/.*jsconfig.*.json",
+    "**/jsconfig*.*.json",
+    "**/jsconfig*.json",
+    "**/jsconfig-*.json",
+    "**/jsconfig.*.json",
+    "**/jsconfig.json",
+    "jsconfig*.json",
+] as const;
+
 /**
  * Resolve a named plugin preset config from a dynamic `plugin.configs` map.
  */
@@ -111,11 +131,9 @@ describe("tsconfig plugin configs", () => {
 
             expect(config).toStrictEqual(
                 expect.objectContaining({
-                    files: expect.arrayContaining([
-                        expect.stringContaining(
-                            isJsconfigPreset ? "jsconfig" : "tsconfig"
-                        ),
-                    ]),
+                    files: isJsconfigPreset
+                        ? [...expectedJsconfigFiles]
+                        : [...expectedDefaultTsconfigFiles],
                 })
             );
         }
