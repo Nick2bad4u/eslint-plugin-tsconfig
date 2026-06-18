@@ -382,11 +382,9 @@ const createTsconfigConfigsDefinition = (): TsconfigConfigsContract =>
 
             const configValue = withTsconfigPlugin(
                 {
-                    ...(configKey === "jsconfig"
-                        ? {
-                              files: [...JSCONFIG_FILES],
-                          }
-                        : {}),
+                    ...(configKey === "jsconfig" && {
+                        files: [...JSCONFIG_FILES],
+                    }),
                     name: `tsconfig/${configKey}`,
                     rules,
                 },

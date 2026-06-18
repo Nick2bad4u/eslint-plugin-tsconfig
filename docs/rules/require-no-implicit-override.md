@@ -37,9 +37,9 @@ The auto-fixer adds `"noImplicitOverride": true` to `compilerOptions`.
 
 ```json
 {
-    "compilerOptions": {
-        "strict": true
-    }
+ "compilerOptions": {
+  "strict": true
+ }
 }
 ```
 
@@ -49,10 +49,10 @@ The auto-fixer adds `"noImplicitOverride": true` to `compilerOptions`.
 
 ```json
 {
-    "compilerOptions": {
-        "strict": true,
-        "noImplicitOverride": true
-    }
+ "compilerOptions": {
+  "strict": true,
+  "noImplicitOverride": true
+ }
 }
 ```
 

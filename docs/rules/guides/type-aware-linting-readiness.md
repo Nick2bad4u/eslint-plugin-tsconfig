@@ -31,8 +31,8 @@ Confirm your flat config applies it to the right files:
 import tsconfig from "eslint-plugin-tsconfig";
 
 export default [
-  // The plugin's preset configs already configure the parser and files scope.
-  tsconfig.configs.recommended,
+ // The plugin's preset configs already configure the parser and files scope.
+ tsconfig.configs.recommended,
 ];
 ```
 
@@ -43,14 +43,14 @@ import tsconfig from "eslint-plugin-tsconfig";
 import jsoncParser from "jsonc-eslint-parser";
 
 export default [
-  {
-    files: ["**/tsconfig*.json"],
-    languageOptions: { parser: jsoncParser },
-    plugins: { tsconfig },
-    rules: {
-      "tsconfig/require-strict-mode": "error",
-    },
+ {
+  files: ["**/tsconfig*.json"],
+  languageOptions: { parser: jsoncParser },
+  plugins: { tsconfig },
+  rules: {
+   "tsconfig/require-strict-mode": "error",
   },
+ },
 ];
 ```
 

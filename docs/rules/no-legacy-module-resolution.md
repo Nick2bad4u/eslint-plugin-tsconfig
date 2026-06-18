@@ -40,17 +40,17 @@ The modern replacements are:
 
 ```json
 {
-    "compilerOptions": {
-        "moduleResolution": "node"
-    }
+ "compilerOptions": {
+  "moduleResolution": "node"
+ }
 }
 ```
 
 ```json
 {
-    "compilerOptions": {
-        "moduleResolution": "classic"
-    }
+ "compilerOptions": {
+  "moduleResolution": "classic"
+ }
 }
 ```
 
@@ -60,10 +60,10 @@ For a Node.js ESM project:
 
 ```json
 {
-    "compilerOptions": {
-        "module": "NodeNext",
-        "moduleResolution": "NodeNext"
-    }
+ "compilerOptions": {
+  "module": "NodeNext",
+  "moduleResolution": "NodeNext"
+ }
 }
 ```
 
@@ -71,10 +71,10 @@ For a bundled frontend project:
 
 ```json
 {
-    "compilerOptions": {
-        "module": "ESNext",
-        "moduleResolution": "Bundler"
-    }
+ "compilerOptions": {
+  "module": "ESNext",
+  "moduleResolution": "Bundler"
+ }
 }
 ```
 

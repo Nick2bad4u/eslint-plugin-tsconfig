@@ -45,9 +45,9 @@ The auto-fixer adds `"noUnusedParameters": true` to `compilerOptions`.
 
 ```json
 {
-    "compilerOptions": {
-        "strict": true
-    }
+ "compilerOptions": {
+  "strict": true
+ }
 }
 ```
 
@@ -56,10 +56,10 @@ errors.
 
 ```json
 {
-    "compilerOptions": {
-        "strict": true,
-        "noUnusedParameters": false
-    }
+ "compilerOptions": {
+  "strict": true,
+  "noUnusedParameters": false
+ }
 }
 ```
 
@@ -69,10 +69,10 @@ Explicitly disabled; TypeScript will not report unused function parameters.
 
 ```json
 {
-    "compilerOptions": {
-        "strict": true,
-        "noUnusedParameters": true
-    }
+ "compilerOptions": {
+  "strict": true,
+  "noUnusedParameters": true
+ }
 }
 ```
 

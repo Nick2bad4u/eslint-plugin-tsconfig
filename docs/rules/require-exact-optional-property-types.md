@@ -42,9 +42,9 @@ The auto-fixer adds `"exactOptionalPropertyTypes": true` to `compilerOptions`.
 
 ```json
 {
-    "compilerOptions": {
-        "strict": true
-    }
+ "compilerOptions": {
+  "strict": true
+ }
 }
 ```
 
@@ -55,10 +55,10 @@ explicitly.
 
 ```json
 {
-    "compilerOptions": {
-        "strict": true,
-        "exactOptionalPropertyTypes": true
-    }
+ "compilerOptions": {
+  "strict": true,
+  "exactOptionalPropertyTypes": true
+ }
 }
 ```
 

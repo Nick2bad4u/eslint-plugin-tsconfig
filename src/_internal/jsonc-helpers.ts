@@ -264,7 +264,7 @@ export function insertProperty(
     obj: Readonly<JSONObjectExpression>,
     key: string,
     value: JSONPrimitive,
-    indent = "    "
+    indent: string = " ".repeat(4)
 ): ReturnType<Fixer["insertTextAfter"]> {
     const encodedValue = encodeValue(value);
     const propertyText = `"${key}": ${encodedValue}`;

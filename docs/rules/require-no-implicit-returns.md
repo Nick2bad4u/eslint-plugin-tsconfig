@@ -26,11 +26,11 @@ returns `undefined` from that branch:
 
 ```typescript
 function getLabel(code: number): string {
-    if (code === 1) {
-        return "success";
-    }
-    // ← no return here — TypeScript would allow this without noImplicitReturns
-    // at runtime, callers receive `undefined` instead of a string
+ if (code === 1) {
+  return "success";
+ }
+ // ← no return here — TypeScript would allow this without noImplicitReturns
+ // at runtime, callers receive `undefined` instead of a string
 }
 ```
 
@@ -53,10 +53,10 @@ The auto-fixer adds `"noImplicitReturns": true` to `compilerOptions`.
 
 ```json
 {
-    "compilerOptions": {
-        "target": "ES2022",
-        "module": "NodeNext"
-    }
+ "compilerOptions": {
+  "target": "ES2022",
+  "module": "NodeNext"
+ }
 }
 ```
 
@@ -65,9 +65,9 @@ on some paths are not reported.
 
 ```json
 {
-    "compilerOptions": {
-        "noImplicitReturns": false
-    }
+ "compilerOptions": {
+  "noImplicitReturns": false
+ }
 }
 ```
 
@@ -77,9 +77,9 @@ Explicitly disabled.
 
 ```json
 {
-    "compilerOptions": {
-        "noImplicitReturns": true
-    }
+ "compilerOptions": {
+  "noImplicitReturns": true
+ }
 }
 ```
 

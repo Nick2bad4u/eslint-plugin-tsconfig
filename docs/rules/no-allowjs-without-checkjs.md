@@ -36,10 +36,10 @@ The intended pattern for mixed JS/TS projects is:
 
 ```json
 {
-    "compilerOptions": {
-        "allowJs": true,
-        "checkJs": true
-    }
+ "compilerOptions": {
+  "allowJs": true,
+  "checkJs": true
+ }
 }
 ```
 
@@ -55,9 +55,9 @@ implied and `checkJs` should always be set. This rule is included in the
 
 ```json
 {
-    "compilerOptions": {
-        "allowJs": true
-    }
+ "compilerOptions": {
+  "allowJs": true
+ }
 }
 ```
 
@@ -65,10 +65,10 @@ JavaScript files are compiled but not type-checked.
 
 ```json
 {
-    "compilerOptions": {
-        "allowJs": true,
-        "checkJs": false
-    }
+ "compilerOptions": {
+  "allowJs": true,
+  "checkJs": false
+ }
 }
 ```
 
@@ -78,10 +78,10 @@ Type-checking is explicitly disabled for JavaScript files.
 
 ```json
 {
-    "compilerOptions": {
-        "allowJs": true,
-        "checkJs": true
-    }
+ "compilerOptions": {
+  "allowJs": true,
+  "checkJs": true
+ }
 }
 ```
 
@@ -89,7 +89,7 @@ Both compilation and type-checking are enabled for JavaScript files.
 
 ```json
 {
-    "compilerOptions": {}
+ "compilerOptions": {}
 }
 ```
 

@@ -15,9 +15,7 @@ Then enable it in your Flat Config:
 ```ts
 import tsconfig from "eslint-plugin-tsconfig";
 
-export default [
-    tsconfig.configs.recommended,
-];
+export default [tsconfig.configs.recommended];
 ```
 
 This lints all `tsconfig*.json` files in your project.

@@ -22,42 +22,41 @@ import { createRuleDocsUrl } from "../_internal/rule-docs-url.js";
 
 /** Rule implementation for this tsconfig lint rule. */
 const rule: JsoncRuleModule = createJsoncRule({
-    create(context) {
-        return {
-            JSONObjectExpression(node: Readonly<JSONObjectExpression>) {
-                if (node.parent.type !== "JSONExpressionStatement") return;
-                const co = getCompilerOptions(node);
-                if (!co) return;
+    create: (context) => ({
+        JSONObjectExpression(node: Readonly<JSONObjectExpression>) {
+            if (node.parent.type !== "JSONExpressionStatement") return;
+            const co = getCompilerOptions(node);
+            if (!co) return;
 
-                const incrementalProp: JSONProperty | undefined = findProperty(
-                    co,
-                    "incremental"
-                );
-                if (
-                    !isDefined(incrementalProp) ||
-                    getBooleanValue(incrementalProp) !== true
-                )
-                    return;
+            const incrementalProp: JSONProperty | undefined = findProperty(
+                co,
+                "incremental"
+            );
+            if (
+                !isDefined(incrementalProp) ||
+                getBooleanValue(incrementalProp) !== true
+            )
+                return;
 
-                const tsBuildInfoFileProp: JSONProperty | undefined =
-                    findProperty(co, "tsBuildInfoFile");
-                if (isDefined(tsBuildInfoFileProp)) return;
+            const tsBuildInfoFileProp: JSONProperty | undefined = findProperty(
+                co,
+                "tsBuildInfoFile"
+            );
+            if (isDefined(tsBuildInfoFileProp)) return;
 
-                reportViolation(context, {
-                    fix(fixer) {
-                        return insertProperty(
-                            fixer,
-                            co,
-                            "tsBuildInfoFile",
-                            ".tsbuildinfo"
-                        );
-                    },
-                    loc: incrementalProp.loc,
-                    messageId: "missingTsBuildInfoFile",
-                });
-            },
-        };
-    },
+            reportViolation(context, {
+                fix: (fixer) =>
+                    insertProperty(
+                        fixer,
+                        co,
+                        "tsBuildInfoFile",
+                        ".tsbuildinfo"
+                    ),
+                loc: incrementalProp.loc,
+                messageId: "missingTsBuildInfoFile",
+            });
+        },
+    }),
     meta: {
         docs: {
             description:

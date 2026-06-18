@@ -34,9 +34,9 @@ and gitignore-friendly.
 
 ```json
 {
-    "compilerOptions": {
-        "incremental": true
-    }
+ "compilerOptions": {
+  "incremental": true
+ }
 }
 ```
 
@@ -47,10 +47,10 @@ location that may conflict with other projects.
 
 ```json
 {
-    "compilerOptions": {
-        "incremental": true,
-        "tsBuildInfoFile": ".tsbuildinfo"
-    }
+ "compilerOptions": {
+  "incremental": true,
+  "tsBuildInfoFile": ".tsbuildinfo"
+ }
 }
 ```
 
@@ -58,9 +58,9 @@ Or disable incremental compilation entirely:
 
 ```json
 {
-    "compilerOptions": {
-        "incremental": false
-    }
+ "compilerOptions": {
+  "incremental": false
+ }
 }
 ```
 

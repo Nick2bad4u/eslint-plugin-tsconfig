@@ -29,9 +29,9 @@ across TypeScript upgrades and gives consumers and runtimes a clearer baseline.
 
 ```json
 {
-    "compilerOptions": {
-        "target": "ESNext"
-    }
+ "compilerOptions": {
+  "target": "ESNext"
+ }
 }
 ```
 
@@ -41,9 +41,9 @@ The emitted output target can shift after a routine TypeScript upgrade.
 
 ```json
 {
-    "compilerOptions": {
-        "target": "ES2022"
-    }
+ "compilerOptions": {
+  "target": "ES2022"
+ }
 }
 ```
 

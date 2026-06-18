@@ -86,8 +86,8 @@ describe("jsonc-helpers", () => {
 
         expect(compilerOptionsProperty).toBeDefined();
         expect(nameProperty).toBeDefined();
-        expect(hasProperty(root, "name")).toBeTruthy();
-        expect(hasProperty(root, "missing")).toBeFalsy();
+        expect(hasProperty(root, "name")).toBe(true);
+        expect(hasProperty(root, "missing")).toBe(false);
         expect(getCompilerOptions(root)).toBeDefined();
 
         assertDefined(compilerOptionsProperty);
@@ -102,7 +102,7 @@ describe("jsonc-helpers", () => {
 
         assertDefined(strictProperty);
 
-        expect(getBooleanValue(strictProperty)).toBeTruthy();
+        expect(getBooleanValue(strictProperty)).toBe(true);
 
         expect(getStringValue(nameProperty)).toBe("demo");
     });

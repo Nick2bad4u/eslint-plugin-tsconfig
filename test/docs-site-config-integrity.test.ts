@@ -68,7 +68,7 @@ describe("docusaurus site configuration integrity", () => {
                 chartFile ?? ""
             );
 
-            expect(fs.existsSync(resolvedTargetPath)).toBeTruthy();
+            expect(fs.existsSync(resolvedTargetPath)).toBe(true);
         }
     });
 });

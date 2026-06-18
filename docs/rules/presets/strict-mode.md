@@ -9,7 +9,7 @@ Rules that enforce TypeScript strict mode options beyond the base `strict` flag,
 ## Config key
 
 ```ts
-tsconfig.configs["strict-mode"]
+tsconfig.configs["strict-mode"];
 ```
 
 ## Flat Config example

@@ -23,38 +23,36 @@ import { createRuleDocsUrl } from "../_internal/rule-docs-url.js";
 
 /** Rule implementation for this tsconfig lint rule. */
 const rule: JsoncRuleModule = createJsoncRule({
-    create(context) {
-        return {
-            JSONObjectExpression(node: Readonly<JSONObjectExpression>) {
-                if (node.parent.type !== "JSONExpressionStatement") return;
-                const co = getCompilerOptions(node);
-                if (!co) return;
+    create: (context) => ({
+        JSONObjectExpression(node: Readonly<JSONObjectExpression>) {
+            if (node.parent.type !== "JSONExpressionStatement") return;
+            const co = getCompilerOptions(node);
+            if (!co) return;
 
-                const prop: JSONProperty | undefined = findProperty(
-                    co,
-                    "noFallthroughCasesInSwitch"
-                );
+            const prop: JSONProperty | undefined = findProperty(
+                co,
+                "noFallthroughCasesInSwitch"
+            );
 
-                if (isDefined(prop) && getBooleanValue(prop) === true) return;
+            if (isDefined(prop) && getBooleanValue(prop) === true) return;
 
-                reportViolation(context, {
-                    fix(fixer) {
-                        if (isDefined(prop)) {
-                            return replacePropertyValue(fixer, prop, true);
-                        }
-                        return insertProperty(
-                            fixer,
-                            co,
-                            "noFallthroughCasesInSwitch",
-                            true
-                        );
-                    },
-                    loc: (prop ?? co).loc,
-                    messageId: "missingNoFallthroughCasesInSwitch",
-                });
-            },
-        };
-    },
+            reportViolation(context, {
+                fix(fixer) {
+                    if (isDefined(prop)) {
+                        return replacePropertyValue(fixer, prop, true);
+                    }
+                    return insertProperty(
+                        fixer,
+                        co,
+                        "noFallthroughCasesInSwitch",
+                        true
+                    );
+                },
+                loc: (prop ?? co).loc,
+                messageId: "missingNoFallthroughCasesInSwitch",
+            });
+        },
+    }),
     meta: {
         docs: {
             description:

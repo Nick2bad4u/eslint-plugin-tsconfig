@@ -234,7 +234,7 @@ const withGeneratedRuleCaseNames = (
 const patchRuleTesterRunWithGeneratedCaseNames = (
     tester: Readonly<RuleTester>
 ): PluginRuleTester => {
-    const writableTester = tester as RuleTester; // NOSONAR typescript:S4325 -- Readonly<RuleTester> cast to RuleTester removes the wrapper; structural types are identical and the cast is intentional
+    const writableTester = tester as RuleTester; // NOSONAR TypeScript:S4325 -- Readonly<RuleTester> cast to RuleTester removes the wrapper; structural types are identical and the cast is intentional
     const originalRun = writableTester.run.bind(writableTester);
     const wrappedRun: PluginRuleTester["run"] = (
         ruleName,
@@ -243,12 +243,12 @@ const patchRuleTesterRunWithGeneratedCaseNames = (
     ) => {
         originalRun(
             ruleName,
-            ruleModule as Parameters<RuleTester["run"]>[1], // NOSONAR typescript:S4325 -- cast narrows to exact overload parameter type expected by RuleTester.run
+            ruleModule as Parameters<RuleTester["run"]>[1], // NOSONAR TypeScript:S4325 -- cast narrows to exact overload parameter type expected by RuleTester.run
             withGeneratedRuleCaseNames(ruleName, runCases)
         );
     };
-    writableTester.run = wrappedRun; // NOSONAR typescript:S4325 -- wrappedRun signature slightly differs; double-cast bridges the gap safely
-    return writableTester as unknown as PluginRuleTester; // NOSONAR typescript:S4325 -- RuleTester and PluginRuleTester share same shape; cast is a safe branded-type bridge
+    writableTester.run = wrappedRun; // NOSONAR TypeScript:S4325 -- wrappedRun signature slightly differs; double-cast bridges the gap safely
+    return writableTester as unknown as PluginRuleTester; // NOSONAR TypeScript:S4325 -- RuleTester and PluginRuleTester share same shape; cast is a safe branded-type bridge
 };
 
 /**

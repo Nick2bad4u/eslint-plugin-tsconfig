@@ -35,7 +35,7 @@ feedback from generated files instead of source files.
 
 ```json
 {
-  "include": ["src", "dist"]
+ "include": ["src", "dist"]
 }
 ```
 
@@ -45,13 +45,13 @@ TypeScript will attempt to process files in `dist/`, which are build outputs.
 
 ```json
 {
-  "include": ["src"]
+ "include": ["src"]
 }
 ```
 
 ```json
 {
-  "include": ["./src", "./packages/*/src"]
+ "include": ["./src", "./packages/*/src"]
 }
 ```
 

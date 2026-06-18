@@ -9,7 +9,7 @@ Rules that enforce best practices for TypeScript emit (output) configuration, in
 ## Config key
 
 ```ts
-tsconfig.configs["emit-config"]
+tsconfig.configs["emit-config"];
 ```
 
 ## Flat Config example

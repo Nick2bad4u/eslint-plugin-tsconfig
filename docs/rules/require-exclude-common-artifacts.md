@@ -36,8 +36,8 @@ The auto-fixer appends any missing entries to the `exclude` array.
 
 ```json
 {
-    "include": ["src"],
-    "exclude": ["dist"]
+ "include": ["src"],
+ "exclude": ["dist"]
 }
 ```
 
@@ -48,8 +48,8 @@ longer applies its built-in default exclusion.
 
 ```json
 {
-    "include": ["src"],
-    "exclude": ["node_modules", "dist"]
+ "include": ["src"],
+ "exclude": ["node_modules", "dist"]
 }
 ```
 

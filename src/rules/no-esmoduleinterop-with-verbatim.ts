@@ -22,46 +22,46 @@ import { createRuleDocsUrl } from "../_internal/rule-docs-url.js";
 
 /** Rule implementation for this tsconfig lint rule. */
 const rule: JsoncRuleModule = createJsoncRule({
-    create(context) {
-        return {
-            JSONObjectExpression(node: Readonly<JSONObjectExpression>) {
-                if (node.parent.type !== "JSONExpressionStatement") return;
-                const co = getCompilerOptions(node);
-                if (!co) return;
+    create: (context) => ({
+        JSONObjectExpression(node: Readonly<JSONObjectExpression>) {
+            if (node.parent.type !== "JSONExpressionStatement") return;
+            const co = getCompilerOptions(node);
+            if (!co) return;
 
-                const esModuleInteropProp: JSONProperty | undefined =
-                    findProperty(co, "esModuleInterop");
-                if (
-                    !isDefined(esModuleInteropProp) ||
-                    getBooleanValue(esModuleInteropProp) !== true
-                )
-                    return;
+            const esModuleInteropProp: JSONProperty | undefined = findProperty(
+                co,
+                "esModuleInterop"
+            );
+            if (
+                !isDefined(esModuleInteropProp) ||
+                getBooleanValue(esModuleInteropProp) !== true
+            )
+                return;
 
-                const verbatimProp: JSONProperty | undefined = findProperty(
-                    co,
-                    "verbatimModuleSyntax"
-                );
-                if (
-                    !isDefined(verbatimProp) ||
-                    getBooleanValue(verbatimProp) !== true
-                )
-                    return;
+            const verbatimProp: JSONProperty | undefined = findProperty(
+                co,
+                "verbatimModuleSyntax"
+            );
+            if (
+                !isDefined(verbatimProp) ||
+                getBooleanValue(verbatimProp) !== true
+            )
+                return;
 
-                reportViolation(context, {
-                    fix(fixer) {
-                        const removalRange = rangeWithAdjacentComma(
-                            context.sourceCode.text,
-                            esModuleInteropProp.range
-                        );
+            reportViolation(context, {
+                fix(fixer) {
+                    const removalRange = rangeWithAdjacentComma(
+                        context.sourceCode.text,
+                        esModuleInteropProp.range
+                    );
 
-                        return fixer.removeRange(removalRange);
-                    },
-                    loc: esModuleInteropProp.loc,
-                    messageId: "conflictingFlags",
-                });
-            },
-        };
-    },
+                    return fixer.removeRange(removalRange);
+                },
+                loc: esModuleInteropProp.loc,
+                messageId: "conflictingFlags",
+            });
+        },
+    }),
     meta: {
         docs: {
             description:

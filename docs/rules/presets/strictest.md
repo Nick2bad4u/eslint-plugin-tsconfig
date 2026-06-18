@@ -9,7 +9,7 @@ Use when you want the strongest available compiler-strictness enforcement this p
 ## Config key
 
 ```ts
-tsconfig.configs.strictest
+tsconfig.configs.strictest;
 ```
 
 ## Flat Config example

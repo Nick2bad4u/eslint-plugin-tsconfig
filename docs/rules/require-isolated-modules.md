@@ -30,8 +30,8 @@ The most common culprit is `const enum`:
 ```typescript
 // shared.ts
 export const enum Direction {
-    Up,
-    Down,
+ Up,
+ Down,
 }
 
 // consumer.ts
@@ -59,10 +59,10 @@ The auto-fixer adds `"isolatedModules": true` to `compilerOptions`.
 
 ```json
 {
-    "compilerOptions": {
-        "module": "ESNext",
-        "moduleResolution": "Bundler"
-    }
+ "compilerOptions": {
+  "module": "ESNext",
+  "moduleResolution": "Bundler"
+ }
 }
 ```
 
@@ -70,9 +70,9 @@ The auto-fixer adds `"isolatedModules": true` to `compilerOptions`.
 
 ```json
 {
-    "compilerOptions": {
-        "isolatedModules": false
-    }
+ "compilerOptions": {
+  "isolatedModules": false
+ }
 }
 ```
 
@@ -83,11 +83,11 @@ runtime when transpiled by a single-file tool.
 
 ```json
 {
-    "compilerOptions": {
-        "module": "ESNext",
-        "moduleResolution": "Bundler",
-        "isolatedModules": true
-    }
+ "compilerOptions": {
+  "module": "ESNext",
+  "moduleResolution": "Bundler",
+  "isolatedModules": true
+ }
 }
 ```
 

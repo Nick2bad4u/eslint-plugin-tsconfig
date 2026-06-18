@@ -13,7 +13,7 @@ import { describe, expect, it } from "vitest";
 import tsconfigPlugin from "../src/plugin";
 
 /** Process environment alias for lint-safe environment access. */
-const processEnvironment = globalThis.process.env;
+const processEnvironment = process.env;
 
 /** `true` when tests are running in a CI environment. */
 const isCiEnvironment = processEnvironment["CI"] === "true";

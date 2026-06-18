@@ -39,10 +39,10 @@ The auto-fixer adds `"declaration": true` to `compilerOptions`.
 
 ```json
 {
-    "compilerOptions": {
-        "composite": true,
-        "outDir": "./dist"
-    }
+ "compilerOptions": {
+  "composite": true,
+  "outDir": "./dist"
+ }
 }
 ```
 
@@ -50,10 +50,10 @@ The auto-fixer adds `"declaration": true` to `compilerOptions`.
 
 ```json
 {
-    "compilerOptions": {
-        "composite": true,
-        "declaration": false
-    }
+ "compilerOptions": {
+  "composite": true,
+  "declaration": false
+ }
 }
 ```
 
@@ -63,11 +63,11 @@ The auto-fixer adds `"declaration": true` to `compilerOptions`.
 
 ```json
 {
-    "compilerOptions": {
-        "composite": true,
-        "declaration": true,
-        "outDir": "./dist"
-    }
+ "compilerOptions": {
+  "composite": true,
+  "declaration": true,
+  "outDir": "./dist"
+ }
 }
 ```
 

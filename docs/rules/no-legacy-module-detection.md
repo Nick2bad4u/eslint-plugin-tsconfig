@@ -51,10 +51,10 @@ every file is always a module regardless of content.
 
 ```json
 {
-    "compilerOptions": {
-        "module": "NodeNext",
-        "moduleDetection": "legacy"
-    }
+ "compilerOptions": {
+  "module": "NodeNext",
+  "moduleDetection": "legacy"
+ }
 }
 ```
 
@@ -64,10 +64,10 @@ Legacy detection is incompatible with `NodeNext` module resolution.
 
 ```json
 {
-    "compilerOptions": {
-        "module": "NodeNext",
-        "moduleDetection": "auto"
-    }
+ "compilerOptions": {
+  "module": "NodeNext",
+  "moduleDetection": "auto"
+ }
 }
 ```
 
@@ -75,11 +75,11 @@ Legacy detection is incompatible with `NodeNext` module resolution.
 
 ```json
 {
-    "compilerOptions": {
-        "module": "ESNext",
-        "moduleResolution": "Bundler",
-        "moduleDetection": "force"
-    }
+ "compilerOptions": {
+  "module": "ESNext",
+  "moduleResolution": "Bundler",
+  "moduleDetection": "force"
+ }
 }
 ```
 
@@ -87,9 +87,9 @@ Legacy detection is incompatible with `NodeNext` module resolution.
 
 ```json
 {
-    "compilerOptions": {
-        "module": "NodeNext"
-    }
+ "compilerOptions": {
+  "module": "NodeNext"
+ }
 }
 ```
 

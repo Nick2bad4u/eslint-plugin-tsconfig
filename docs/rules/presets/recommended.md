@@ -9,7 +9,7 @@ Use as the default baseline for most TypeScript codebases.
 ## Config key
 
 ```ts
-tsconfig.configs.recommended
+tsconfig.configs.recommended;
 ```
 
 ## Flat Config example
@@ -32,22 +32,22 @@ import tsParser from "@typescript-eslint/parser";
 import tsconfig from "eslint-plugin-tsconfig";
 
 export default [
-    {
-        files: ["src/**/*.ts", "src/**/*.tsx"],
-        languageOptions: {
-            parser: tsParser,
-            parserOptions: {
-                ecmaVersion: "latest",
-                sourceType: "module",
-            },
-        },
-        plugins: {
-            tsconfig,
-        },
-        rules: {
-            ...tsconfig.configs.recommended.rules,
-        },
-    },
+ {
+  files: ["src/**/*.ts", "src/**/*.tsx"],
+  languageOptions: {
+   parser: tsParser,
+   parserOptions: {
+    ecmaVersion: "latest",
+    sourceType: "module",
+   },
+  },
+  plugins: {
+   tsconfig,
+  },
+  rules: {
+   ...tsconfig.configs.recommended.rules,
+  },
+ },
 ];
 ```
 

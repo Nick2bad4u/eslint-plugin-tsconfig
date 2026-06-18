@@ -21,40 +21,35 @@ import { createRuleDocsUrl } from "../_internal/rule-docs-url.js";
 
 /** Rule implementation for this tsconfig lint rule. */
 const rule: JsoncRuleModule = createJsoncRule({
-    create(context) {
-        return {
-            JSONObjectExpression(node: Readonly<JSONObjectExpression>) {
-                if (node.parent.type !== "JSONExpressionStatement") return;
-                const co = getCompilerOptions(node);
-                if (!co) return;
+    create: (context) => ({
+        JSONObjectExpression(node: Readonly<JSONObjectExpression>) {
+            if (node.parent.type !== "JSONExpressionStatement") return;
+            const co = getCompilerOptions(node);
+            if (!co) return;
 
-                const allowJsProp: JSONProperty | undefined = findProperty(
-                    co,
-                    "allowJs"
-                );
-                if (
-                    !isDefined(allowJsProp) ||
-                    getBooleanValue(allowJsProp) !== true
-                )
-                    return;
+            const allowJsProp: JSONProperty | undefined = findProperty(
+                co,
+                "allowJs"
+            );
+            if (
+                !isDefined(allowJsProp) ||
+                getBooleanValue(allowJsProp) !== true
+            )
+                return;
 
-                const checkJsProp: JSONProperty | undefined = findProperty(
-                    co,
-                    "checkJs"
-                );
-                if (
-                    isDefined(checkJsProp) &&
-                    getBooleanValue(checkJsProp) === true
-                )
-                    return;
+            const checkJsProp: JSONProperty | undefined = findProperty(
+                co,
+                "checkJs"
+            );
+            if (isDefined(checkJsProp) && getBooleanValue(checkJsProp) === true)
+                return;
 
-                reportViolation(context, {
-                    loc: allowJsProp.loc,
-                    messageId: "allowJsWithoutCheckJs",
-                });
-            },
-        };
-    },
+            reportViolation(context, {
+                loc: allowJsProp.loc,
+                messageId: "allowJsWithoutCheckJs",
+            });
+        },
+    }),
     meta: {
         docs: {
             description:

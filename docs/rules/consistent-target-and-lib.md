@@ -40,10 +40,10 @@ This rule prevents that one-way mismatch.
 
 ```json
 {
-    "compilerOptions": {
-        "target": "ES2020",
-        "lib": ["ES2022", "DOM"]
-    }
+ "compilerOptions": {
+  "target": "ES2020",
+  "lib": ["ES2022", "DOM"]
+ }
 }
 ```
 
@@ -54,10 +54,10 @@ The type checker accepts `ES2022` APIs even though the configured target is only
 
 ```json
 {
-    "compilerOptions": {
-        "target": "ES2022",
-        "lib": ["ES2022", "DOM"]
-    }
+ "compilerOptions": {
+  "target": "ES2022",
+  "lib": ["ES2022", "DOM"]
+ }
 }
 ```
 
@@ -65,10 +65,10 @@ Or use a more conservative `lib`:
 
 ```json
 {
-    "compilerOptions": {
-        "target": "ES2022",
-        "lib": ["ES2020", "DOM"]
-    }
+ "compilerOptions": {
+  "target": "ES2022",
+  "lib": ["ES2020", "DOM"]
+ }
 }
 ```
 

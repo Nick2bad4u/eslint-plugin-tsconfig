@@ -35,10 +35,10 @@ the runtime or bundler that will eventually execute them.
 
 ```json
 {
-  "compilerOptions": {
-    "module": "NodeNext",
-    "moduleResolution": "node"
-  }
+ "compilerOptions": {
+  "module": "NodeNext",
+  "moduleResolution": "node"
+ }
 }
 ```
 
@@ -49,10 +49,10 @@ ESM rules correctly.
 
 ```json
 {
-  "compilerOptions": {
-    "module": "NodeNext",
-    "moduleResolution": "NodeNext"
-  }
+ "compilerOptions": {
+  "module": "NodeNext",
+  "moduleResolution": "NodeNext"
+ }
 }
 ```
 
@@ -60,10 +60,10 @@ For preserved ESM intended for bundlers:
 
 ```json
 {
-  "compilerOptions": {
-    "module": "Preserve",
-    "moduleResolution": "Bundler"
-  }
+ "compilerOptions": {
+  "module": "Preserve",
+  "moduleResolution": "Bundler"
+ }
 }
 ```
 

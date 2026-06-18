@@ -41,9 +41,9 @@ TypeScript built-in libraries if that is the specific pain point.
 
 ```json
 {
-    "compilerOptions": {
-        "skipLibCheck": true
-    }
+ "compilerOptions": {
+  "skipLibCheck": true
+ }
 }
 ```
 
@@ -53,9 +53,9 @@ Remove the option entirely or set it to `false`:
 
 ```json
 {
-    "compilerOptions": {
-        "strict": true
-    }
+ "compilerOptions": {
+  "strict": true
+ }
 }
 ```
 
@@ -63,9 +63,9 @@ If only the built-in TypeScript lib files are causing issues:
 
 ```json
 {
-    "compilerOptions": {
-        "skipDefaultLibCheck": true
-    }
+ "compilerOptions": {
+  "skipDefaultLibCheck": true
+ }
 }
 ```
 

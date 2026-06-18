@@ -1,24 +1,24 @@
+import type { SidebarsConfig } from "@docusaurus/plugin-content-docs";
+
 /**
  * @packageDocumentation
  * Dynamic sidebar generation for plugin rule documentation sections.
  */
 import { readdirSync } from "node:fs";
-import { dirname, join } from "node:path";
+import * as path from "node:path";
 import { fileURLToPath } from "node:url";
 
-import type { SidebarsConfig } from "@docusaurus/plugin-content-docs";
-
 /** Minimal document item shape used by generated rule categories. */
-type SidebarDocItem = {
-    readonly label: string;
+interface SidebarDocItem {
     readonly id: string;
+    readonly label: string;
     readonly type: "doc";
-};
+}
 
 /** Directory containing this sidebar module. */
-const sidebarDirectoryPath = dirname(fileURLToPath(import.meta.url));
+const sidebarDirectoryPath = path.dirname(fileURLToPath(import.meta.url));
 /** Directory containing generated rule docs consumed by the sidebar. */
-const rulesDirectoryPath = join(sidebarDirectoryPath, "..", "rules");
+const rulesDirectoryPath = path.join(sidebarDirectoryPath, "..", "rules");
 
 /** Check whether a directory entry name is a markdown file. */
 const isMarkdownFile = (fileName: string): boolean => fileName.endsWith(".md");
@@ -32,7 +32,7 @@ const allRuleDocIds = readdirSync(rulesDirectoryPath, {
 })
     .filter((entry) => entry.isFile() && isMarkdownFile(entry.name))
     .map((entry) => toRuleDocId(entry.name))
-    .sort((left, right) => left.localeCompare(right));
+    .toSorted((left, right) => left.localeCompare(right));
 
 /** Build sidebar doc items for rule docs matching a given filename prefix. */
 const createRuleItemsByPrefix = (prefix: string): SidebarDocItem[] =>
@@ -72,14 +72,6 @@ const sidebars = {
             customProps: {
                 badge: "guides",
             },
-            type: "category",
-            label: "🧭 Adoption & Rollout",
-            link: {
-                type: "generated-index",
-                title: "Adoption & Rollout",
-                description:
-                    "Shared migration, rollout, and fix-safety guidance for rule adoption.",
-            },
             items: [
                 {
                     id: "guides/adoption-checklist",
@@ -102,18 +94,20 @@ const sidebars = {
                     type: "doc",
                 },
             ],
+            label: "🧭 Adoption & Rollout",
+            link: {
+                description:
+                    "Shared migration, rollout, and fix-safety guidance for rule adoption.",
+                title: "Adoption & Rollout",
+                type: "generated-index",
+            },
+            type: "category",
         },
         {
             className: "sb-cat-presets",
             collapsed: true,
             customProps: {
                 badge: "presets",
-            },
-            type: "category",
-            label: "Presets",
-            link: {
-                type: "doc",
-                id: "presets/index",
             },
             items: [
                 {
@@ -183,21 +177,18 @@ const sidebars = {
                     type: "doc",
                 },
             ],
+            label: "Presets",
+            link: {
+                id: "presets/index",
+                type: "doc",
+            },
+            type: "category",
         },
         {
             className: "sb-cat-rules",
             collapsed: true,
             customProps: {
                 badge: "rules",
-            },
-            type: "category",
-            label: "Rules",
-            link: {
-                type: "generated-index",
-                title: "Rule Reference",
-                slug: "/",
-                description:
-                    "Rule documentation for every eslint-plugin-tsconfig rule.",
             },
             items: [
                 {
@@ -207,15 +198,15 @@ const sidebars = {
                     customProps: {
                         badge: "consistent",
                     },
-                    type: "category",
+                    items: consistentRuleItems,
                     label: "consistent",
                     link: {
-                        type: "generated-index",
-                        title: "Consistency Rules",
                         description:
                             "Rules that enforce consistent tsconfig.json option combinations.",
+                        title: "Consistency Rules",
+                        type: "generated-index",
                     },
-                    items: consistentRuleItems,
+                    type: "category",
                 },
                 {
                     className: "sb-cat-rules-no",
@@ -224,15 +215,15 @@ const sidebars = {
                     customProps: {
                         badge: "no",
                     },
-                    type: "category",
+                    items: noRuleItems,
                     label: "no",
                     link: {
-                        type: "generated-index",
-                        title: "No Rules",
                         description:
                             "Rules that forbid problematic or incorrect tsconfig.json options.",
+                        title: "No Rules",
+                        type: "generated-index",
                     },
-                    items: noRuleItems,
+                    type: "category",
                 },
                 {
                     className: "sb-cat-rules-require",
@@ -241,17 +232,26 @@ const sidebars = {
                     customProps: {
                         badge: "require",
                     },
-                    type: "category",
+                    items: requireRuleItems,
                     label: "require",
                     link: {
-                        type: "generated-index",
-                        title: "Require Rules",
                         description:
                             "Rules that require specific tsconfig.json options to be present and correctly set.",
+                        title: "Require Rules",
+                        type: "generated-index",
                     },
-                    items: requireRuleItems,
+                    type: "category",
                 },
             ],
+            label: "Rules",
+            link: {
+                description:
+                    "Rule documentation for every eslint-plugin-tsconfig rule.",
+                slug: "/",
+                title: "Rule Reference",
+                type: "generated-index",
+            },
+            type: "category",
         },
     ],
 } satisfies SidebarsConfig;

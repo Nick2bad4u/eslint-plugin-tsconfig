@@ -18,7 +18,7 @@ const RULES_SECTION_SNAPSHOT_PATH = path.join(
     "__snapshots__",
     "readme-rules-section.generated.md"
 );
-const processEnvironment = globalThis.process.env;
+const processEnvironment = process.env;
 const SHOULD_SYNC_README_IN_UPDATE_MODE =
     arrayIncludes(process.argv, "-u") ||
     arrayIncludes(process.argv, "--update") ||

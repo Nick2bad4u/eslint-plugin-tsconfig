@@ -16,12 +16,11 @@ Enable one preset in your Flat Config:
 ```ts
 import tsconfig from "eslint-plugin-tsconfig";
 
-export default [
-    tsconfig.configs.recommended,
-];
+export default [tsconfig.configs.recommended];
 ```
 
 Each preset automatically sets:
+
 - `files: ["**/*.{json,jsonc}"]` (targeting `tsconfig*.json` files)
 - `languageOptions.parser` set to `jsonc-eslint-parser`
 
@@ -34,18 +33,18 @@ import * as jsoncParser from "jsonc-eslint-parser";
 import tsconfig from "eslint-plugin-tsconfig";
 
 export default [
-    {
-        files: ["**/tsconfig*.json"],
-        languageOptions: {
-            parser: jsoncParser,
-        },
-        plugins: {
-            tsconfig,
-        },
-        rules: {
-            ...tsconfig.configs.recommended.rules,
-        },
-    },
+ {
+  files: ["**/tsconfig*.json"],
+  languageOptions: {
+   parser: jsoncParser,
+  },
+  plugins: {
+   tsconfig,
+  },
+  rules: {
+   ...tsconfig.configs.recommended.rules,
+  },
+ },
 ];
 ```
 

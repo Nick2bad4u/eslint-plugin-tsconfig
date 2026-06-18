@@ -33,20 +33,20 @@ The auto-fixer adds `"declarationMap": true` to `compilerOptions`.
 
 ```json
 {
-    "compilerOptions": {
-        "declaration": true,
-        "outDir": "./dist"
-    }
+ "compilerOptions": {
+  "declaration": true,
+  "outDir": "./dist"
+ }
 }
 ```
 
 ```json
 {
-    "compilerOptions": {
-        "declaration": true,
-        "declarationMap": false,
-        "outDir": "./dist"
-    }
+ "compilerOptions": {
+  "declaration": true,
+  "declarationMap": false,
+  "outDir": "./dist"
+ }
 }
 ```
 
@@ -54,11 +54,11 @@ The auto-fixer adds `"declarationMap": true` to `compilerOptions`.
 
 ```json
 {
-    "compilerOptions": {
-        "declaration": true,
-        "declarationMap": true,
-        "outDir": "./dist"
-    }
+ "compilerOptions": {
+  "declaration": true,
+  "declarationMap": true,
+  "outDir": "./dist"
+ }
 }
 ```
 

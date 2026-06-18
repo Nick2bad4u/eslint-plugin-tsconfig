@@ -1,3 +1,5 @@
+import type { ArrayValues } from "type-fest";
+
 /**
  * @packageDocumentation
  * Shared tsconfig preset/config reference constants and type guards.
@@ -28,7 +30,7 @@ export type TsconfigConfigMetadata = Readonly<{
 }>;
 
 /** Canonical flat-config preset key type exposed through `plugin.configs`. */
-export type TsconfigConfigName = (typeof tsconfigConfigNames)[number];
+export type TsconfigConfigName = ArrayValues<typeof tsconfigConfigNames>;
 
 /**
  * Canonical metadata for every exported `tsconfig` preset key.

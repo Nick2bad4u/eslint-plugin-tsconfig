@@ -40,10 +40,10 @@ any default imports of CJS modules to namespace-style imports.
 
 ```json
 {
-    "compilerOptions": {
-        "esModuleInterop": true,
-        "verbatimModuleSyntax": true
-    }
+ "compilerOptions": {
+  "esModuleInterop": true,
+  "verbatimModuleSyntax": true
+ }
 }
 ```
 
@@ -56,9 +56,9 @@ Use `verbatimModuleSyntax` alone for ESM-first codebases:
 
 ```json
 {
-    "compilerOptions": {
-        "verbatimModuleSyntax": true
-    }
+ "compilerOptions": {
+  "verbatimModuleSyntax": true
+ }
 }
 ```
 
@@ -66,9 +66,9 @@ Or use `esModuleInterop` alone for CJS-interop codebases:
 
 ```json
 {
-    "compilerOptions": {
-        "esModuleInterop": true
-    }
+ "compilerOptions": {
+  "esModuleInterop": true
+ }
 }
 ```
 

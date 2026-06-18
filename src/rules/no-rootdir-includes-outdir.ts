@@ -22,53 +22,48 @@ import { createRuleDocsUrl } from "../_internal/rule-docs-url.js";
 
 /** Rule implementation for this tsconfig lint rule. */
 const rule: JsoncRuleModule = createJsoncRule({
-    create(context) {
-        return {
-            JSONObjectExpression(node: Readonly<JSONObjectExpression>) {
-                if (node.parent.type !== "JSONExpressionStatement") return;
-                const co = getCompilerOptions(node);
-                if (!co) return;
+    create: (context) => ({
+        JSONObjectExpression(node: Readonly<JSONObjectExpression>) {
+            if (node.parent.type !== "JSONExpressionStatement") return;
+            const co = getCompilerOptions(node);
+            if (!co) return;
 
-                const rootDirProp: JSONProperty | undefined = findProperty(
-                    co,
-                    "rootDir"
-                );
-                const outDirProp: JSONProperty | undefined = findProperty(
-                    co,
-                    "outDir"
-                );
-                if (!isDefined(rootDirProp) || !isDefined(outDirProp)) return;
+            const rootDirProp: JSONProperty | undefined = findProperty(
+                co,
+                "rootDir"
+            );
+            const outDirProp: JSONProperty | undefined = findProperty(
+                co,
+                "outDir"
+            );
+            if (!isDefined(rootDirProp) || !isDefined(outDirProp)) return;
 
-                const rootDirValue = getStringValue(rootDirProp);
-                const outDirValue = getStringValue(outDirProp);
-                if (!isDefined(rootDirValue) || !isDefined(outDirValue)) return;
+            const rootDirValue = getStringValue(rootDirProp);
+            const outDirValue = getStringValue(outDirProp);
+            if (!isDefined(rootDirValue) || !isDefined(outDirValue)) return;
 
-                const tsconfigDir = path.dirname(context.filename);
-                const normalizedRoot = path.normalize(
-                    path.resolve(tsconfigDir, rootDirValue)
-                );
-                const normalizedOut = path.normalize(
-                    path.resolve(tsconfigDir, outDirValue)
-                );
-                const relativeOutDir = path.relative(
-                    normalizedRoot,
-                    normalizedOut
-                );
-                if (
-                    relativeOutDir !== "" &&
-                    (relativeOutDir.startsWith("..") ||
-                        path.isAbsolute(relativeOutDir))
-                )
-                    return;
+            const tsconfigDir = path.dirname(context.filename);
+            const normalizedRoot = path.normalize(
+                path.resolve(tsconfigDir, rootDirValue)
+            );
+            const normalizedOut = path.normalize(
+                path.resolve(tsconfigDir, outDirValue)
+            );
+            const relativeOutDir = path.relative(normalizedRoot, normalizedOut);
+            if (
+                relativeOutDir !== "" &&
+                (relativeOutDir.startsWith("..") ||
+                    path.isAbsolute(relativeOutDir))
+            )
+                return;
 
-                reportViolation(context, {
-                    data: { outDir: outDirValue, rootDir: rootDirValue },
-                    loc: outDirProp.loc,
-                    messageId: "rootDirIncludesOutDir",
-                });
-            },
-        };
-    },
+            reportViolation(context, {
+                data: { outDir: outDirValue, rootDir: rootDirValue },
+                loc: outDirProp.loc,
+                messageId: "rootDirIncludesOutDir",
+            });
+        },
+    }),
     meta: {
         docs: {
             description:

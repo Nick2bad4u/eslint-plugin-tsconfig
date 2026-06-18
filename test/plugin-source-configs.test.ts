@@ -87,7 +87,7 @@ describe("source plugin config wiring", () => {
         for (const configName of tsconfigConfigNames) {
             expect(
                 tsconfigConfigMetadataByName[configName].requiresTypeChecking
-            ).toBeFalsy();
+            ).toBe(false);
         }
     });
 

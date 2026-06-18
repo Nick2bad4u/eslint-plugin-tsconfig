@@ -55,10 +55,10 @@ The auto-fixer adds `"forceConsistentCasingInFileNames": true` to
 
 ```json
 {
-    "compilerOptions": {
-        "target": "ES2022",
-        "module": "NodeNext"
-    }
+ "compilerOptions": {
+  "target": "ES2022",
+  "module": "NodeNext"
+ }
 }
 ```
 
@@ -67,9 +67,9 @@ reported and may silently break on Linux CI.
 
 ```json
 {
-    "compilerOptions": {
-        "forceConsistentCasingInFileNames": false
-    }
+ "compilerOptions": {
+  "forceConsistentCasingInFileNames": false
+ }
 }
 ```
 
@@ -79,11 +79,11 @@ Explicitly disabled — cross-platform import casing errors are suppressed.
 
 ```json
 {
-    "compilerOptions": {
-        "target": "ES2022",
-        "module": "NodeNext",
-        "forceConsistentCasingInFileNames": true
-    }
+ "compilerOptions": {
+  "target": "ES2022",
+  "module": "NodeNext",
+  "forceConsistentCasingInFileNames": true
+ }
 }
 ```
 

@@ -96,7 +96,7 @@ describe("rule-catalog", () => {
     it("reports valid baseline catalog integrity", () => {
         expect.hasAssertions();
         expect.hasAssertions();
-        expect(validateRuleCatalogIntegrity()).toBeTruthy();
+        expect(validateRuleCatalogIntegrity()).toBe(true);
     });
 
     it("detects duplicate rule ids", () => {
@@ -112,7 +112,7 @@ describe("rule-catalog", () => {
                 ruleId: firstEntry.ruleId,
             },
             () => {
-                expect(validateRuleCatalogIntegrity()).toBeFalsy();
+                expect(validateRuleCatalogIntegrity()).toBe(false);
             }
         );
     });
@@ -127,7 +127,7 @@ describe("rule-catalog", () => {
                 ruleNumber: 99,
             },
             () => {
-                expect(validateRuleCatalogIntegrity()).toBeFalsy();
+                expect(validateRuleCatalogIntegrity()).toBe(false);
             }
         );
     });
@@ -142,7 +142,7 @@ describe("rule-catalog", () => {
                 ruleId: "R999",
             },
             () => {
-                expect(validateRuleCatalogIntegrity()).toBeFalsy();
+                expect(validateRuleCatalogIntegrity()).toBe(false);
             }
         );
     });

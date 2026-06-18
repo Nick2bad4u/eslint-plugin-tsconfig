@@ -31,8 +31,8 @@ notations interchangeably:
 
 ```typescript
 interface Config {
-    strict: boolean; // declared property
-    [key: string]: unknown; // index signature
+ strict: boolean; // declared property
+ [key: string]: unknown; // index signature
 }
 
 declare const cfg: Config;
@@ -65,10 +65,10 @@ The auto-fixer adds `"noPropertyAccessFromIndexSignature": true` to
 
 ```json
 {
-    "compilerOptions": {
-        "strict": true,
-        "noUncheckedIndexedAccess": true
-    }
+ "compilerOptions": {
+  "strict": true,
+  "noUncheckedIndexedAccess": true
+ }
 }
 ```
 
@@ -77,9 +77,9 @@ allowed for index-signature accesses.
 
 ```json
 {
-    "compilerOptions": {
-        "noPropertyAccessFromIndexSignature": false
-    }
+ "compilerOptions": {
+  "noPropertyAccessFromIndexSignature": false
+ }
 }
 ```
 
@@ -89,11 +89,11 @@ Explicitly disabled.
 
 ```json
 {
-    "compilerOptions": {
-        "strict": true,
-        "noUncheckedIndexedAccess": true,
-        "noPropertyAccessFromIndexSignature": true
-    }
+ "compilerOptions": {
+  "strict": true,
+  "noUncheckedIndexedAccess": true,
+  "noPropertyAccessFromIndexSignature": true
+ }
 }
 ```
 

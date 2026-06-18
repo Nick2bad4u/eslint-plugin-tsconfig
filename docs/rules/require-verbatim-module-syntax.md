@@ -45,10 +45,10 @@ The auto-fixer adds `"verbatimModuleSyntax": true` to `compilerOptions`.
 
 ```json
 {
-    "compilerOptions": {
-        "module": "NodeNext",
-        "moduleResolution": "NodeNext"
-    }
+ "compilerOptions": {
+  "module": "NodeNext",
+  "moduleResolution": "NodeNext"
+ }
 }
 ```
 
@@ -59,11 +59,11 @@ Type-only imports may be emitted as value imports, silently resolving to
 
 ```json
 {
-    "compilerOptions": {
-        "module": "NodeNext",
-        "moduleResolution": "NodeNext",
-        "verbatimModuleSyntax": true
-    }
+ "compilerOptions": {
+  "module": "NodeNext",
+  "moduleResolution": "NodeNext",
+  "verbatimModuleSyntax": true
+ }
 }
 ```
 

@@ -26,10 +26,10 @@ always `any`:
 
 ```typescript
 try {
-    doSomething();
+ doSomething();
 } catch (error) {
-    // error: any — you can call anything on it without TypeScript objecting
-    console.log(error.message); // no type error, but may be undefined
+ // error: any — you can call anything on it without TypeScript objecting
+ console.log(error.message); // no type error, but may be undefined
 }
 ```
 
@@ -39,12 +39,12 @@ forcing you to narrow it before use:
 
 ```typescript
 try {
-    doSomething();
+ doSomething();
 } catch (error) {
-    // error: unknown — must narrow before use
-    if (error instanceof Error) {
-        console.log(error.message); // safe
-    }
+ // error: unknown — must narrow before use
+ if (error instanceof Error) {
+  console.log(error.message); // safe
+ }
 }
 ```
 
@@ -62,11 +62,11 @@ The auto-fixer adds `"useUnknownInCatchVariables": true` to `compilerOptions`.
 
 ```json
 {
-    "compilerOptions": {
-        "target": "ES2022",
-        "module": "NodeNext",
-        "strict": false
-    }
+ "compilerOptions": {
+  "target": "ES2022",
+  "module": "NodeNext",
+  "strict": false
+ }
 }
 ```
 
@@ -74,9 +74,9 @@ The auto-fixer adds `"useUnknownInCatchVariables": true` to `compilerOptions`.
 
 ```json
 {
-    "compilerOptions": {
-        "useUnknownInCatchVariables": false
-    }
+ "compilerOptions": {
+  "useUnknownInCatchVariables": false
+ }
 }
 ```
 
@@ -86,9 +86,9 @@ Explicitly opting out of unknown-typed catch variables.
 
 ```json
 {
-    "compilerOptions": {
-        "strict": true
-    }
+ "compilerOptions": {
+  "strict": true
+ }
 }
 ```
 
@@ -96,9 +96,9 @@ Explicitly opting out of unknown-typed catch variables.
 
 ```json
 {
-    "compilerOptions": {
-        "useUnknownInCatchVariables": true
-    }
+ "compilerOptions": {
+  "useUnknownInCatchVariables": true
+ }
 }
 ```
 

@@ -41,9 +41,9 @@ The auto-fixer adds `"noUncheckedIndexedAccess": true` to `compilerOptions`.
 
 ```json
 {
-    "compilerOptions": {
-        "strict": true
-    }
+ "compilerOptions": {
+  "strict": true
+ }
 }
 ```
 
@@ -53,10 +53,10 @@ The auto-fixer adds `"noUncheckedIndexedAccess": true` to `compilerOptions`.
 
 ```json
 {
-    "compilerOptions": {
-        "strict": true,
-        "noUncheckedIndexedAccess": true
-    }
+ "compilerOptions": {
+  "strict": true,
+  "noUncheckedIndexedAccess": true
+ }
 }
 ```
 

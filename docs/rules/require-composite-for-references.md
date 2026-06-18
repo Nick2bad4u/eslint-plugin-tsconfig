@@ -31,9 +31,7 @@ The auto-fixer adds `"composite": true` to the current config's
 
 ```json
 {
-    "references": [
-        { "path": "./packages/core" }
-    ]
+ "references": [{ "path": "./packages/core" }]
 }
 ```
 
@@ -43,12 +41,10 @@ The config declares references but is not itself marked composite.
 
 ```json
 {
-    "references": [
-        { "path": "./packages/core" }
-    ],
-    "compilerOptions": {
-        "composite": true
-    }
+ "references": [{ "path": "./packages/core" }],
+ "compilerOptions": {
+  "composite": true
+ }
 }
 ```
 

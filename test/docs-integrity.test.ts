@@ -118,29 +118,29 @@ function assertOptionalDetailHeadingPlacement(markdown: string): void {
     if (matchedPatternsOffset !== -1) {
         expect(packageHeadingOffset).toBeGreaterThan(matchedPatternsOffset);
 
-        const inTargetedScope =
+        const isInTargetedScope =
             matchedPatternsOffset > targetedScopeOffset &&
             matchedPatternsOffset < whatThisRuleReportsOffset;
-        const inWhatThisRuleReports =
+        const isInWhatThisRuleReports =
             matchedPatternsOffset > whatThisRuleReportsOffset &&
             (packageHeadingOffset === -1 ||
                 matchedPatternsOffset < packageHeadingOffset);
 
-        expect(inTargetedScope || inWhatThisRuleReports).toBeTruthy();
+        expect(isInTargetedScope || isInWhatThisRuleReports).toBe(true);
     }
 
     if (detectionBoundariesOffset !== -1) {
         expect(packageHeadingOffset).toBeGreaterThan(detectionBoundariesOffset);
 
-        const inTargetedScope =
+        const isInTargetedScope =
             detectionBoundariesOffset > targetedScopeOffset &&
             detectionBoundariesOffset < whatThisRuleReportsOffset;
-        const inWhatThisRuleReports =
+        const isInWhatThisRuleReports =
             detectionBoundariesOffset > whatThisRuleReportsOffset &&
             (packageHeadingOffset === -1 ||
                 detectionBoundariesOffset < packageHeadingOffset);
 
-        expect(inTargetedScope || inWhatThisRuleReports).toBeTruthy();
+        expect(isInTargetedScope || isInWhatThisRuleReports).toBe(true);
     }
 
     if (matchedPatternsOffset !== -1 && detectionBoundariesOffset !== -1) {
@@ -237,10 +237,8 @@ describe("tsconfig rule docs", () => {
 
             expect(
                 typeof url !== "string" || url === createRuleDocsUrl(ruleId)
-            ).toBeTruthy();
-            expect(
-                typeof url !== "string" || !url.includes(".md")
-            ).toBeTruthy();
+            ).toBe(true);
+            expect(typeof url !== "string" || !url.includes(".md")).toBe(true);
 
             const description = docs?.description;
 
@@ -248,7 +246,7 @@ describe("tsconfig rule docs", () => {
 
             const expectedPath = path.join(docsDir, `${ruleId}.md`);
 
-            expect(fs.existsSync(expectedPath)).toBeTruthy();
+            expect(fs.existsSync(expectedPath)).toBe(true);
         }
     });
 

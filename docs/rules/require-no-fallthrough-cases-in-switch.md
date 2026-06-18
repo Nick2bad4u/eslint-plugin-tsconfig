@@ -28,12 +28,12 @@ the next `case` condition does not match:
 
 ```typescript
 switch (action) {
-    case "increment":
-        count++;
-    // ← missing break — falls through to "decrement"!
-    case "decrement":
-        count--;
-        break;
+ case "increment":
+  count++;
+ // ← missing break — falls through to "decrement"!
+ case "decrement":
+  count--;
+  break;
 }
 ```
 
@@ -43,10 +43,10 @@ consecutively with no code between them:
 
 ```typescript
 switch (action) {
-    case "increment":
-    case "increase": // explicit shared case — TypeScript allows this
-        count++;
-        break;
+ case "increment":
+ case "increase": // explicit shared case — TypeScript allows this
+  count++;
+  break;
 }
 ```
 
@@ -59,10 +59,10 @@ The auto-fixer adds `"noFallthroughCasesInSwitch": true` to `compilerOptions`.
 
 ```json
 {
-    "compilerOptions": {
-        "target": "ES2022",
-        "module": "NodeNext"
-    }
+ "compilerOptions": {
+  "target": "ES2022",
+  "module": "NodeNext"
+ }
 }
 ```
 
@@ -70,9 +70,9 @@ The auto-fixer adds `"noFallthroughCasesInSwitch": true` to `compilerOptions`.
 
 ```json
 {
-    "compilerOptions": {
-        "noFallthroughCasesInSwitch": false
-    }
+ "compilerOptions": {
+  "noFallthroughCasesInSwitch": false
+ }
 }
 ```
 
@@ -82,9 +82,9 @@ Explicitly disabled.
 
 ```json
 {
-    "compilerOptions": {
-        "noFallthroughCasesInSwitch": true
-    }
+ "compilerOptions": {
+  "noFallthroughCasesInSwitch": true
+ }
 }
 ```
 

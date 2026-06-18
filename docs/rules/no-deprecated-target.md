@@ -53,9 +53,9 @@ _and_ the correct output.
 
 ```json
 {
-    "compilerOptions": {
-        "target": "ES3"
-    }
+ "compilerOptions": {
+  "target": "ES3"
+ }
 }
 ```
 
@@ -63,9 +63,9 @@ Targets a 1999-era JavaScript specification.
 
 ```json
 {
-    "compilerOptions": {
-        "target": "ES5"
-    }
+ "compilerOptions": {
+  "target": "ES5"
+ }
 }
 ```
 
@@ -75,9 +75,9 @@ Targets IE-era JavaScript; no modern runtime requires this.
 
 ```json
 {
-    "compilerOptions": {
-        "target": "ES2022"
-    }
+ "compilerOptions": {
+  "target": "ES2022"
+ }
 }
 ```
 
@@ -85,9 +85,9 @@ Targets a version all modern runtimes support natively.
 
 ```json
 {
-    "compilerOptions": {
-        "target": "ESNext"
-    }
+ "compilerOptions": {
+  "target": "ESNext"
+ }
 }
 ```
 

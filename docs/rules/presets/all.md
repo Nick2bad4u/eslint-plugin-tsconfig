@@ -9,7 +9,7 @@ Use when you explicitly want every plugin rule, including experimental coverage.
 ## Config key
 
 ```ts
-tsconfig.configs.all
+tsconfig.configs.all;
 ```
 
 ## Flat Config example
@@ -71,13 +71,13 @@ export default [tsconfig.configs.all];
 | [`require-verbatim-module-syntax`](https://nick2bad4u.github.io/eslint-plugin-tsconfig/docs/rules/require-verbatim-module-syntax) | 🔧 |
 ## Related presets
 
-| Preset | Description |
-| --- | --- |
-| [🟡 recommended](./recommended.md) | Default baseline for most TypeScript codebases |
-| [🔴 strict](./strict.md) | Recommended plus a richer set of safety rules |
-| [📤 emit-config](./emit-config.md) | Best practices for TypeScript emit/output configuration |
-| [🧹 include-hygiene](./include-hygiene.md) | Clean include, exclude, and files patterns |
-| [🎯 lib-target](./lib-target.md) | Consistency between target, lib, and downlevelling |
-| [📦 module-resolution](./module-resolution.md) | Modern and consistent module resolution settings |
-| [🔗 project-references](./project-references.md) | Correct TypeScript project references setup |
-| [🔒 strict-mode](./strict-mode.md) | Strict mode options beyond the base strict flag |
+| Preset                                           | Description                                             |
+| ------------------------------------------------ | ------------------------------------------------------- |
+| [🟡 recommended](./recommended.md)               | Default baseline for most TypeScript codebases          |
+| [🔴 strict](./strict.md)                         | Recommended plus a richer set of safety rules           |
+| [📤 emit-config](./emit-config.md)               | Best practices for TypeScript emit/output configuration |
+| [🧹 include-hygiene](./include-hygiene.md)       | Clean include, exclude, and files patterns              |
+| [🎯 lib-target](./lib-target.md)                 | Consistency between target, lib, and downlevelling      |
+| [📦 module-resolution](./module-resolution.md)   | Modern and consistent module resolution settings        |
+| [🔗 project-references](./project-references.md) | Correct TypeScript project references setup             |
+| [🔒 strict-mode](./strict-mode.md)               | Strict mode options beyond the base strict flag         |

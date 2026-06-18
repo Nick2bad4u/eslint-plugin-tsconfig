@@ -35,10 +35,10 @@ is always distinct from source.
 
 ```json
 {
-    "compilerOptions": {
-        "rootDir": ".",
-        "outDir": "./dist"
-    }
+ "compilerOptions": {
+  "rootDir": ".",
+  "outDir": "./dist"
+ }
 }
 ```
 
@@ -47,10 +47,10 @@ the source tree.
 
 ```json
 {
-    "compilerOptions": {
-        "rootDir": "./src",
-        "outDir": "./src/dist"
-    }
+ "compilerOptions": {
+  "rootDir": "./src",
+  "outDir": "./src/dist"
+ }
 }
 ```
 
@@ -60,10 +60,10 @@ the source tree.
 
 ```json
 {
-    "compilerOptions": {
-        "rootDir": "./src",
-        "outDir": "./dist"
-    }
+ "compilerOptions": {
+  "rootDir": "./src",
+  "outDir": "./dist"
+ }
 }
 ```
 

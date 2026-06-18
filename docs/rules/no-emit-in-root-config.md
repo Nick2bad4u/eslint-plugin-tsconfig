@@ -27,9 +27,9 @@ from the root config.
 
 ```json
 {
-    "compilerOptions": {
-        "outDir": "./dist"
-    }
+ "compilerOptions": {
+  "outDir": "./dist"
+ }
 }
 ```
 
@@ -39,9 +39,9 @@ The root config is allowed to emit because `noEmit` is not enabled.
 
 ```json
 {
-    "compilerOptions": {
-        "noEmit": true
-    }
+ "compilerOptions": {
+  "noEmit": true
+ }
 }
 ```
 

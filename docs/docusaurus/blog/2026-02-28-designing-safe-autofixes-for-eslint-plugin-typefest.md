@@ -2,13 +2,13 @@
 slug: designing-safe-autofixes-for-eslint-plugin-tsconfig
 title: Designing Safe Autofixes for eslint-plugin-tsconfig
 authors:
-  - nick
+ - nick
 tags:
-  - eslint
-  - autofix
-  - typescript
-  - static-analysis
-  - developer-experience
+ - eslint
+ - autofix
+ - typescript
+ - static-analysis
+ - developer-experience
 description: How eslint-plugin-tsconfig decides between automatic fixes and suggestions to protect runtime behavior.
 ---
 

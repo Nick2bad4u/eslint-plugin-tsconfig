@@ -9,7 +9,7 @@ Rules that enforce modern and consistent module resolution settings in tsconfig,
 ## Config key
 
 ```ts
-tsconfig.configs["module-resolution"]
+tsconfig.configs["module-resolution"];
 ```
 
 ## Flat Config example

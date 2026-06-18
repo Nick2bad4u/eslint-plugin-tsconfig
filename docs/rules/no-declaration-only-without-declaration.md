@@ -33,9 +33,9 @@ The auto-fixer adds `"declaration": true` alongside the existing
 
 ```json
 {
-    "compilerOptions": {
-        "emitDeclarationOnly": true
-    }
+ "compilerOptions": {
+  "emitDeclarationOnly": true
+ }
 }
 ```
 
@@ -45,10 +45,10 @@ No `.d.ts` files will be emitted because `declaration` is implicitly `false`.
 
 ```json
 {
-    "compilerOptions": {
-        "declaration": true,
-        "emitDeclarationOnly": true
-    }
+ "compilerOptions": {
+  "declaration": true,
+  "emitDeclarationOnly": true
+ }
 }
 ```
 
@@ -57,9 +57,9 @@ If the project should emit both JavaScript and declarations, omit
 
 ```json
 {
-    "compilerOptions": {
-        "declaration": true
-    }
+ "compilerOptions": {
+  "declaration": true
+ }
 }
 ```
 

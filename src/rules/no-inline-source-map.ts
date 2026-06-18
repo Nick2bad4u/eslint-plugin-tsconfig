@@ -21,28 +21,26 @@ import { createRuleDocsUrl } from "../_internal/rule-docs-url.js";
 
 /** Rule implementation for this tsconfig lint rule. */
 const rule: JsoncRuleModule = createJsoncRule({
-    create(context) {
-        return {
-            JSONObjectExpression(node: Readonly<JSONObjectExpression>) {
-                if (node.parent.type !== "JSONExpressionStatement") return;
-                const co = getCompilerOptions(node);
-                if (!co) return;
+    create: (context) => ({
+        JSONObjectExpression(node: Readonly<JSONObjectExpression>) {
+            if (node.parent.type !== "JSONExpressionStatement") return;
+            const co = getCompilerOptions(node);
+            if (!co) return;
 
-                const prop: JSONProperty | undefined = findProperty(
-                    co,
-                    "inlineSourceMap"
-                );
+            const prop: JSONProperty | undefined = findProperty(
+                co,
+                "inlineSourceMap"
+            );
 
-                if (!isDefined(prop)) return;
-                if (getBooleanValue(prop) !== true) return;
+            if (!isDefined(prop)) return;
+            if (getBooleanValue(prop) !== true) return;
 
-                reportViolation(context, {
-                    loc: prop.loc,
-                    messageId: "inlineSourceMap",
-                });
-            },
-        };
-    },
+            reportViolation(context, {
+                loc: prop.loc,
+                messageId: "inlineSourceMap",
+            });
+        },
+    }),
     meta: {
         docs: {
             description:

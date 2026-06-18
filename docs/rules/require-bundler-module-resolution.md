@@ -42,10 +42,10 @@ using rules that do not match modern bundlers or package `exports` fields.
 
 ```json
 {
-    "compilerOptions": {
-        "module": "Preserve",
-        "moduleResolution": "node"
-    }
+ "compilerOptions": {
+  "module": "Preserve",
+  "moduleResolution": "node"
+ }
 }
 ```
 
@@ -56,10 +56,10 @@ bundler-oriented output.
 
 ```json
 {
-    "compilerOptions": {
-        "module": "ESNext",
-        "moduleResolution": "Bundler"
-    }
+ "compilerOptions": {
+  "module": "ESNext",
+  "moduleResolution": "Bundler"
+ }
 }
 ```
 
@@ -67,10 +67,10 @@ These are also treated as acceptable by the current implementation:
 
 ```json
 {
-    "compilerOptions": {
-        "module": "ESNext",
-        "moduleResolution": "NodeNext"
-    }
+ "compilerOptions": {
+  "module": "ESNext",
+  "moduleResolution": "NodeNext"
+ }
 }
 ```
 

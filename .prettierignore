@@ -16,6 +16,7 @@ docs/docusaurus/.docusaurus/
 docs/packages/
 docs/TSDoc/
 docs/Guides/
+docs/rules/presets/*.md
 
 # MD and MDX files since we use Remark Lint and other tools for those
 
@@ -28,6 +29,7 @@ electron-app/package-lock.json
 
 # Ignore specific files
 **/coverage-results.json
+test/__snapshots__/readme-rules-section.generated.md
 
 # Ignore prompts (Changed " to ' for tools messes up agents)
 

@@ -9,7 +9,7 @@ Rules that enforce correct TypeScript project references setup, requiring `compo
 ## Config key
 
 ```ts
-tsconfig.configs["project-references"]
+tsconfig.configs["project-references"];
 ```
 
 ## Flat Config example

@@ -27,15 +27,15 @@ Recommended checks:
 import tsconfig from "eslint-plugin-tsconfig";
 
 export default [
-  {
-    files: ["**/*.{ts,tsx}"],
-    plugins: {
-      tsconfig,
-    },
-    rules: {
-      ...tsconfig.configs.recommended.rules,
-    },
+ {
+  files: ["**/*.{ts,tsx}"],
+  plugins: {
+   tsconfig,
   },
+  rules: {
+   ...tsconfig.configs.recommended.rules,
+  },
+ },
 ];
 ```
 

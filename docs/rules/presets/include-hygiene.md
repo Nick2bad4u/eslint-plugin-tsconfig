@@ -9,7 +9,7 @@ Rules that enforce clean `include`, `exclude`, and `files` patterns in your tsco
 ## Config key
 
 ```ts
-tsconfig.configs["include-hygiene"]
+tsconfig.configs["include-hygiene"];
 ```
 
 ## Flat Config example

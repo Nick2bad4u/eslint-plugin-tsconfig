@@ -45,9 +45,9 @@ They impose no cost on normal execution. Prefer `sourceMap: true` and deploy
 
 ```json
 {
-    "compilerOptions": {
-        "inlineSourceMap": true
-    }
+ "compilerOptions": {
+  "inlineSourceMap": true
+ }
 }
 ```
 
@@ -58,9 +58,9 @@ comment, increasing output file size.
 
 ```json
 {
-    "compilerOptions": {
-        "sourceMap": true
-    }
+ "compilerOptions": {
+  "sourceMap": true
+ }
 }
 ```
 
@@ -68,7 +68,7 @@ Source maps are written to separate `.js.map` files and loaded only when needed.
 
 ```json
 {
-    "compilerOptions": {}
+ "compilerOptions": {}
 }
 ```
 

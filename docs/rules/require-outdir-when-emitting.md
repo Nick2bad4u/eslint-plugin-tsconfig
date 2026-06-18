@@ -40,10 +40,10 @@ keeps the source tree clean and makes the build output predictable.
 
 ```json
 {
-    "compilerOptions": {
-        "target": "ES2022",
-        "module": "NodeNext"
-    }
+ "compilerOptions": {
+  "target": "ES2022",
+  "module": "NodeNext"
+ }
 }
 ```
 
@@ -54,11 +54,11 @@ files.
 
 ```json
 {
-    "compilerOptions": {
-        "target": "ES2022",
-        "module": "NodeNext",
-        "outDir": "./dist"
-    }
+ "compilerOptions": {
+  "target": "ES2022",
+  "module": "NodeNext",
+  "outDir": "./dist"
+ }
 }
 ```
 
@@ -66,9 +66,9 @@ Or, for a type-check-only config:
 
 ```json
 {
-    "compilerOptions": {
-        "noEmit": true
-    }
+ "compilerOptions": {
+  "noEmit": true
+ }
 }
 ```
 

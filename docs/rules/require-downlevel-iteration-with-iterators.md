@@ -50,10 +50,10 @@ The auto-fixer adds `"downlevelIteration": true` to `compilerOptions`.
 
 ```json
 {
-    "compilerOptions": {
-        "target": "ES5",
-        "lib": ["ES2015.Iterable", "DOM"]
-    }
+ "compilerOptions": {
+  "target": "ES5",
+  "lib": ["ES2015.Iterable", "DOM"]
+ }
 }
 ```
 
@@ -64,11 +64,11 @@ will silently break non-array iteration at runtime.
 
 ```json
 {
-    "compilerOptions": {
-        "target": "ES5",
-        "lib": ["ES2015.Iterable", "DOM"],
-        "downlevelIteration": true
-    }
+ "compilerOptions": {
+  "target": "ES5",
+  "lib": ["ES2015.Iterable", "DOM"],
+  "downlevelIteration": true
+ }
 }
 ```
 
@@ -76,10 +76,10 @@ Or, if ES5 is no longer required, raise the target:
 
 ```json
 {
-    "compilerOptions": {
-        "target": "ES2017",
-        "lib": ["ES2018.AsyncIterable", "DOM"]
-    }
+ "compilerOptions": {
+  "target": "ES2017",
+  "lib": ["ES2018.AsyncIterable", "DOM"]
+ }
 }
 ```
 

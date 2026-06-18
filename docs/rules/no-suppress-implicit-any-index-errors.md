@@ -51,10 +51,10 @@ because it creates a silent hole in `noImplicitAny` coverage.
 
 ```json
 {
-    "compilerOptions": {
-        "strict": true,
-        "suppressImplicitAnyIndexErrors": true
-    }
+ "compilerOptions": {
+  "strict": true,
+  "suppressImplicitAnyIndexErrors": true
+ }
 }
 ```
 
@@ -65,9 +65,9 @@ access, undermining `noImplicitAny`.
 
 ```json
 {
-    "compilerOptions": {
-        "strict": true
-    }
+ "compilerOptions": {
+  "strict": true
+ }
 }
 ```
 

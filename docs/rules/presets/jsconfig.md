@@ -9,7 +9,7 @@ Use when you lint `jsconfig.json` files and want strong JavaScript-project compi
 ## Config key
 
 ```ts
-tsconfig.configs.jsconfig
+tsconfig.configs.jsconfig;
 ```
 
 ## Flat Config example

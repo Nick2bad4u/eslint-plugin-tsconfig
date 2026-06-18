@@ -108,7 +108,7 @@ const getRuleRecord = (
     expect(
         isRecord(ruleModule),
         `Rule '${ruleName}' must export an object`
-    ).toBeTruthy();
+    ).toBe(true);
 
     return isRecord(ruleModule) ? ruleModule : {};
 };
@@ -122,7 +122,7 @@ const getRuleMetaRecord = (
 ): Readonly<UnknownRecord> => {
     const meta = ruleRecord["meta"];
 
-    expect(isRecord(meta), `Rule '${ruleName}' must define meta`).toBeTruthy();
+    expect(isRecord(meta), `Rule '${ruleName}' must define meta`).toBe(true);
 
     return isRecord(meta) ? meta : {};
 };
@@ -136,10 +136,9 @@ const getRuleDocsRecord = (
 ): Readonly<UnknownRecord> => {
     const docs = metaRecord["docs"];
 
-    expect(
-        isRecord(docs),
-        `Rule '${ruleName}' must define meta.docs`
-    ).toBeTruthy();
+    expect(isRecord(docs), `Rule '${ruleName}' must define meta.docs`).toBe(
+        true
+    );
 
     return isRecord(docs) ? docs : {};
 };
@@ -165,29 +164,29 @@ const assertDocsContract = ({
     expect(
         isNonEmptyString(description),
         `Rule '${ruleName}' must provide a non-empty docs.description`
-    ).toBeTruthy();
+    ).toBe(true);
     expect(
         typeof recommended === "boolean",
         `Rule '${ruleName}' must provide boolean docs.recommended`
-    ).toBeTruthy();
+    ).toBe(true);
     expect(
         requiresTypeChecking === false,
         `Rule '${ruleName}' must have docs.requiresTypeChecking: false (JSONC rules never need type checking)`
-    ).toBeTruthy();
+    ).toBe(true);
     expect(
         typeof ruleId === "string" && ruleCatalogIdPattern.test(ruleId),
         `Rule '${ruleName}' must provide docs.ruleId in 'R###' format`
-    ).toBeTruthy();
+    ).toBe(true);
     expect(
         typeof ruleNumber === "number" &&
             isInteger(ruleNumber) &&
             ruleNumber > 0,
         `Rule '${ruleName}' must provide positive integer docs.ruleNumber`
-    ).toBeTruthy();
+    ).toBe(true);
     expect(
         isNonEmptyString(url),
         `Rule '${ruleName}' must provide a non-empty docs.url`
-    ).toBeTruthy();
+    ).toBe(true);
 
     if (
         !isNonEmptyString(url) ||
@@ -211,26 +210,26 @@ const assertDocsContract = ({
         `${ruleName}.md`
     );
 
-    expect(fs.existsSync(docsPath)).toBeTruthy();
+    expect(fs.existsSync(docsPath)).toBe(true);
 
     const configNames = normalizeTsconfigConfigNames(tsconfigConfigs);
 
     expect(
-        configNames.length > 0,
+        configNames.length,
         `Rule '${ruleName}' must declare at least one docs.tsconfigConfigs entry`
-    ).toBeTruthy();
+    ).toBeGreaterThan(0);
     expect(configNames).toHaveLength(new Set(configNames).size);
 
     for (const configName of configNames) {
         expect(
             arrayIncludes(tsconfigConfigNames, configName),
             `Rule '${ruleName}' has invalid docs.tsconfigConfigs value '${configName}'`
-        ).toBeTruthy();
+        ).toBe(true);
     }
 
-    const includesRecommended = arrayIncludes(configNames, "recommended");
+    const isIncludesRecommended = arrayIncludes(configNames, "recommended");
 
-    expect(recommended).toBe(includesRecommended);
+    expect(recommended).toBe(isIncludesRecommended);
 };
 
 /**
@@ -249,11 +248,11 @@ const assertBaseRuleMetadataContract = ({
     expect(
         isNonEmptyString(type) && setHas(expectedRuleTypes, type),
         `Rule '${ruleName}' has unsupported meta.type '${String(type)}'`
-    ).toBeTruthy();
+    ).toBe(true);
     expect(
         Array.isArray(schema),
         `Rule '${ruleName}' must declare a schema array`
-    ).toBeTruthy();
+    ).toBe(true);
 };
 
 /**
@@ -271,7 +270,7 @@ const assertMessageAndFixContract = ({
     expect(
         isRecord(messages),
         `Rule '${ruleName}' must define a messages record`
-    ).toBeTruthy();
+    ).toBe(true);
 
     if (!isRecord(messages)) {
         return;
@@ -288,7 +287,7 @@ const assertMessageAndFixContract = ({
         expect(
             isNonEmptyString(messageTemplate),
             `Rule '${ruleName}' message '${messageId}' must be a non-empty string`
-        ).toBeTruthy();
+        ).toBe(true);
     }
 
     const fixable = metaRecord["fixable"];

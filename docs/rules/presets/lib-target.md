@@ -9,7 +9,7 @@ Rules that enforce consistency between `target`, `lib`, and related TypeScript d
 ## Config key
 
 ```ts
-tsconfig.configs["lib-target"]
+tsconfig.configs["lib-target"];
 ```
 
 ## Flat Config example

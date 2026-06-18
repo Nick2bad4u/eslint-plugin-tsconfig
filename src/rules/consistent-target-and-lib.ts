@@ -1,3 +1,5 @@
+import type { ArrayValues } from "type-fest";
+
 import { isDefined } from "ts-extras";
 
 /**
@@ -35,7 +37,7 @@ const ES_VERSIONS = [
     "es2024",
     "esnext",
 ] as const;
-type EsVersion = (typeof ES_VERSIONS)[number];
+type EsVersion = ArrayValues<typeof ES_VERSIONS>;
 
 /** Get the index of an ES version in the versions array. */
 function esIndex(v: string): number {
@@ -56,47 +58,42 @@ function libEsVersion(lib: string): string | undefined {
 
 /** Rule implementation for this tsconfig lint rule. */
 const rule: JsoncRuleModule = createJsoncRule({
-    create(context) {
-        return {
-            JSONObjectExpression(node: Readonly<JSONObjectExpression>) {
-                if (node.parent.type !== "JSONExpressionStatement") return;
-                const co = getCompilerOptions(node);
-                if (!co) return;
+    create: (context) => ({
+        JSONObjectExpression(node: Readonly<JSONObjectExpression>) {
+            if (node.parent.type !== "JSONExpressionStatement") return;
+            const co = getCompilerOptions(node);
+            if (!co) return;
 
-                const targetProp: JSONProperty | undefined = findProperty(
-                    co,
-                    "target"
-                );
-                if (!isDefined(targetProp)) return;
-                const targetStr = getStringValue(targetProp);
-                if (!isDefined(targetStr)) return;
-                const targetIdx = esIndex(targetStr);
-                if (targetIdx === -1) return;
+            const targetProp: JSONProperty | undefined = findProperty(
+                co,
+                "target"
+            );
+            if (!isDefined(targetProp)) return;
+            const targetStr = getStringValue(targetProp);
+            if (!isDefined(targetStr)) return;
+            const targetIdx = esIndex(targetStr);
+            if (targetIdx === -1) return;
 
-                const libProp: JSONProperty | undefined = findProperty(
-                    co,
-                    "lib"
-                );
-                if (libProp?.value.type !== "JSONArrayExpression") return;
+            const libProp: JSONProperty | undefined = findProperty(co, "lib");
+            if (libProp?.value.type !== "JSONArrayExpression") return;
 
-                const libs = getStringArrayElements(libProp.value);
+            const libs = getStringArrayElements(libProp.value);
 
-                for (const lib of libs) {
-                    const libVer = libEsVersion(lib);
-                    if (!isDefined(libVer)) continue;
-                    const libIdx = esIndex(libVer);
-                    if (libIdx === -1 || libIdx <= targetIdx) continue;
+            for (const lib of libs) {
+                const libVer = libEsVersion(lib);
+                if (!isDefined(libVer)) continue;
+                const libIdx = esIndex(libVer);
+                if (libIdx === -1 || libIdx <= targetIdx) continue;
 
-                    reportViolation(context, {
-                        data: { libEntry: lib, target: targetStr },
-                        loc: libProp.loc,
-                        messageId: "inconsistentTargetAndLib",
-                    });
-                    return;
-                }
-            },
-        };
-    },
+                reportViolation(context, {
+                    data: { libEntry: lib, target: targetStr },
+                    loc: libProp.loc,
+                    messageId: "inconsistentTargetAndLib",
+                });
+                return;
+            }
+        },
+    }),
     meta: {
         docs: {
             description:

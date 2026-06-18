@@ -39,13 +39,13 @@ any exported declaration that would require cross-file inference:
 ```typescript
 // ❌ TypeScript error with isolatedDeclarations
 export function getUser() {
-    // return type must be inferred from the return expression
-    return { id: 1, name: "Alice" };
+ // return type must be inferred from the return expression
+ return { id: 1, name: "Alice" };
 }
 
 // ✅ Explicit return type — safe for isolated declaration emit
 export function getUser(): { id: number; name: string } {
-    return { id: 1, name: "Alice" };
+ return { id: 1, name: "Alice" };
 }
 ```
 
@@ -55,10 +55,10 @@ The auto-fixer adds `"isolatedDeclarations": true` to `compilerOptions`.
 
 ```json
 {
-    "compilerOptions": {
-        "declaration": true,
-        "composite": true
-    }
+ "compilerOptions": {
+  "declaration": true,
+  "composite": true
+ }
 }
 ```
 
@@ -67,9 +67,9 @@ cannot parallelise declaration emit.
 
 ```json
 {
-    "compilerOptions": {
-        "isolatedDeclarations": false
-    }
+ "compilerOptions": {
+  "isolatedDeclarations": false
+ }
 }
 ```
 
@@ -79,11 +79,11 @@ Explicitly disabled.
 
 ```json
 {
-    "compilerOptions": {
-        "declaration": true,
-        "composite": true,
-        "isolatedDeclarations": true
-    }
+ "compilerOptions": {
+  "declaration": true,
+  "composite": true,
+  "isolatedDeclarations": true
+ }
 }
 ```
 

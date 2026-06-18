@@ -40,10 +40,10 @@ The auto-fixer adds `"strict": true` to `compilerOptions`.
 
 ```json
 {
-    "compilerOptions": {
-        "target": "ES2022",
-        "module": "NodeNext"
-    }
+ "compilerOptions": {
+  "target": "ES2022",
+  "module": "NodeNext"
+ }
 }
 ```
 
@@ -51,9 +51,9 @@ None of the strict checks are active.
 
 ```json
 {
-    "compilerOptions": {
-        "strict": false
-    }
+ "compilerOptions": {
+  "strict": false
+ }
 }
 ```
 
@@ -63,11 +63,11 @@ Strict mode is explicitly disabled.
 
 ```json
 {
-    "compilerOptions": {
-        "target": "ES2022",
-        "module": "NodeNext",
-        "strict": true
-    }
+ "compilerOptions": {
+  "target": "ES2022",
+  "module": "NodeNext",
+  "strict": true
+ }
 }
 ```
 

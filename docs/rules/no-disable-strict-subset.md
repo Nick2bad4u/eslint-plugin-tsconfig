@@ -41,10 +41,10 @@ unambiguous.
 
 ```json
 {
-    "compilerOptions": {
-        "strict": true,
-        "strictNullChecks": false
-    }
+ "compilerOptions": {
+  "strict": true,
+  "strictNullChecks": false
+ }
 }
 ```
 
@@ -57,9 +57,9 @@ Enable everything via `strict`:
 
 ```json
 {
-    "compilerOptions": {
-        "strict": true
-    }
+ "compilerOptions": {
+  "strict": true
+ }
 }
 ```
 
@@ -68,11 +68,11 @@ enumerate exactly what should be enabled:
 
 ```json
 {
-    "compilerOptions": {
-        "noImplicitAny": true,
-        "strictFunctionTypes": true,
-        "strictBindCallApply": true
-    }
+ "compilerOptions": {
+  "noImplicitAny": true,
+  "strictFunctionTypes": true,
+  "strictBindCallApply": true
+ }
 }
 ```
 

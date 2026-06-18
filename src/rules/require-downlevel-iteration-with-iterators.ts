@@ -1,3 +1,5 @@
+import type { ArrayValues } from "type-fest";
+
 import { isDefined } from "ts-extras";
 
 /**
@@ -41,7 +43,7 @@ const rule: JsoncRuleModule = createJsoncRule({
             "es2024",
             "esnext",
         ] as const;
-        type EsVersion = (typeof ES_VERSIONS)[number];
+        type EsVersion = ArrayValues<typeof ES_VERSIONS>;
         function esIndex(v: string): number {
             const normalized = v.toLowerCase();
             return ES_VERSIONS.findIndex(

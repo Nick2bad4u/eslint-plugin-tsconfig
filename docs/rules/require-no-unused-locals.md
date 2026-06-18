@@ -41,9 +41,9 @@ The auto-fixer adds `"noUnusedLocals": true` to `compilerOptions`.
 
 ```json
 {
-    "compilerOptions": {
-        "strict": true
-    }
+ "compilerOptions": {
+  "strict": true
+ }
 }
 ```
 
@@ -52,10 +52,10 @@ type errors.
 
 ```json
 {
-    "compilerOptions": {
-        "strict": true,
-        "noUnusedLocals": false
-    }
+ "compilerOptions": {
+  "strict": true,
+  "noUnusedLocals": false
+ }
 }
 ```
 
@@ -65,10 +65,10 @@ Explicitly disabled; TypeScript will not report unused locals.
 
 ```json
 {
-    "compilerOptions": {
-        "strict": true,
-        "noUnusedLocals": true
-    }
+ "compilerOptions": {
+  "strict": true,
+  "noUnusedLocals": true
+ }
 }
 ```
 

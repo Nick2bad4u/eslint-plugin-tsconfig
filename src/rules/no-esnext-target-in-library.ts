@@ -21,29 +21,27 @@ import { createRuleDocsUrl } from "../_internal/rule-docs-url.js";
 
 /** Rule implementation for this tsconfig lint rule. */
 const rule: JsoncRuleModule = createJsoncRule({
-    create(context) {
-        return {
-            JSONObjectExpression(node: Readonly<JSONObjectExpression>) {
-                if (node.parent.type !== "JSONExpressionStatement") return;
-                const co = getCompilerOptions(node);
-                if (!co) return;
+    create: (context) => ({
+        JSONObjectExpression(node: Readonly<JSONObjectExpression>) {
+            if (node.parent.type !== "JSONExpressionStatement") return;
+            const co = getCompilerOptions(node);
+            if (!co) return;
 
-                const targetProp: JSONProperty | undefined = findProperty(
-                    co,
-                    "target"
-                );
-                if (!isDefined(targetProp)) return;
+            const targetProp: JSONProperty | undefined = findProperty(
+                co,
+                "target"
+            );
+            if (!isDefined(targetProp)) return;
 
-                const targetValue = getStringValue(targetProp);
-                if (targetValue?.toLowerCase() !== "esnext") return;
+            const targetValue = getStringValue(targetProp);
+            if (targetValue?.toLowerCase() !== "esnext") return;
 
-                reportViolation(context, {
-                    loc: targetProp.loc,
-                    messageId: "esnextTargetInLibrary",
-                });
-            },
-        };
-    },
+            reportViolation(context, {
+                loc: targetProp.loc,
+                messageId: "esnextTargetInLibrary",
+            });
+        },
+    }),
     meta: {
         docs: {
             description:

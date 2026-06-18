@@ -43,10 +43,10 @@ The auto-fixer adds `"sourceMap": true` to `compilerOptions`.
 
 ```json
 {
-    "compilerOptions": {
-        "target": "ES2022",
-        "outDir": "./dist"
-    }
+ "compilerOptions": {
+  "target": "ES2022",
+  "outDir": "./dist"
+ }
 }
 ```
 
@@ -57,11 +57,11 @@ original TypeScript source.
 
 ```json
 {
-    "compilerOptions": {
-        "target": "ES2022",
-        "outDir": "./dist",
-        "sourceMap": true
-    }
+ "compilerOptions": {
+  "target": "ES2022",
+  "outDir": "./dist",
+  "sourceMap": true
+ }
 }
 ```
 
@@ -69,11 +69,11 @@ Or using inline source maps:
 
 ```json
 {
-    "compilerOptions": {
-        "target": "ES2022",
-        "outDir": "./dist",
-        "inlineSourceMap": true
-    }
+ "compilerOptions": {
+  "target": "ES2022",
+  "outDir": "./dist",
+  "inlineSourceMap": true
+ }
 }
 ```
 

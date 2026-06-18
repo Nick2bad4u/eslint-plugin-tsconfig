@@ -36,7 +36,7 @@ The auto-fixer removes the offending `include` entry.
 
 ```json
 {
-    "include": ["src", "node_modules/my-internal-package"]
+ "include": ["src", "node_modules/my-internal-package"]
 }
 ```
 
@@ -47,7 +47,7 @@ conflicting with its published type declarations.
 
 ```json
 {
-    "include": ["src"]
+ "include": ["src"]
 }
 ```
 

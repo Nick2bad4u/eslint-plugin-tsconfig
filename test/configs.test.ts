@@ -213,7 +213,7 @@ describe("tsconfig plugin configs", () => {
         for (const configName of tsconfigConfigNames) {
             expect(
                 tsconfigConfigMetadataByName[configName].requiresTypeChecking
-            ).toBeFalsy();
+            ).toBe(false);
         }
     });
 
