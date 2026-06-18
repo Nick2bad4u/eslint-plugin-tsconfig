@@ -544,7 +544,7 @@ function setSidebarLeadingToken(
     );
 }
 
-if (document !== undefined) {
+if (typeof document !== "undefined") {
     initializeEnhancements();
     (globalThis as Record<string, unknown>)["initializeAdvancedFeatures"] =
         initializeAdvancedFeatures;
