@@ -174,26 +174,22 @@ type ReadonlyLintResult = Readonly<ESLint.LintResult>;
 /** Build fatal diagnostic strings from lint results. */
 const collectFatalDiagnostics = (
     lintResults: readonly ReadonlyLintResult[]
-): readonly string[] => {
-    const diagnostics: string[] = [];
-
-    for (const lintResult of lintResults) {
-        for (const message of lintResult.messages) {
-            if (message.fatal === true) {
-                const line =
-                    typeof message.line === "number" ? message.line : 0;
-                const column =
-                    typeof message.column === "number" ? message.column : 0;
-
-                diagnostics.push(
-                    `${toRelativePath(lintResult.filePath)}:${line}:${column} ${message.message}`
-                );
+): readonly string[] =>
+    lintResults.flatMap((lintResult) =>
+        lintResult.messages.flatMap((message) => {
+            if (message.fatal !== true) {
+                return [];
             }
-        }
-    }
 
-    return diagnostics;
-};
+            const line = typeof message.line === "number" ? message.line : 0;
+            const column =
+                typeof message.column === "number" ? message.column : 0;
+
+            return [
+                `${toRelativePath(lintResult.filePath)}:${line}:${column} ${message.message}`,
+            ];
+        })
+    );
 
 /** Validate parser safety of all generated in-memory autofix outputs. */
 const collectAutofixOutputParseErrors = (

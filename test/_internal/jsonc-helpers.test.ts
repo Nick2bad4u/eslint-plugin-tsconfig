@@ -38,8 +38,7 @@ function asArrayExpression(
 
 function asJsonExpression(
     expression:
-        | Readonly<AST.JSONArrayExpression["elements"][number]>
-        | undefined
+        Readonly<AST.JSONArrayExpression["elements"][number]> | undefined
 ): AST.JSONExpression {
     assertPresent(expression);
 

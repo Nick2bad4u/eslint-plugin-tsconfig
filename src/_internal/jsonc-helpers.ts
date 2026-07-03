@@ -41,9 +41,7 @@ export type JSONProperty = AST.JSONProperty;
 
 /** JSON property key node from the JSONC AST. */
 export type JSONPropertyKey =
-    | AST.JSONIdentifier
-    | AST.JSONNumberLiteral
-    | AST.JSONStringLiteral;
+    AST.JSONIdentifier | AST.JSONNumberLiteral | AST.JSONStringLiteral;
 
 // ─── Reporting helpers ────────────────────────────────────────────────────────
 
