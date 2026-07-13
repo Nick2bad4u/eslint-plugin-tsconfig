@@ -71,6 +71,7 @@ const config = [
         rules: {
             "@typescript-eslint/prefer-nullish-coalescing": "off",
             "n/no-sync": "off",
+            "unicorn/consistent-boolean-name": "off",
             "unicorn/no-array-sort": "off",
             "unicorn/prefer-import-meta-properties": "off",
         },
@@ -128,6 +129,7 @@ const config = [
             "unicorn/no-top-level-side-effects": "off",
             "unicorn/no-unreadable-for-of-expression": "off",
             "unicorn/no-unreadable-new-expression": "off",
+            "unicorn/prefer-error-is-error": "off",
             "unicorn/try-complexity": "off",
         },
     },
