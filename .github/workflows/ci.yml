@@ -56,8 +56,6 @@ jobs:
               uses: "actions/setup-node@820762786026740c76f36085b0efc47a31fe5020" # v7.0.0
               with:
                   node-version-file: ".node-version"
-                  cache: "npm"
-                  cache-dependency-path: "package-lock.json"
 
             - name: "Setup repository npm version"
               run: |
@@ -65,6 +63,13 @@ jobs:
                   cd "$RUNNER_TEMP"
                   npm install --global "npm@${npm_version}"
                   test "$(npm --version)" = "$npm_version"
+
+            - name: "Configure npm cache"
+              uses: "actions/setup-node@820762786026740c76f36085b0efc47a31fe5020" # v7.0.0
+              with:
+                  node-version-file: ".node-version"
+                  cache: "npm"
+                  cache-dependency-path: "package-lock.json"
 
             - name: "Install dependencies"
               run: "npm ci"
@@ -163,8 +168,6 @@ jobs:
             - name: "Setup Node.js"
               uses: "actions/setup-node@820762786026740c76f36085b0efc47a31fe5020" # v7.0.0
               with:
-                  cache: "npm"
-                  cache-dependency-path: "package-lock.json"
                   node-version-file: ".node-version"
 
             - name: "Setup repository npm version"
@@ -173,6 +176,13 @@ jobs:
                   cd "$RUNNER_TEMP"
                   npm install --global "npm@${npm_version}"
                   test "$(npm --version)" = "$npm_version"
+
+            - name: "Configure npm cache"
+              uses: "actions/setup-node@820762786026740c76f36085b0efc47a31fe5020" # v7.0.0
+              with:
+                  node-version-file: ".node-version"
+                  cache: "npm"
+                  cache-dependency-path: "package-lock.json"
 
             - name: "Install dependencies"
               run: "npm ci"
