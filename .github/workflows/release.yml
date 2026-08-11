@@ -15,7 +15,7 @@ on:
     workflow_dispatch:
         inputs:
             release_type:
-                description: "Release bump type"
+                description: "Release bump type relative to the latest npm version (manifest must already be bumped)"
                 required: true
                 default: "patch"
                 type: "choice"
@@ -24,7 +24,7 @@ on:
                     - "minor"
                     - "major"
             version:
-                description: "Explicit release version in x.y.z format (overrides release_type)"
+                description: "Explicit pre-bumped version in x.y.z format (overrides release_type)"
                 required: false
                 type: "string"
             ref:
@@ -87,6 +87,10 @@ jobs:
                     branch="${branch#refs/heads/}"
                     if [[ "$branch" == refs/tags/* ]]; then
                       echo "workflow_dispatch ref must be a branch, not a tag: $branch" >&2
+                      exit 1
+                    fi
+                    if ! git check-ref-format --branch "$branch" >/dev/null 2>&1; then
+                      echo "workflow_dispatch ref is not a valid branch name: $branch" >&2
                       exit 1
                     fi
                     echo "ref=$branch" >> "$GITHUB_OUTPUT"
@@ -184,11 +188,10 @@ jobs:
               run: "npm run release:check"
 
             - name: "Ensure verification did not modify tracked files"
-              if: "startsWith(github.ref, 'refs/tags/v')"
               run: |
                   set -euo pipefail
                   if ! git diff --quiet || ! git diff --cached --quiet; then
-                    echo "release:check modified files on a tag-triggered release. Ensure main is clean before tagging." >&2
+                    echo "release:check modified tracked files. Commit generated changes through a pull request before releasing." >&2
                     git status --short
                     exit 1
                   fi
@@ -201,22 +204,45 @@ jobs:
               run: |
                   set -euo pipefail
 
+                  package_name=$(node -p "require('./package.json').name")
+                  package_version=$(node -p "require('./package.json').version")
+
                   if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
                     explicit_version="${EXPLICIT_VERSION:-}"
                     if [ -n "$explicit_version" ]; then
-                      npm version "$explicit_version" --no-git-tag-version
                       version="$explicit_version"
                     else
                       release_type="${RELEASE_TYPE:-patch}"
-                      npm version "$release_type" --no-git-tag-version
-                      version=$(node -p "require('./package.json').version")
+                      published_version=$(npm view "${package_name}@latest" version)
+                      if [[ ! "$published_version" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+                        echo "Latest published version '$published_version' is not a stable x.y.z version." >&2
+                        exit 1
+                      fi
+
+                      IFS=. read -r major minor patch <<< "$published_version"
+                      case "$release_type" in
+                        patch)
+                          version="${major}.${minor}.$((10#$patch + 1))"
+                          ;;
+                        minor)
+                          version="${major}.$((10#$minor + 1)).0"
+                          ;;
+                        major)
+                          version="$((10#$major + 1)).0.0"
+                          ;;
+                      esac
+                    fi
+
+                    if [ "$package_version" != "$version" ]; then
+                      echo "Requested release version is ${version}, but package.json contains ${package_version}." >&2
+                      echo "Commit the version bump through a pull request, then rerun this release." >&2
+                      exit 1
                     fi
                   else
                     tag="${GITHUB_REF_NAME}"
                     version="${tag#v}"
                   fi
 
-                  package_name=$(node -p "require('./package.json').name")
                   tag="v${version}"
                   npm_release_url="https://www.npmjs.com/package/${package_name}/v/${version}"
                   github_release_url="${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/releases/tag/${tag}"
@@ -228,10 +254,6 @@ jobs:
                     echo "npm_release_url=$npm_release_url"
                     echo "github_release_url=$github_release_url"
                   } >> "$GITHUB_OUTPUT"
-
-            - name: "Rebuild package after manual version bump"
-              if: "github.event_name == 'workflow_dispatch'"
-              run: "npm run build"
 
             - name: "Check whether version is already published"
               id: "npm_check"
@@ -256,7 +278,7 @@ jobs:
                   echo "Version ${VERSION} is already published. Choose a new release type/version." >&2
                   exit 1
 
-            - name: "Commit and push release version + tag"
+            - name: "Create and push release tag"
               if: "github.event_name == 'workflow_dispatch'"
               env:
                   BRANCH: "${{ steps.target_ref.outputs.branch }}"
@@ -264,21 +286,33 @@ jobs:
               run: |
                   set -euo pipefail
 
-                  if git rev-parse "$TAG" >/dev/null 2>&1; then
-                    echo "Tag $TAG already exists locally." >&2
+                  if [ -n "$(git status --porcelain)" ]; then
+                    echo "Release checkout is not clean; refusing to tag uncommitted changes." >&2
+                    git status --short
                     exit 1
                   fi
 
-                  git add -A
-                  if git diff --cached --quiet; then
-                    echo "No staged changes found for release commit." >&2
+                  git fetch --tags origin "refs/heads/${BRANCH}:refs/remotes/origin/${BRANCH}"
+                  head_commit=$(git rev-parse HEAD)
+                  branch_commit=$(git rev-parse "origin/${BRANCH}")
+                  if [ "$head_commit" != "$branch_commit" ]; then
+                    echo "Source branch ${BRANCH} moved from ${head_commit} to ${branch_commit} during release verification." >&2
+                    echo "Rerun the release against the updated branch." >&2
                     exit 1
                   fi
 
-                  git commit -m "chore: release ${TAG}"
-                  git tag -a "$TAG" -m "$TAG"
-                  git push origin "HEAD:${BRANCH}"
-                  git push origin "$TAG"
+                  if git show-ref --verify --quiet "refs/tags/${TAG}"; then
+                    tag_type=$(git cat-file -t "refs/tags/${TAG}")
+                    tag_commit=$(git rev-parse "refs/tags/${TAG}^{commit}")
+                    if [ "$tag_type" != "tag" ] || [ "$tag_commit" != "$head_commit" ]; then
+                      echo "Existing tag ${TAG} is not an annotated tag for ${head_commit}." >&2
+                      exit 1
+                    fi
+                    echo "Reusing existing annotated tag ${TAG} at ${head_commit}."
+                  else
+                    git tag -a "$TAG" -m "$TAG"
+                    git push origin "refs/tags/${TAG}"
+                  fi
 
             - name: "Generate release notes from git-cliff"
               env:
