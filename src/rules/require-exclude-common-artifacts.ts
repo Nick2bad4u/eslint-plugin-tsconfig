@@ -62,6 +62,7 @@ const rule: JsoncRuleModule = createJsoncRule({
                                     );
                                 }
                                 const lastEl = arrayAt(arr.elements, -1);
+                                // eslint-disable-next-line unicorn/prefer-simple-condition-first -- Preserve the narrowing order for undefined and sparse parser arrays.
                                 if (!isDefined(lastEl) || lastEl === null) {
                                     return null;
                                 }

@@ -5,6 +5,7 @@
 import type { SidebarsConfig } from "@docusaurus/plugin-content-docs";
 
 const packageName = "eslint-plugin-tsconfig";
+const apiOverviewItemClassName = "sb-api-overview-item";
 
 /** Main sidebar configuration for the default docs plugin instance. */
 const sidebars = {
@@ -32,31 +33,31 @@ const sidebars = {
                 "Entry point for generated API docs and typed-path service inventory notes.",
             items: [
                 {
-                    className: "sb-api-overview-item",
+                    className: apiOverviewItemClassName,
                     id: "developer/api/plugin/index",
                     label: "🧩 Plugin API index",
                     type: "doc",
                 },
                 {
-                    className: "sb-api-overview-item",
+                    className: apiOverviewItemClassName,
                     id: "developer/typed-paths",
                     label: "🧬 Typed paths inventory",
                     type: "doc",
                 },
                 {
-                    className: "sb-api-overview-item",
+                    className: apiOverviewItemClassName,
                     id: "developer/api/plugin/type-aliases/TsconfigPlugin",
                     label: "🧠 Type aliases · tsconfigPlugin",
                     type: "doc",
                 },
                 {
-                    className: "sb-api-overview-item",
+                    className: apiOverviewItemClassName,
                     id: "developer/api/plugin/variables/tsconfigPlugin",
                     label: "⚙️ Runtime exports · tsconfigPlugin",
                     type: "doc",
                 },
                 {
-                    className: "sb-api-overview-item",
+                    className: apiOverviewItemClassName,
                     id: "developer/api/plugin/variables/tsconfigConfigs",
                     label: "⚙️ Runtime exports · tsconfigConfigs",
                     type: "doc",

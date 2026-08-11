@@ -828,7 +828,9 @@ node_modules/
 node_modules_backup/
 
 # NPM
+# Commit repository policy; authentication remains in user-level npm config.
 .npmrc
+!/.npmrc
 
 # OhMyPosh
 !.vscode/OhMyPosh-Atomic-Custom.json

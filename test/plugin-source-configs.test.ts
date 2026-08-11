@@ -34,9 +34,7 @@ describe("source plugin config wiring", () => {
         expect.hasAssertions();
 
         const plugin = await loadSourcePlugin();
-        const all = plugin.configs.all;
-        const strict = plugin.configs.strict;
-        const recommended = plugin.configs.recommended;
+        const { all, recommended, strict } = plugin.configs;
 
         expect(getRuleEntries(all).length).toBeGreaterThan(0);
         expect(getRuleEntries(strict).length).toBeGreaterThan(0);

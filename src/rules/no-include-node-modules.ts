@@ -38,22 +38,21 @@ const rule: JsoncRuleModule = createJsoncRule({
                 for (const element of elements) {
                     if (element === null) continue;
                     const value = getStringFromExpression(element);
-                    if (!isDefined(value) || !NODE_MODULES_PATTERN.test(value))
-                        continue;
+                    if (isDefined(value) && NODE_MODULES_PATTERN.test(value)) {
+                        reportViolation(context, {
+                            data: { pattern: value },
+                            fix(fixer) {
+                                const removalRange = rangeWithAdjacentComma(
+                                    context.sourceCode.text,
+                                    element.range
+                                );
 
-                    reportViolation(context, {
-                        data: { pattern: value },
-                        fix(fixer) {
-                            const removalRange = rangeWithAdjacentComma(
-                                context.sourceCode.text,
-                                element.range
-                            );
-
-                            return fixer.removeRange(removalRange);
-                        },
-                        loc: element.loc,
-                        messageId: "nodeModulesInInclude",
-                    });
+                                return fixer.removeRange(removalRange);
+                            },
+                            loc: element.loc,
+                            messageId: "nodeModulesInInclude",
+                        });
+                    }
                 }
             },
         };

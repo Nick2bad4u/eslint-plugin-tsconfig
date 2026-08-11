@@ -130,6 +130,7 @@ const tsconfigRuleEntries: readonly (readonly [
         (typeof tsconfigRules)[TsconfigRuleName],
     ])[] = [];
 
+    // eslint-disable-next-line sonarjs/too-many-break-or-continue-in-loop -- Preserve two defensive objectEntries boundary guards.
     for (const [ruleName] of objectEntries(tsconfigRules)) {
         if (!isTsconfigRuleName(ruleName)) {
             continue;
@@ -356,6 +357,7 @@ const createTsconfigConfigsDefinition = (): TsconfigConfigsContract =>
                 // All: each rule at its own default severity
                 for (const ruleName of ruleNames) {
                     const ruleDefinition = tsconfigRules[ruleName];
+                    // eslint-disable-next-line sonarjs/nested-control-flow -- Keep registry validation beside preset assembly for exact failures.
                     if (!isDefined(ruleDefinition)) {
                         throw new TypeError(
                             `Missing rule definition for '${ruleName}'.`
@@ -363,6 +365,7 @@ const createTsconfigConfigsDefinition = (): TsconfigConfigsContract =>
                     }
 
                     const ruleMeta = ruleDefinition.meta;
+                    // eslint-disable-next-line sonarjs/nested-control-flow -- Keep registry validation beside preset assembly for exact failures.
                     if (!isDefined(ruleMeta)) {
                         throw new TypeError(
                             `Rule '${ruleName}' is missing meta.`

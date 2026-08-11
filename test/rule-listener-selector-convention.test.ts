@@ -106,6 +106,26 @@ const getBroadListenerMatch = (
     };
 };
 
+/** Inspect one AST node and enqueue its children for the iterative walk. */
+const inspectBroadListenerNode = ({
+    currentNode,
+    matches,
+    nodesToVisit,
+}: Readonly<{
+    currentNode: unknown;
+    matches: BroadListenerMatch[];
+    nodesToVisit: unknown[];
+}>): void => {
+    if (!isObjectRecord(currentNode)) return;
+
+    const broadListenerMatch = getBroadListenerMatch(currentNode);
+    if (broadListenerMatch !== null) {
+        matches.push(broadListenerMatch);
+    }
+
+    pushChildNodes({ nodeRecord: currentNode, nodesToVisit });
+};
+
 const collectBroadListenerMatchesFromSourceText = (
     sourceText: string
 ): BroadListenerCollectionResult => {
@@ -121,28 +141,18 @@ const collectBroadListenerMatchesFromSourceText = (
 
         while (nodesToVisit.length > 0) {
             const currentNode = nodesToVisit.pop();
-
-            if (isObjectRecord(currentNode)) {
-                const broadListenerMatch = getBroadListenerMatch(currentNode);
-
-                if (broadListenerMatch !== null) {
-                    matches.push(broadListenerMatch);
-                }
-
-                pushChildNodes({
-                    nodeRecord: currentNode,
-                    nodesToVisit,
-                });
-            }
+            inspectBroadListenerNode({ currentNode, matches, nodesToVisit });
         }
 
         return {
             matches,
             parseErrorMessage: null,
         };
-    } catch (error_) {
+    } catch (caughtError) {
         const parseErrorMessage =
-            error_ instanceof Error ? error_.message : String(error_);
+            caughtError instanceof Error
+                ? caughtError.message
+                : String(caughtError);
 
         return {
             matches: [],

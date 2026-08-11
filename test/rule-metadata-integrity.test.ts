@@ -165,14 +165,11 @@ const assertDocsContract = ({
         isNonEmptyString(description),
         `Rule '${ruleName}' must provide a non-empty docs.description`
     ).toBe(true);
+    expect(recommended).toBeTypeOf("boolean");
     expect(
-        typeof recommended === "boolean",
-        `Rule '${ruleName}' must provide boolean docs.recommended`
-    ).toBe(true);
-    expect(
-        requiresTypeChecking === false,
+        requiresTypeChecking,
         `Rule '${ruleName}' must have docs.requiresTypeChecking: false (JSONC rules never need type checking)`
-    ).toBe(true);
+    ).toBe(false);
     expect(
         typeof ruleId === "string" && ruleCatalogIdPattern.test(ruleId),
         `Rule '${ruleName}' must provide docs.ruleId in 'R###' format`
@@ -189,10 +186,10 @@ const assertDocsContract = ({
     ).toBe(true);
 
     if (
-        !isNonEmptyString(url) ||
         typeof recommended !== "boolean" ||
         typeof ruleId !== "string" ||
-        typeof ruleNumber !== "number"
+        typeof ruleNumber !== "number" ||
+        !isNonEmptyString(url)
     ) {
         return;
     }

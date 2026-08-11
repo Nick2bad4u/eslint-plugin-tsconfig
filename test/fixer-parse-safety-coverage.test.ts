@@ -72,7 +72,11 @@ const getCallExpressionName = (callee: unknown): null | string => {
         return null;
     }
 
-    const calleeRecord = callee as Readonly<UnknownRecord>;
+    if (!isObjectRecord(callee)) {
+        return null;
+    }
+
+    const calleeRecord = callee;
 
     if (
         calleeRecord["type"] === "Identifier" &&
@@ -91,28 +95,20 @@ const getCallExpressionName = (callee: unknown): null | string => {
     const memberObject = calleeRecord["object"];
     const memberProperty = calleeRecord["property"];
 
+    if (!isObjectRecord(memberObject) || !isObjectRecord(memberProperty)) {
+        return null;
+    }
+
     if (
-        typeof memberObject !== "object" ||
-        memberObject === null ||
-        typeof memberProperty !== "object" ||
-        memberProperty === null
+        memberObject["type"] !== "Identifier" ||
+        typeof memberObject["name"] !== "string" ||
+        memberProperty["type"] !== "Identifier" ||
+        typeof memberProperty["name"] !== "string"
     ) {
         return null;
     }
 
-    const objectRecord = memberObject as Readonly<UnknownRecord>; // NOSONAR TypeScript:S4325 -- object is narrowed from unknown; index-signature cast required for property access
-    const propertyRecord = memberProperty as Readonly<UnknownRecord>; // NOSONAR TypeScript:S4325 -- object is narrowed from unknown; index-signature cast required for property access
-
-    if (
-        objectRecord["type"] !== "Identifier" ||
-        typeof objectRecord["name"] !== "string" ||
-        propertyRecord["type"] !== "Identifier" ||
-        typeof propertyRecord["name"] !== "string"
-    ) {
-        return null;
-    }
-
-    return `${objectRecord["name"]}.${propertyRecord["name"]}`;
+    return `${memberObject["name"]}.${memberProperty["name"]}`;
 };
 
 const isObjectRecord = (value: unknown): value is Readonly<UnknownRecord> =>
@@ -266,6 +262,26 @@ const getNamedFunctionBodyFromNode = (
     return null;
 };
 
+/** Record a named function body and enqueue its child AST nodes. */
+const inspectNamedFunctionNode = ({
+    currentNode,
+    namedFunctionBodies,
+    nodesToVisit,
+}: Readonly<{
+    currentNode: unknown;
+    namedFunctionBodies: Map<string, unknown>;
+    nodesToVisit: unknown[];
+}>): void => {
+    if (!isObjectRecord(currentNode)) return;
+
+    const namedFunctionBody = getNamedFunctionBodyFromNode(currentNode);
+    if (namedFunctionBody !== null) {
+        namedFunctionBodies.set(namedFunctionBody.name, namedFunctionBody.body);
+    }
+
+    enqueueChildNodes({ nodeRecord: currentNode, nodesToVisit });
+};
+
 const collectNamedFunctionBodies = (
     sourceText: string
 ): ReadonlyMap<string, unknown> => {
@@ -281,23 +297,11 @@ const collectNamedFunctionBodies = (
 
         while (nodesToVisit.length > 0) {
             const currentNode = nodesToVisit.pop();
-
-            if (isObjectRecord(currentNode)) {
-                const namedFunctionBody =
-                    getNamedFunctionBodyFromNode(currentNode);
-
-                if (namedFunctionBody !== null) {
-                    namedFunctionBodies.set(
-                        namedFunctionBody.name,
-                        namedFunctionBody.body
-                    );
-                }
-
-                enqueueChildNodes({
-                    nodeRecord: currentNode,
-                    nodesToVisit,
-                });
-            }
+            inspectNamedFunctionNode({
+                currentNode,
+                namedFunctionBodies,
+                nodesToVisit,
+            });
         }
 
         return namedFunctionBodies;
@@ -319,17 +323,15 @@ const containsCallToKnownFunction = ({
         const currentNode = nodesToVisit.pop();
 
         if (isObjectRecord(currentNode)) {
-            if (currentNode["type"] === "CallExpression") {
-                const callExpressionCallee = currentNode["callee"];
-
-                if (
-                    isObjectRecord(callExpressionCallee) &&
-                    callExpressionCallee["type"] === "Identifier" &&
-                    typeof callExpressionCallee["name"] === "string" &&
-                    setHas(knownFunctionNames, callExpressionCallee["name"])
-                ) {
-                    return true;
-                }
+            const callExpressionCallee = currentNode["callee"];
+            if (
+                currentNode["type"] === "CallExpression" &&
+                isObjectRecord(callExpressionCallee) &&
+                callExpressionCallee["type"] === "Identifier" &&
+                typeof callExpressionCallee["name"] === "string" &&
+                setHas(knownFunctionNames, callExpressionCallee["name"])
+            ) {
+                return true;
             }
 
             enqueueChildNodes({
@@ -400,6 +402,25 @@ const isFastCheckPropertyCallbackWithParseSafety = ({
     );
 };
 
+/** Check one AST node for an fc.property callback with parse-safety coverage. */
+const isFastCheckPropertyCallWithParseSafety = ({
+    currentNode,
+    parseDriverFunctionNames,
+}: Readonly<{
+    currentNode: unknown;
+    parseDriverFunctionNames: ReadonlySet<string>;
+}>): boolean =>
+    isObjectRecord(currentNode) &&
+    currentNode["type"] === "CallExpression" &&
+    getCallExpressionName(currentNode["callee"]) === "fc.property" &&
+    Array.isArray(currentNode["arguments"]) &&
+    currentNode["arguments"].some((argument) =>
+        isFastCheckPropertyCallbackWithParseSafety({
+            callbackCandidate: argument,
+            parseDriverFunctionNames,
+        })
+    );
+
 const hasFastCheckPropertyParseGuard = (sourceText: string): boolean => {
     try {
         const parsed = parser.parseForESLint(sourceText, {
@@ -417,22 +438,16 @@ const hasFastCheckPropertyParseGuard = (sourceText: string): boolean => {
         while (nodesToVisit.length > 0) {
             const currentNode = nodesToVisit.pop();
 
-            if (isObjectRecord(currentNode)) {
-                if (
-                    currentNode["type"] === "CallExpression" &&
-                    getCallExpressionName(currentNode["callee"]) ===
-                        "fc.property" &&
-                    Array.isArray(currentNode["arguments"]) &&
-                    currentNode["arguments"].some((argument) =>
-                        isFastCheckPropertyCallbackWithParseSafety({
-                            callbackCandidate: argument,
-                            parseDriverFunctionNames,
-                        })
-                    )
-                ) {
-                    return true;
-                }
+            if (
+                isFastCheckPropertyCallWithParseSafety({
+                    currentNode,
+                    parseDriverFunctionNames,
+                })
+            ) {
+                return true;
+            }
 
+            if (isObjectRecord(currentNode)) {
                 enqueueChildNodes({
                     nodeRecord: currentNode,
                     nodesToVisit,
@@ -516,6 +531,32 @@ const expectNoMissingRuleCoverage = ({
     ).toStrictEqual([]);
 };
 
+/** Record each coverage marker missing from one inspected rule test. */
+const recordMissingCoverageMarkers = ({
+    coverageInspection,
+    missingRuleIdsByMarkerDescription,
+    ruleId,
+}: Readonly<{
+    coverageInspection: CoverageInspection;
+    missingRuleIdsByMarkerDescription: ReadonlyMap<string, string[]>;
+    ruleId: string;
+}>): void => {
+    for (const marker of coverageMarkers) {
+        const missingRuleIds = missingRuleIdsByMarkerDescription.get(
+            marker.description
+        );
+
+        if (missingRuleIds) {
+            pushRuleIdIfMarkerMissing({
+                inspection: coverageInspection,
+                marker,
+                missingRuleIds,
+                ruleId,
+            });
+        }
+    }
+};
+
 describe("fixer parse-safety coverage", () => {
     it("ensures each fixable/suggestion rule test includes parser-backed fast-check parse guards", async () => {
         expect.hasAssertions();
@@ -538,22 +579,11 @@ describe("fixer parse-safety coverage", () => {
             if (existsSync(ruleTestFilePath)) {
                 const testSource = await readFile(ruleTestFilePath, "utf8");
                 const coverageInspection = inspectCoverage(testSource);
-
-                for (const marker of coverageMarkers) {
-                    const missingRuleIds =
-                        missingRuleIdsByMarkerDescription.get(
-                            marker.description
-                        );
-
-                    if (missingRuleIds) {
-                        pushRuleIdIfMarkerMissing({
-                            inspection: coverageInspection,
-                            marker,
-                            missingRuleIds,
-                            ruleId,
-                        });
-                    }
-                }
+                recordMissingCoverageMarkers({
+                    coverageInspection,
+                    missingRuleIdsByMarkerDescription,
+                    ruleId,
+                });
             } else {
                 missingTestFiles.push(ruleId);
             }

@@ -37,14 +37,13 @@ const rule: JsoncRuleModule = createJsoncRule({
                 for (const element of elements) {
                     if (element === null) continue;
                     const value = getStringFromExpression(element);
-                    if (!isDefined(value) || !DIST_PATTERN.test(value))
-                        continue;
-
-                    reportViolation(context, {
-                        data: { pattern: value },
-                        loc: element.loc,
-                        messageId: "distInInclude",
-                    });
+                    if (isDefined(value) && DIST_PATTERN.test(value)) {
+                        reportViolation(context, {
+                            data: { pattern: value },
+                            loc: element.loc,
+                            messageId: "distInInclude",
+                        });
+                    }
                 }
             },
         };

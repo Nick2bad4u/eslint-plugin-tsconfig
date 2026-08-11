@@ -19,6 +19,8 @@ interface SidebarDocItem {
 const sidebarDirectoryPath = path.dirname(fileURLToPath(import.meta.url));
 /** Directory containing generated rule docs consumed by the sidebar. */
 const rulesDirectoryPath = path.join(sidebarDirectoryPath, "..", "rules");
+/** Docusaurus sidebar item type for generated category landing pages. */
+const generatedIndexType = "generated-index";
 
 /** Check whether a directory entry name is a markdown file. */
 const isMarkdownFile = (fileName: string): boolean => fileName.endsWith(".md");
@@ -99,7 +101,7 @@ const sidebars = {
                 description:
                     "Shared migration, rollout, and fix-safety guidance for rule adoption.",
                 title: "Adoption & Rollout",
-                type: "generated-index",
+                type: generatedIndexType,
             },
             type: "category",
         },
@@ -204,7 +206,7 @@ const sidebars = {
                         description:
                             "Rules that enforce consistent tsconfig.json option combinations.",
                         title: "Consistency Rules",
-                        type: "generated-index",
+                        type: generatedIndexType,
                     },
                     type: "category",
                 },
@@ -221,7 +223,7 @@ const sidebars = {
                         description:
                             "Rules that forbid problematic or incorrect tsconfig.json options.",
                         title: "No Rules",
-                        type: "generated-index",
+                        type: generatedIndexType,
                     },
                     type: "category",
                 },
@@ -238,7 +240,7 @@ const sidebars = {
                         description:
                             "Rules that require specific tsconfig.json options to be present and correctly set.",
                         title: "Require Rules",
-                        type: "generated-index",
+                        type: generatedIndexType,
                     },
                     type: "category",
                 },
@@ -249,7 +251,7 @@ const sidebars = {
                     "Rule documentation for every eslint-plugin-tsconfig rule.",
                 slug: "/",
                 title: "Rule Reference",
-                type: "generated-index",
+                type: generatedIndexType,
             },
             type: "category",
         },

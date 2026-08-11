@@ -1,8 +1,8 @@
+import { createRequire } from "node:module";
 import * as path from "node:path";
 import process from "node:process";
-import { fileURLToPath } from "node:url";
+import { fileURLToPath, pathToFileURL } from "node:url";
 
-import { ESLint } from "eslint";
 import pc from "picocolors";
 
 import plugin from "../plugin.mjs";
@@ -28,6 +28,43 @@ const scriptsDirectoryPath = fileURLToPath(new URL(".", import.meta.url));
 const repositoryRootPath = path.resolve(scriptsDirectoryPath, "..");
 
 const expectedEslintMajorArgumentPrefix = "--expect-eslint-major=";
+const eslintRuntimeRootArgumentPrefix = "--eslint-runtime-root=";
+
+/**
+ * Resolve the ESLint API from either this repository or an isolated runtime.
+ *
+ * @param {readonly string[]} argv
+ *
+ * @returns {Promise<typeof import("eslint")>}
+ */
+const loadEslintApi = async (argv) => {
+    const runtimeRootArgument = argv.find((argument) =>
+        argument.startsWith(eslintRuntimeRootArgumentPrefix)
+    );
+
+    if (runtimeRootArgument === undefined) {
+        return import("eslint");
+    }
+
+    const runtimeRoot = runtimeRootArgument.slice(
+        eslintRuntimeRootArgumentPrefix.length
+    );
+    if (runtimeRoot.length === 0) {
+        throw new TypeError(
+            `Missing ESLint runtime root in argument: ${runtimeRootArgument}`
+        );
+    }
+
+    const require = createRequire(import.meta.url);
+    const eslintApiPath = require.resolve("eslint", {
+        paths: [path.resolve(runtimeRoot)],
+    });
+
+    return import(pathToFileURL(eslintApiPath).href);
+};
+
+const argv = process.argv.slice(2);
+const { ESLint } = await loadEslintApi(argv);
 
 /**
  * @param {unknown} value
@@ -263,7 +300,7 @@ const scenarios = /** @type {const} */ ([
 
 console.log(pc.bold(pc.cyan("Running ESLint compatibility smoke checks...")));
 
-const expectedEslintMajor = parseExpectedEslintMajor(process.argv.slice(2));
+const expectedEslintMajor = parseExpectedEslintMajor(argv);
 assertEslintMajor(expectedEslintMajor);
 
 for (const scenario of scenarios) {

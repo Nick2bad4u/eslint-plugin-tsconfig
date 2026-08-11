@@ -4,9 +4,8 @@ import plugin from "./plugin.mjs";
 
 const allConfig = plugin.configs?.["all"];
 const localPluginRules =
-    allConfig &&
-    !Array.isArray(allConfig) &&
     typeof allConfig === "object" &&
+    !Array.isArray(allConfig) &&
     "rules" in allConfig
         ? (allConfig.rules ?? {})
         : {};
@@ -86,8 +85,14 @@ const config = [
         name: "Plugin Rule Implementation Compatibility",
         rules: {
             complexity: "off",
+            // The plugin analyzes JSONC through parser services rather than exposing
+            // an ESLint language plugin. `meta.languages` therefore does not apply.
+            "eslint-plugin/require-meta-languages": "off",
             "import-x/max-dependencies": "off",
             "no-duplicate-imports": "off",
+            // Rule listeners are keyed by ESLint selectors such as
+            // `JSONObjectExpression`; those API-defined keys are not function names.
+            "sonarjs/function-name": "off",
             "unicorn/consistent-boolean-name": "off",
             "unicorn/import-style": "off",
             "unicorn/no-declarations-before-early-exit": "off",
@@ -131,6 +136,42 @@ const config = [
             "unicorn/no-unreadable-new-expression": "off",
             "unicorn/prefer-error-is-error": "off",
             "unicorn/try-complexity": "off",
+        },
+    },
+    {
+        files: [
+            "test/consistent-*.test.ts",
+            "test/no-*.test.ts",
+            "test/require-*.test.ts",
+        ],
+        name: "Property-Based Rule Tests",
+        rules: {
+            // Assertions live inside fast-check callbacks, which test-signal cannot
+            // currently associate with the enclosing Vitest case.
+            "test-signal/require-assertions": "off",
+        },
+    },
+    {
+        files: [
+            "docs/rules/**/*.md",
+            "docs/docusaurus/blog/**/*.{md,mdx}",
+            "docs/docusaurus/site-docs/**/*.{md,mdx}",
+        ],
+        name: "Standalone Docusaurus Documents",
+        rules: {
+            // Frontmatter supplies the Docusaurus page title while the explicit H1
+            // keeps packaged Markdown usable on npm and GitHub outside Docusaurus.
+            "markdown/no-multiple-h1": "off",
+        },
+    },
+    {
+        files: ["mermaid.config.json"],
+        name: "Mermaid Runtime Configuration",
+        rules: {
+            // Mermaid's generated JSON Schema incorrectly marks optional fields as
+            // required. The installed Mermaid types declare each reported field
+            // optional, and the production Docusaurus build validates this config.
+            "json-schema-validator-2/no-invalid": "off",
         },
     },
 

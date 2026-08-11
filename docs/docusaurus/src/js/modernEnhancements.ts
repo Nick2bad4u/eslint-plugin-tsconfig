@@ -44,6 +44,14 @@ interface SidebarLabelMutation {
     originalLabel: string;
 }
 
+/** Token replacement derived from a sidebar link label. */
+interface SidebarTokenReplacement {
+    readonly remainderText: string;
+    readonly separator?: string;
+    readonly tokenClassName: string;
+    readonly tokenText: string;
+}
+
 /** Dataset key used to mark links already tokenized by this enhancer. */
 const SIDEBAR_TOKENIZED_DATA_KEY = "sbTokenized";
 
@@ -53,66 +61,22 @@ const SIDEBAR_TOKENIZED_DATA_KEY = "sbTokenized";
  * @returns Cleanup callback that restores original labels.
  */
 function applySidebarLabelTokenColoring(): CleanupFunction {
-    // NOSONAR typescript:S3776 -- complexity from iterating sidebar links and token coloring;
-    // acceptable for a DOM mutation utility
     const mutations: SidebarLabelMutation[] = [];
 
-    const processLinks = (sidebarLinks: readonly HTMLAnchorElement[]): void => {
-        // NOSONAR TypeScript:S3776 -- complex but necessary DOM mutation for sidebar token coloring
+    const processLinks = (
+        sidebarLinks: readonly Readonly<HTMLAnchorElement>[]
+    ): void => {
         for (const link of sidebarLinks) {
-            if (isSidebarLinkTokenized(link)) {
-                continue;
-            }
+            const linkLabel = link.textContent.trim();
+            const replacement = getSidebarTokenReplacement(link, linkLabel);
 
-            const linkLabel = link.textContent?.trim();
-
-            if (!linkLabel) {
-                continue;
-            }
-
-            if (isRuntimeSidebarLink(link)) {
-                const runtimePrefix = getRuntimeSidebarKindPrefix(linkLabel);
-
-                if (runtimePrefix !== null) {
-                    const remainderText = linkLabel
-                        .slice(runtimePrefix.length)
-                        .trimStart();
-
-                    if (remainderText.length > 0) {
-                        mutations.push({
-                            element: link,
-                            originalLabel: linkLabel,
-                        });
-
-                        setSidebarLeadingToken({
-                            link,
-                            remainderText,
-                            separator: "",
-                            tokenClassName: "sb-inline-runtime-kind",
-                            tokenText: `${runtimePrefix}\u{A0}`,
-                        });
-                    }
-
-                    continue;
-                }
-            }
-
-            if (isNumberedRuleSidebarLink(link)) {
-                const ruleNumberPrefix = getRuleNumberPrefix(linkLabel);
-
-                if (ruleNumberPrefix !== null) {
-                    mutations.push({
-                        element: link,
-                        originalLabel: linkLabel,
-                    });
-
-                    setSidebarLeadingToken({
-                        link,
-                        remainderText: ruleNumberPrefix.remainder,
-                        tokenClassName: "sb-inline-rule-number",
-                        tokenText: ruleNumberPrefix.numberToken,
-                    });
-                }
+            if (
+                replacement !== null &&
+                linkLabel.length > 0 &&
+                !isSidebarLinkTokenized(link)
+            ) {
+                mutations.push({ element: link, originalLabel: linkLabel });
+                setSidebarLeadingToken({ link, ...replacement });
             }
         }
     };
@@ -160,8 +124,11 @@ function applySidebarLabelTokenColoring(): CleanupFunction {
                               continue;
                           }
 
-                          if (addedNode.matches("a.menu__link")) {
-                              addedLinks.push(addedNode as HTMLAnchorElement);
+                          if (
+                              addedNode instanceof HTMLAnchorElement &&
+                              addedNode.matches("a.menu__link")
+                          ) {
+                              addedLinks.push(addedNode);
                           }
 
                           const nestedLinks =
@@ -322,6 +289,23 @@ function getRuleNumberPrefix(
     };
 }
 
+/** Derive numbered-rule tokenization details for a sidebar link. */
+function getRuleNumberTokenReplacement(
+    link: Readonly<HTMLAnchorElement>,
+    linkLabel: string
+): null | SidebarTokenReplacement {
+    if (!isNumberedRuleSidebarLink(link)) return null;
+
+    const ruleNumberPrefix = getRuleNumberPrefix(linkLabel);
+    if (ruleNumberPrefix === null) return null;
+
+    return {
+        remainderText: ruleNumberPrefix.remainder,
+        tokenClassName: "sb-inline-rule-number",
+        tokenText: ruleNumberPrefix.numberToken,
+    };
+}
+
 /**
  * Detect runtime kind prefix in a sidebar label.
  *
@@ -339,6 +323,38 @@ function getRuntimeSidebarKindPrefix(
     }
 
     return null;
+}
+
+/** Derive runtime-kind tokenization details for a sidebar link. */
+function getRuntimeTokenReplacement(
+    link: Readonly<HTMLAnchorElement>,
+    linkLabel: string
+): null | SidebarTokenReplacement {
+    if (!isRuntimeSidebarLink(link)) return null;
+
+    const runtimePrefix = getRuntimeSidebarKindPrefix(linkLabel);
+    if (runtimePrefix === null) return null;
+
+    const remainderText = linkLabel.slice(runtimePrefix.length).trimStart();
+    if (remainderText.length === 0) return null;
+
+    return {
+        remainderText,
+        separator: "",
+        tokenClassName: "sb-inline-runtime-kind",
+        tokenText: `${runtimePrefix}\u{A0}`,
+    };
+}
+
+/** Derive the first applicable token replacement for a sidebar link. */
+function getSidebarTokenReplacement(
+    link: Readonly<HTMLAnchorElement>,
+    linkLabel: string
+): null | SidebarTokenReplacement {
+    return (
+        getRuntimeTokenReplacement(link, linkLabel) ??
+        getRuleNumberTokenReplacement(link, linkLabel)
+    );
 }
 
 /**
@@ -469,7 +485,9 @@ function initializeEnhancements(): CleanupFunction {
  *
  * @returns `true` when element is an `HTMLElement` instance.
  */
-function isHTMLElement(element: Element | null): element is HTMLElement {
+function isHTMLElement(
+    element: null | Readonly<Element>
+): element is HTMLElement {
     return element instanceof HTMLElement;
 }
 
@@ -480,7 +498,7 @@ function isHTMLElement(element: Element | null): element is HTMLElement {
  *
  * @returns `true` when link is in `ts-extras` or `type-fest` rule lists.
  */
-function isNumberedRuleSidebarLink(link: HTMLAnchorElement): boolean {
+function isNumberedRuleSidebarLink(link: Readonly<HTMLAnchorElement>): boolean {
     return (
         link.closest(".sb-cat-rules-ts-extras") !== null ||
         link.closest(".sb-cat-rules-type-fest") !== null
@@ -494,7 +512,7 @@ function isNumberedRuleSidebarLink(link: HTMLAnchorElement): boolean {
  *
  * @returns `true` when link is under `.sb-cat-api-runtime`.
  */
-function isRuntimeSidebarLink(link: HTMLAnchorElement): boolean {
+function isRuntimeSidebarLink(link: Readonly<HTMLAnchorElement>): boolean {
     return link.closest(".sb-cat-api-runtime") !== null;
 }
 
@@ -505,7 +523,7 @@ function isRuntimeSidebarLink(link: HTMLAnchorElement): boolean {
  *
  * @returns `true` when already tokenized.
  */
-function isSidebarLinkTokenized(link: HTMLAnchorElement): boolean {
+function isSidebarLinkTokenized(link: Readonly<HTMLAnchorElement>): boolean {
     const tokenizedValue = link.dataset[SIDEBAR_TOKENIZED_DATA_KEY];
 
     return tokenizedValue !== undefined && tokenizedValue.length > 0;
