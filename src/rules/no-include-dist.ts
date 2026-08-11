@@ -35,10 +35,7 @@ const rule: JsoncRuleModule = createJsoncRule({
 
                 const elements = includeProp.value.elements;
                 for (const element of elements) {
-                    if (element === null) {
-                        continue;
-                    }
-
+                    if (element === null) continue;
                     const value = getStringFromExpression(element);
                     if (isDefined(value) && DIST_PATTERN.test(value)) {
                         reportViolation(context, {

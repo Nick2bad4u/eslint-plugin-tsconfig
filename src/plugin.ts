@@ -130,6 +130,7 @@ const tsconfigRuleEntries: readonly (readonly [
         (typeof tsconfigRules)[TsconfigRuleName],
     ])[] = [];
 
+    // eslint-disable-next-line sonarjs/too-many-break-or-continue-in-loop -- Preserve two defensive objectEntries boundary guards.
     for (const [ruleName] of objectEntries(tsconfigRules)) {
         if (!isTsconfigRuleName(ruleName)) {
             continue;
@@ -137,9 +138,11 @@ const tsconfigRuleEntries: readonly (readonly [
 
         const ruleDefinition = tsconfigRules[ruleName];
 
-        if (isDefined(ruleDefinition)) {
-            entries.push([ruleName, ruleDefinition]);
+        if (!isDefined(ruleDefinition)) {
+            continue;
         }
+
+        entries.push([ruleName, ruleDefinition]);
     }
 
     return entries;
@@ -270,27 +273,6 @@ const derivePresetRuleNamesByConfig = (): Readonly<
 const presetRuleNamesByConfig = derivePresetRuleNamesByConfig();
 
 /**
- * Resolve the default preset severity for one registered rule.
- *
- * @throws TypeError When the internal rule registry is incomplete.
- */
-function defaultSeverityFor(
-    ruleName: TsconfigRuleName
-): typeof ERROR_SEVERITY | typeof WARN_SEVERITY {
-    const ruleDefinition = tsconfigRules[ruleName];
-    if (!isDefined(ruleDefinition)) {
-        throw new TypeError(`Missing rule definition for '${ruleName}'.`);
-    }
-
-    const ruleMeta = ruleDefinition.meta;
-    if (!isDefined(ruleMeta)) {
-        throw new TypeError(`Rule '${ruleName}' is missing meta.`);
-    }
-
-    return ruleMeta.type === "problem" ? ERROR_SEVERITY : WARN_SEVERITY;
-}
-
-/**
  * Build an ESLint rules map that enables each provided rule at the given
  * severity.
  *
@@ -374,8 +356,26 @@ const createTsconfigConfigsDefinition = (): TsconfigConfigsContract =>
             if (isAllPreset) {
                 // All: each rule at its own default severity
                 for (const ruleName of ruleNames) {
-                    rules[`tsconfig/${ruleName}`] =
-                        defaultSeverityFor(ruleName);
+                    const ruleDefinition = tsconfigRules[ruleName];
+                    // eslint-disable-next-line sonarjs/nested-control-flow -- Keep registry validation beside preset assembly for exact failures.
+                    if (!isDefined(ruleDefinition)) {
+                        throw new TypeError(
+                            `Missing rule definition for '${ruleName}'.`
+                        );
+                    }
+
+                    const ruleMeta = ruleDefinition.meta;
+                    // eslint-disable-next-line sonarjs/nested-control-flow -- Keep registry validation beside preset assembly for exact failures.
+                    if (!isDefined(ruleMeta)) {
+                        throw new TypeError(
+                            `Rule '${ruleName}' is missing meta.`
+                        );
+                    }
+
+                    const ruleType = ruleMeta.type;
+                    const severity =
+                        ruleType === "problem" ? ERROR_SEVERITY : WARN_SEVERITY;
+                    rules[`tsconfig/${ruleName}`] = severity;
                 }
             } else if (isStrictPreset || isStrictestPreset) {
                 rules = severityRulesFor(ruleNames, ERROR_SEVERITY);
