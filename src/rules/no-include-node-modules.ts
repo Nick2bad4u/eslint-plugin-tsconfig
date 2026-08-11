@@ -36,24 +36,26 @@ const rule: JsoncRuleModule = createJsoncRule({
 
                 const elements = includeProp.value.elements;
                 for (const element of elements) {
-                    if (element === null) continue;
-                    const value = getStringFromExpression(element);
-                    if (!isDefined(value) || !NODE_MODULES_PATTERN.test(value))
+                    if (element === null) {
                         continue;
+                    }
 
-                    reportViolation(context, {
-                        data: { pattern: value },
-                        fix(fixer) {
-                            const removalRange = rangeWithAdjacentComma(
-                                context.sourceCode.text,
-                                element.range
-                            );
+                    const value = getStringFromExpression(element);
+                    if (isDefined(value) && NODE_MODULES_PATTERN.test(value)) {
+                        reportViolation(context, {
+                            data: { pattern: value },
+                            fix(fixer) {
+                                const removalRange = rangeWithAdjacentComma(
+                                    context.sourceCode.text,
+                                    element.range
+                                );
 
-                            return fixer.removeRange(removalRange);
-                        },
-                        loc: element.loc,
-                        messageId: "nodeModulesInInclude",
-                    });
+                                return fixer.removeRange(removalRange);
+                            },
+                            loc: element.loc,
+                            messageId: "nodeModulesInInclude",
+                        });
+                    }
                 }
             },
         };

@@ -137,11 +137,9 @@ const tsconfigRuleEntries: readonly (readonly [
 
         const ruleDefinition = tsconfigRules[ruleName];
 
-        if (!isDefined(ruleDefinition)) {
-            continue;
+        if (isDefined(ruleDefinition)) {
+            entries.push([ruleName, ruleDefinition]);
         }
-
-        entries.push([ruleName, ruleDefinition]);
     }
 
     return entries;
@@ -272,6 +270,27 @@ const derivePresetRuleNamesByConfig = (): Readonly<
 const presetRuleNamesByConfig = derivePresetRuleNamesByConfig();
 
 /**
+ * Resolve the default preset severity for one registered rule.
+ *
+ * @throws TypeError When the internal rule registry is incomplete.
+ */
+function defaultSeverityFor(
+    ruleName: TsconfigRuleName
+): typeof ERROR_SEVERITY | typeof WARN_SEVERITY {
+    const ruleDefinition = tsconfigRules[ruleName];
+    if (!isDefined(ruleDefinition)) {
+        throw new TypeError(`Missing rule definition for '${ruleName}'.`);
+    }
+
+    const ruleMeta = ruleDefinition.meta;
+    if (!isDefined(ruleMeta)) {
+        throw new TypeError(`Rule '${ruleName}' is missing meta.`);
+    }
+
+    return ruleMeta.type === "problem" ? ERROR_SEVERITY : WARN_SEVERITY;
+}
+
+/**
  * Build an ESLint rules map that enables each provided rule at the given
  * severity.
  *
@@ -355,24 +374,8 @@ const createTsconfigConfigsDefinition = (): TsconfigConfigsContract =>
             if (isAllPreset) {
                 // All: each rule at its own default severity
                 for (const ruleName of ruleNames) {
-                    const ruleDefinition = tsconfigRules[ruleName];
-                    if (!isDefined(ruleDefinition)) {
-                        throw new TypeError(
-                            `Missing rule definition for '${ruleName}'.`
-                        );
-                    }
-
-                    const ruleMeta = ruleDefinition.meta;
-                    if (!isDefined(ruleMeta)) {
-                        throw new TypeError(
-                            `Rule '${ruleName}' is missing meta.`
-                        );
-                    }
-
-                    const ruleType = ruleMeta.type;
-                    const severity =
-                        ruleType === "problem" ? ERROR_SEVERITY : WARN_SEVERITY;
-                    rules[`tsconfig/${ruleName}`] = severity;
+                    rules[`tsconfig/${ruleName}`] =
+                        defaultSeverityFor(ruleName);
                 }
             } else if (isStrictPreset || isStrictestPreset) {
                 rules = severityRulesFor(ruleNames, ERROR_SEVERITY);

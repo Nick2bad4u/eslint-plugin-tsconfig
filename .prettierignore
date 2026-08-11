@@ -35,6 +35,12 @@ test/__snapshots__/readme-rules-section.generated.md
 
 # Ignore Sonar properties (not compatible with prettier-ini parser)
 sonar-project.properties
+.sonarcloud.properties
+
+# Preserve workflow block-scalar semantics; ESLint, yamllint, and actionlint
+# validate these files without rewriting shell scripts as quoted strings.
+.github/workflows/
+.yamllint
 
 # covered by remark lint / remark
 .gitleaks.toml

@@ -62,7 +62,7 @@ const rule: JsoncRuleModule = createJsoncRule({
                                     );
                                 }
                                 const lastEl = arrayAt(arr.elements, -1);
-                                if (!isDefined(lastEl) || lastEl === null) {
+                                if (lastEl === null || !isDefined(lastEl)) {
                                     return null;
                                 }
                                 return fixer.insertTextAfterRange(

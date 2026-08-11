@@ -79,18 +79,20 @@ const rule: JsoncRuleModule = createJsoncRule({
 
             const libs = getStringArrayElements(libProp.value);
 
-            for (const lib of libs) {
+            const newerLib = libs.find((lib) => {
                 const libVer = libEsVersion(lib);
-                if (!isDefined(libVer)) continue;
+                if (!isDefined(libVer)) return false;
                 const libIdx = esIndex(libVer);
-                if (libIdx === -1 || libIdx <= targetIdx) continue;
 
+                return libIdx !== -1 && libIdx > targetIdx;
+            });
+
+            if (isDefined(newerLib)) {
                 reportViolation(context, {
-                    data: { libEntry: lib, target: targetStr },
+                    data: { libEntry: newerLib, target: targetStr },
                     loc: libProp.loc,
                     messageId: "inconsistentTargetAndLib",
                 });
-                return;
             }
         },
     }),

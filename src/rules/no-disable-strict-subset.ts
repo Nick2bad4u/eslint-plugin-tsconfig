@@ -55,14 +55,16 @@ const rule: JsoncRuleModule = createJsoncRule({
                         co,
                         flag
                     );
-                    if (!isDefined(flagProp)) continue;
-                    if (getBooleanValue(flagProp) !== false) continue;
-
-                    reportViolation(context, {
-                        data: { flag },
-                        loc: flagProp.loc,
-                        messageId: "disabledStrictSubflag",
-                    });
+                    if (
+                        isDefined(flagProp) &&
+                        getBooleanValue(flagProp) === false
+                    ) {
+                        reportViolation(context, {
+                            data: { flag },
+                            loc: flagProp.loc,
+                            messageId: "disabledStrictSubflag",
+                        });
+                    }
                 }
             },
         };
