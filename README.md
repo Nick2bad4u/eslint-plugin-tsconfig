@@ -6,6 +6,8 @@ ESLint plugin for teams that want consistent `tsconfig.json` configurations enfo
 
 Uses [`jsonc-eslint-parser`](https://github.com/ota-meshi/jsonc-eslint-parser) to statically analyze your `tsconfig*.json` files and report configuration issues.
 
+> **Oxlint:** Not compatible as a complete plugin (verified with Oxlint 1.80.0); all 40 rules and every preset require JSONC configuration parsing through `jsonc-eslint-parser`, and [Oxlint JavaScript plugins do not support custom parsers](https://oxc.rs/docs/guide/usage/linter/js-plugins.html#api-support), so use ESLint for this plugin.
+
 ## Table of contents
 
 1. [Installation](#installation)
