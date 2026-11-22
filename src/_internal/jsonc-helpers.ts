@@ -100,6 +100,21 @@ export function encodeValue(value: JSONPrimitive): string {
 // ─── Property access ─────────────────────────────────────────────────────────
 
 /**
+ * Find the last occurrence of a named JSONC property.
+ *
+ * @param obj - JSON object AST node.
+ * @param key - Property key to search for.
+ *
+ * @returns The last matching property, if present.
+ */
+export function findLastProperty(
+    obj: Readonly<JSONObjectExpression>,
+    key: string
+): JSONProperty | undefined {
+    return obj.properties.findLast((prop) => isPropertyKey(prop, key));
+}
+
+/**
  * Find a named property within a `JSONObjectExpression`.
  *
  * @param obj - JSON object AST node.
@@ -111,13 +126,7 @@ export function findProperty(
     obj: Readonly<JSONObjectExpression>,
     key: string
 ): JSONProperty | undefined {
-    return obj.properties.find((prop) => {
-        if (prop.key.type === "JSONIdentifier") {
-            return prop.key.name === key;
-        }
-
-        return typeof prop.key.value === "string" && prop.key.value === key;
-    });
+    return obj.properties.find((prop) => isPropertyKey(prop, key));
 }
 
 /**
@@ -129,10 +138,10 @@ export function findProperty(
  *   otherwise `undefined`.
  */
 export function getBooleanValue(
-    prop: Readonly<JSONProperty>
+    prop: Readonly<JSONProperty> | undefined
 ): boolean | undefined {
     if (
-        prop.value.type === "JSONLiteral" &&
+        prop?.value.type === "JSONLiteral" &&
         typeof prop.value.value === "boolean"
     ) {
         return prop.value.value;
@@ -227,7 +236,13 @@ export function getStringValue(
     return undefined;
 }
 
-// ─── Fixer helpers ────────────────────────────────────────────────────────────
+/** Check whether a property name appears more than once in an object. */
+export function hasDuplicateProperty(
+    obj: Readonly<JSONObjectExpression>,
+    key: string
+): boolean {
+    return findProperty(obj, key) !== findLastProperty(obj, key);
+}
 
 /**
  * Determine whether a named property exists in a `JSONObjectExpression`.
@@ -243,6 +258,8 @@ export function hasProperty(
 ): boolean {
     return isDefined(findProperty(obj, key));
 }
+
+// ─── Fixer helpers ────────────────────────────────────────────────────────────
 
 /**
  * Build fixer text for inserting a new property into an existing object.
@@ -341,8 +358,6 @@ export function replacePropertyValue(
     return fixer.replaceTextRange(prop.value.range, encodeValue(value));
 }
 
-// ─── Array helpers ────────────────────────────────────────────────────────────
-
 /**
  * Report a rule violation through the shared policy-compliant helper.
  *
@@ -359,4 +374,13 @@ export function reportViolation(
     violation: Readonly<ViolationReport>
 ): void {
     context.report(violation);
+}
+
+/** Match a JSONC property against a named key. */
+function isPropertyKey(prop: Readonly<JSONProperty>, key: string): boolean {
+    if (prop.key.type === "JSONIdentifier") {
+        return prop.key.name === key;
+    }
+
+    return prop.key.value === key;
 }

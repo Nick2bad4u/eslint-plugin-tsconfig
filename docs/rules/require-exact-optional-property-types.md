@@ -36,7 +36,10 @@ Enabling `exactOptionalPropertyTypes` forces TypeScript to distinguish between
 these states, catching a class of bugs where code assumes a property is absent
 but it is present with an `undefined` value, or vice versa.
 
-The auto-fixer adds `"exactOptionalPropertyTypes": true` to `compilerOptions`.
+The fixer enables `exactOptionalPropertyTypes` when the config sets
+`strictNullChecks: true` or is a standalone config with `strict: true` and no
+explicit `strictNullChecks` override. If the prerequisite is off or may come from
+an extended config, the rule reports the issue and leaves the file unchanged.
 
 ## ❌ Incorrect
 
