@@ -49,7 +49,12 @@ export function getUser(): { id: number; name: string } {
 }
 ```
 
-The auto-fixer adds `"isolatedDeclarations": true` to `compilerOptions`.
+The fixer enables `isolatedDeclarations` when the config explicitly enables
+`declaration` or `composite` and JavaScript input is disabled. TypeScript treats
+`checkJs: true` as enabling JavaScript input when `allowJs` is omitted. For a
+config with `extends`, the fixer also requires a local `allowJs: false` because
+the base config may enable JavaScript input. If the rule cannot establish those
+conditions, it reports the issue and leaves the file unchanged.
 
 ## ❌ Incorrect
 

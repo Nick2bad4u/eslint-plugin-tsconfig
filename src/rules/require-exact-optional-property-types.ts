@@ -11,15 +11,36 @@ import type {
 import type { JsoncRuleModule } from "../_internal/jsonc-rule.js";
 
 import {
-    findProperty,
+    findLastProperty,
     getBooleanValue,
     getCompilerOptions,
+    hasDuplicateProperty,
+    hasProperty,
     insertProperty,
     replacePropertyValue,
     reportViolation,
 } from "../_internal/jsonc-helpers.js";
 import { createJsoncRule } from "../_internal/jsonc-rule.js";
 import { createRuleDocsUrl } from "../_internal/rule-docs-url.js";
+
+/** An inherited strictNullChecks override can take precedence over local strict. */
+function hasStrictNullChecks(
+    root: Readonly<JSONObjectExpression>,
+    compilerOptions: Readonly<JSONObjectExpression>
+): boolean {
+    const strictNullChecks = findLastProperty(
+        compilerOptions,
+        "strictNullChecks"
+    );
+    if (isDefined(strictNullChecks)) {
+        return getBooleanValue(strictNullChecks) === true;
+    }
+
+    return (
+        !hasProperty(root, "extends") &&
+        getBooleanValue(findLastProperty(compilerOptions, "strict")) === true
+    );
+}
 
 /** Rule implementation for this tsconfig lint rule. */
 const rule: JsoncRuleModule = createJsoncRule({
@@ -29,7 +50,7 @@ const rule: JsoncRuleModule = createJsoncRule({
             const co = getCompilerOptions(node);
             if (!co) return;
 
-            const prop: JSONProperty | undefined = findProperty(
+            const prop: JSONProperty | undefined = findLastProperty(
                 co,
                 "exactOptionalPropertyTypes"
             );
@@ -38,6 +59,13 @@ const rule: JsoncRuleModule = createJsoncRule({
 
             reportViolation(context, {
                 fix(fixer) {
+                    if (
+                        hasDuplicateProperty(node, "compilerOptions") ||
+                        !hasStrictNullChecks(node, co)
+                    ) {
+                        return null;
+                    }
+
                     if (isDefined(prop)) {
                         return replacePropertyValue(fixer, prop, true);
                     }
@@ -65,7 +93,7 @@ const rule: JsoncRuleModule = createJsoncRule({
         fixable: "code",
         messages: {
             missingExactOptionalPropertyTypes:
-                "`exactOptionalPropertyTypes: true` makes TypeScript distinguish between `{ x?: number }` (property may be absent) and `{ x: number | undefined }` (property must be present). Add it to `compilerOptions` for stronger type safety.",
+                "`exactOptionalPropertyTypes: true` makes TypeScript distinguish between `{ x?: number }` (property may be absent) and `{ x: number | undefined }` (property must be present). Add it to `compilerOptions` with `strictNullChecks` enabled.",
         },
         schema: [],
         type: "suggestion",
